@@ -39,7 +39,7 @@ export default function BasicInfoScreen() {
       <Text style={styles.subtitle}>Tell us about your trip</Text>
 
       <View style={styles.formGroup}>
-        <Text style={styles.label}>Destination</Text>
+        <Text style={styles.label}>City/Location</Text>
         <TextInput
           style={styles.input}
           placeholder="Where are you going?"
