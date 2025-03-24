@@ -76,7 +76,7 @@ export default function DailyBudgetScreen() {
 
       <View style={styles.infoCard}>
         <View style={styles.infoRow}>
-          <Text style={styles.infoLabel}>Destination:</Text>
+          <Text style={styles.infoLabel}>City/Location:</Text>
           <Text style={styles.infoValue}>{destination}</Text>
         </View>
         <View style={styles.infoRow}>

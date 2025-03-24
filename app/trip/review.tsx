@@ -112,7 +112,7 @@ export default function ReviewScreen() {
         <Text style={styles.cardTitle}>Trip Details</Text>
         
         <View style={styles.infoRow}>
-          <Text style={styles.infoLabel}>Destination:</Text>
+          <Text style={styles.infoLabel}>City/Location:</Text>
           <Text style={styles.infoValue}>{params.destination}</Text>
         </View>
         
