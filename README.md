@@ -97,24 +97,103 @@ Package Management:
 ```
 TravelPal/
 ├── app/                  # Main application code using Expo Router
+│   ├── _layout.tsx       # Root layout with app-wide navigation setup
 │   ├── (tabs)/           # Tab-based screens
-│   │   ├── index.tsx     # Budget overview
-│   │   └── expenses.tsx  # Expense tracking
+│   │   ├── _layout.tsx   # Tab navigation configuration
+│   │   ├── index.tsx     # Budget overview with trip list and creation
+│   │   ├── expenses.tsx  # Expense tracking with transaction history
+│   │   ├── journal.tsx   # Travel journal entries and memories
+│   │   └── settings.tsx  # App settings and preferences
 │   ├── trip/             # Trip creation flow screens
-│   │   ├── _layout.tsx   # Stack navigation for trip creation
-│   │   ├── select-method.tsx
-│   │   ├── basic-info.tsx
-│   │   ├── daily-budget.tsx
-│   │   ├── category-allocation.tsx
-│   │   └── review.tsx
+│   │   ├── _layout.tsx   # Stack navigation for trip creation flow
+│   │   ├── select-method.tsx    # Choose between total or daily budget planning
+│   │   ├── basic-info.tsx       # Enter destination, dates, and travel style
+│   │   ├── daily-budget.tsx     # Configure daily spending and travelers
+│   │   ├── total-budget.tsx     # Set total trip budget and emergency fund
+│   │   ├── category-allocation.tsx  # Allocate budget across categories
+│   │   └── review.tsx           # Final trip review and confirmation
+│   ├── components/       # Reusable components
+│   │   ├── DatePickerField.tsx  # Custom date picker with validation
+│   │   └── CountryPicker.tsx    # Country selection with search
 │   ├── context.tsx       # App-wide state management
 │   └── types.ts          # TypeScript definitions
 ├── assets/               # Images and fonts
-├── components/           # Reusable components
 ├── utils/                # Utility functions
 │   └── countryData.ts    # Country-specific budget calculations
 └── scripts/              # Helper scripts
 ```
+
+## Trip Creation Flow
+
+The app features a step-by-step trip creation process:
+
+1. **Select Method** (`select-method.tsx`)
+   - Choose between total budget or daily budget planning
+   - Visual cards with icons for each method
+   - Clear descriptions of when to use each approach
+   - Smooth navigation to next step
+
+2. **Basic Info** (`basic-info.tsx`)
+   - Enter trip destination and country with search
+   - Date range selection with validation
+   - Travel style selection (Budget, Mid-range, Luxury)
+   - Country-specific recommendations
+   - Form validation before proceeding
+
+3. **Budget Setup**
+   - **Daily Budget** (`daily-budget.tsx`)
+     - Set number of travelers
+     - Configure daily spending limits
+     - Emergency fund planning (5-25%)
+     - Pre-trip expense tracking
+     - Real-time budget calculations
+   
+   - **Total Budget** (`total-budget.tsx`)
+     - Set overall trip budget
+     - Configure emergency fund percentage
+     - Track pre-trip expenses
+     - Calculate daily spending limits
+
+4. **Category Allocation** (`category-allocation.tsx`)
+   - Interactive budget distribution
+   - Default allocations based on travel style
+   - Real-time percentage adjustments
+   - Category-specific recommendations
+   - Visual feedback on allocation changes
+   - Automatic rebalancing of other categories
+
+5. **Review** (`review.tsx`)
+   - Comprehensive trip summary
+   - Detailed budget breakdown
+   - Emergency fund calculations
+   - Category allocation overview
+   - Final confirmation with data persistence
+
+## Tab Navigation
+
+1. **Budget Overview** (`index.tsx`)
+   - List of all trips
+   - Quick access to trip creation
+   - Budget status indicators
+   - Placeholder trips for new users
+
+2. **Expenses** (`expenses.tsx`)
+   - Transaction history
+   - Category-based expense tracking
+   - Visual expense breakdown
+   - Sample transactions for new users
+
+3. **Journal** (`journal.tsx`)
+   - Travel memories and experiences
+   - Location-based entries
+   - Mood tracking
+   - Photo integration (coming soon)
+
+4. **Settings** (`settings.tsx`)
+   - App preferences
+   - Currency settings
+   - User preferences
+   - App configuration
 
 ## State Management
 
