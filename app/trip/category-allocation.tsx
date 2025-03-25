@@ -46,6 +46,14 @@ export default function CategoryAllocationScreen() {
     shopping: 0,
     other: 0
   });
+  const [recommendedCategories, setRecommendedCategories] = useState<CategoryPercentages>({
+    accommodation: 0,
+    food: 0,
+    transportation: 0,
+    activities: 0,
+    shopping: 0,
+    other: 0
+  });
   const [isLoaded, setIsLoaded] = useState(false);
 
   // Load default category percentages when component mounts
@@ -58,21 +66,29 @@ export default function CategoryAllocationScreen() {
         );
         
         setCategories(defaultPercentages);
+        setRecommendedCategories(defaultPercentages);
       } catch (error) {
         console.error("Error loading default percentages:", error);
         // Fallback to default values if there's an error
-        setCategories({
+        const fallbackValues = {
           accommodation: 40,
           food: 25,
           transportation: 15,
           activities: 15,
           shopping: 3,
           other: 2
-        });
+        };
+        setCategories(fallbackValues);
+        setRecommendedCategories(fallbackValues);
       }
       setIsLoaded(true);
     }
   }, [params.country, params.travelStyle, isLoaded]);
+
+  // Reset to recommended values
+  const resetToRecommended = () => {
+    setCategories({ ...recommendedCategories });
+  };
 
   // Calculate total percentage allocated
   const totalPercentage = Object.values(categories).reduce((sum, value) => sum + value, 0);
@@ -181,6 +197,27 @@ export default function CategoryAllocationScreen() {
         </View>
       </View>
 
+      <View style={styles.recommendationHeader}>
+        <View style={styles.recommendationTitleContainer}>
+          <Text style={styles.recommendationTitle}>Recommended Budget Distribution for {params.destination}</Text>
+          <View style={styles.recommendationActions}>
+            <TouchableOpacity 
+              style={styles.resetButton}
+              onPress={resetToRecommended}
+            >
+              <FontAwesome name="refresh" size={16} color="#FF6B6B" />
+              <Text style={styles.resetButtonText}>Reset</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.infoIconContainer}>
+              <FontAwesome name="info-circle" size={20} color="#666666" />
+            </TouchableOpacity>
+          </View>
+        </View>
+        <Text style={styles.recommendationSubtitle}>
+          These percentages are based on typical spending patterns in {params.country} for {params.travelStyle.toLowerCase()} travelers
+        </Text>
+      </View>
+
       <View style={styles.totalAllocationContainer}>
         <Text style={styles.totalAllocationLabel}>Total Allocated</Text>
         <Text style={[
@@ -204,9 +241,14 @@ export default function CategoryAllocationScreen() {
                 <FontAwesome name={category.icon as any} size={16} color="#FFFFFF" />
               </View>
               <Text style={styles.categoryName}>{category.name}</Text>
-              <Text style={styles.categoryPercentage}>
-                {categories[category.id]?.toFixed(1) || '0'}%
-              </Text>
+              <View style={styles.percentageContainer}>
+                <Text style={styles.categoryPercentage}>
+                  {categories[category.id]?.toFixed(1) || '0'}%
+                </Text>
+                <Text style={styles.recommendedPercentage}>
+                  Recommended: {recommendedCategories[category.id]?.toFixed(1) || '0'}%
+                </Text>
+              </View>
             </View>
             
             <Slider
@@ -223,16 +265,26 @@ export default function CategoryAllocationScreen() {
             
             <View style={styles.categoryValueContainer}>
               <Text style={styles.categoryValueLabel}>Daily budget:</Text>
-              <Text style={styles.categoryValueAmount}>
-                ${((categories[category.id] || 0) / 100 * dailyBudget).toFixed(2)}
-              </Text>
+              <View style={styles.valuePairContainer}>
+                <Text style={styles.categoryValueAmount}>
+                  ${((categories[category.id] || 0) / 100 * dailyBudget).toFixed(2)}
+                </Text>
+                <Text style={styles.recommendedValueAmount}>
+                  Recommended: ${((recommendedCategories[category.id] || 0) / 100 * dailyBudget).toFixed(2)}
+                </Text>
+              </View>
             </View>
             
             <View style={styles.categoryValueContainer}>
               <Text style={styles.categoryValueLabel}>Total budget:</Text>
-              <Text style={styles.categoryValueAmount}>
-                ${((categories[category.id] || 0) / 100 * totalDailyBudget).toFixed(2)}
-              </Text>
+              <View style={styles.valuePairContainer}>
+                <Text style={styles.categoryValueAmount}>
+                  ${((categories[category.id] || 0) / 100 * totalDailyBudget).toFixed(2)}
+                </Text>
+                <Text style={styles.recommendedValueAmount}>
+                  Recommended: ${((recommendedCategories[category.id] || 0) / 100 * totalDailyBudget).toFixed(2)}
+                </Text>
+              </View>
             </View>
           </View>
         ))}
@@ -297,6 +349,54 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     color: '#333333',
   },
+  recommendationHeader: {
+    backgroundColor: '#FFF0F0',
+    borderRadius: 12,
+    padding: 16,
+    marginBottom: 24,
+    borderWidth: 1,
+    borderColor: '#FFD6D6',
+  },
+  recommendationTitleContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 8,
+  },
+  recommendationTitle: {
+    fontSize: 18,
+    fontWeight: '600',
+    color: '#333333',
+    flex: 1,
+  },
+  recommendationActions: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  resetButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#FFF0F0',
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 16,
+    marginRight: 8,
+    borderWidth: 1,
+    borderColor: '#FFD6D6',
+  },
+  resetButtonText: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#FF6B6B',
+    marginLeft: 4,
+  },
+  infoIconContainer: {
+    padding: 4,
+  },
+  recommendationSubtitle: {
+    fontSize: 14,
+    color: '#666666',
+    lineHeight: 20,
+  },
   totalAllocationContainer: {
     backgroundColor: '#FFFFFF',
     borderRadius: 12,
@@ -356,10 +456,18 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     color: '#333333',
   },
+  percentageContainer: {
+    alignItems: 'flex-end',
+  },
   categoryPercentage: {
     fontSize: 16,
     fontWeight: '700',
     color: '#FF6B6B',
+  },
+  recommendedPercentage: {
+    fontSize: 12,
+    color: '#666666',
+    marginTop: 2,
   },
   categorySlider: {
     width: '100%',
@@ -375,10 +483,18 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: '#666666',
   },
+  valuePairContainer: {
+    alignItems: 'flex-end',
+  },
   categoryValueAmount: {
     fontSize: 14,
     fontWeight: '500',
     color: '#333333',
+  },
+  recommendedValueAmount: {
+    fontSize: 12,
+    color: '#666666',
+    marginTop: 2,
   },
   buttonContainer: {
     marginTop: 8,
