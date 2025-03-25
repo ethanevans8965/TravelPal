@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, TextInput, TouchableOpacity, ScrollView } from 
 import { useRouter, useLocalSearchParams } from 'expo-router';
 import { FontAwesome } from '@expo/vector-icons';
 import CountryPicker from '../components/CountryPicker';
+import DatePickerField from '../components/DatePickerField';
 
 export default function BasicInfoScreen() {
   const router = useRouter();
@@ -56,27 +57,18 @@ export default function BasicInfoScreen() {
         />
       </View>
 
-      <View style={styles.formGroup}>
-        <Text style={styles.label}>Start Date</Text>
-        <TextInput
-          style={styles.input}
-          placeholder="YYYY-MM-DD"
-          value={startDate}
-          onChangeText={setStartDate}
-          keyboardType="numbers-and-punctuation"
-        />
-      </View>
+      <DatePickerField
+        label="Start Date"
+        value={startDate}
+        onChange={setStartDate}
+      />
 
-      <View style={styles.formGroup}>
-        <Text style={styles.label}>End Date</Text>
-        <TextInput
-          style={styles.input}
-          placeholder="YYYY-MM-DD"
-          value={endDate}
-          onChangeText={setEndDate}
-          keyboardType="numbers-and-punctuation"
-        />
-      </View>
+      <DatePickerField
+        label="End Date"
+        value={endDate}
+        onChange={setEndDate}
+        minimumDate={startDate ? new Date(startDate) : undefined}
+      />
 
       <View style={styles.formGroup}>
         <Text style={styles.label}>Travel Style</Text>
@@ -246,4 +238,4 @@ const styles = StyleSheet.create({
     color: '#FFFFFF',
     marginRight: 8,
   },
-}); 
+});
