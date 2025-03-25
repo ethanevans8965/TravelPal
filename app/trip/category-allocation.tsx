@@ -15,6 +15,55 @@ const BUDGET_CATEGORIES = [
   { id: 'other', name: 'Other', icon: 'ellipsis-h' },
 ];
 
+// Custom slider component that shows recommended value
+const RecommendedSlider = ({ 
+  value, 
+  recommendedValue, 
+  onValueChange, 
+  minimumValue = 0, 
+  maximumValue = 100,
+  step = 1,
+  style
+}: {
+  value: number;
+  recommendedValue: number;
+  onValueChange: (value: number) => void;
+  minimumValue?: number;
+  maximumValue?: number;
+  step?: number;
+  style?: any;
+}) => {
+  return (
+    <View style={[styles.sliderContainer, style]}>
+      <View style={styles.sliderTrack}>
+        <View 
+          style={[
+            styles.recommendedTrack,
+            { width: `${(recommendedValue / maximumValue) * 100}%` }
+          ]} 
+        />
+        <View 
+          style={[
+            styles.activeTrack,
+            { width: `${(value / maximumValue) * 100}%` }
+          ]} 
+        />
+      </View>
+      <Slider
+        style={styles.slider}
+        minimumValue={minimumValue}
+        maximumValue={maximumValue}
+        step={step}
+        value={value}
+        onValueChange={onValueChange}
+        minimumTrackTintColor="transparent"
+        maximumTrackTintColor="transparent"
+        thumbTintColor="#FF6B6B"
+      />
+    </View>
+  );
+};
+
 export default function CategoryAllocationScreen() {
   const router = useRouter();
   const params = useLocalSearchParams<{
@@ -65,7 +114,7 @@ export default function CategoryAllocationScreen() {
           params.travelStyle
         );
         
-        setCategories(defaultPercentages);
+        // Only set recommended values, keep current values at 0
         setRecommendedCategories(defaultPercentages);
       } catch (error) {
         console.error("Error loading default percentages:", error);
@@ -78,7 +127,6 @@ export default function CategoryAllocationScreen() {
           shopping: 3,
           other: 2
         };
-        setCategories(fallbackValues);
         setRecommendedCategories(fallbackValues);
       }
       setIsLoaded(true);
@@ -96,54 +144,12 @@ export default function CategoryAllocationScreen() {
   // Check if allocations are valid (total is 100%)
   const isFormValid = Math.abs(totalPercentage - 100) < 0.1; // Allow small rounding errors
 
-  // Update a category's percentage and adjust others proportionally
+  // Update a category's percentage without adjusting others
   const updateCategory = (categoryId: string, newValue: number) => {
-    const oldValue = categories[categoryId] || 0;
-    const difference = newValue - oldValue;
-    
-    // Calculate how much we need to adjust other categories
-    const remainingCategories = Object.keys(categories).filter(id => id !== categoryId);
-    const totalRemainingPercentage = remainingCategories.reduce((sum, id) => sum + categories[id], 0);
-    
-    // Avoid division by zero
-    if (totalRemainingPercentage === 0 && difference !== 0) {
-      // If all other categories are 0, distribute evenly
-      const newCategories = { ...categories };
-      newCategories[categoryId] = newValue;
-      const remainingPercentage = 100 - newValue;
-      const evenShare = remainingPercentage / remainingCategories.length;
-      remainingCategories.forEach(id => {
-        newCategories[id] = evenShare;
-      });
-      setCategories(newCategories);
-      return;
-    }
-    
-    // Calculate adjustment ratio
-    const adjustmentRatio = (totalRemainingPercentage - difference) / totalRemainingPercentage;
-    
-    // Create new categories object with adjustments
-    const newCategories = { ...categories };
-    newCategories[categoryId] = newValue;
-    
-    // Adjust other categories proportionally
-    remainingCategories.forEach(id => {
-      // Ensure we don't go below 0
-      newCategories[id] = Math.max(0, categories[id] * adjustmentRatio);
-    });
-    
-    // Handle rounding errors by adjusting the largest category
-    const totalNewPercentage = Object.values(newCategories).reduce((sum, value) => sum + value, 0);
-    if (Math.abs(totalNewPercentage - 100) > 0.1) {
-      const adjustment = 100 - totalNewPercentage;
-      const largestCategoryId = remainingCategories.reduce(
-        (maxId, id) => newCategories[id] > newCategories[maxId] ? id : maxId,
-        remainingCategories[0]
-      );
-      newCategories[largestCategoryId] += adjustment;
-    }
-    
-    setCategories(newCategories);
+    setCategories(prev => ({
+      ...prev,
+      [categoryId]: newValue
+    }));
   };
 
   const navigateToNext = () => {
@@ -251,16 +257,11 @@ export default function CategoryAllocationScreen() {
               </View>
             </View>
             
-            <Slider
-              style={styles.categorySlider}
-              minimumValue={0}
-              maximumValue={100}
-              step={1}
+            <RecommendedSlider
               value={categories[category.id] || 0}
+              recommendedValue={recommendedCategories[category.id] || 0}
               onValueChange={(value) => updateCategory(category.id, value)}
-              minimumTrackTintColor="#FF6B6B"
-              maximumTrackTintColor="#E5E5E5"
-              thumbTintColor="#FF6B6B"
+              style={styles.categorySlider}
             />
             
             <View style={styles.categoryValueContainer}>
@@ -516,5 +517,40 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     color: '#FFFFFF',
     marginRight: 8,
+  },
+  sliderContainer: {
+    position: 'relative',
+    width: '100%',
+    height: 40,
+  },
+  sliderTrack: {
+    position: 'absolute',
+    top: 18,
+    left: 0,
+    right: 0,
+    height: 4,
+    backgroundColor: '#E5E5E5',
+    borderRadius: 2,
+    overflow: 'hidden',
+  },
+  recommendedTrack: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    height: '100%',
+    backgroundColor: '#FFB5B5',
+    borderRadius: 2,
+  },
+  activeTrack: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    height: '100%',
+    backgroundColor: '#FF6B6B',
+    borderRadius: 2,
+  },
+  slider: {
+    width: '100%',
+    height: 40,
   },
 }); 
