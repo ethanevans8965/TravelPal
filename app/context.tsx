@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useState } from 'react';
+import * as Crypto from 'expo-crypto';
 import { AppContextType, Expense, JournalEntry, Trip } from './types';
 
 const AppContext = createContext<AppContextType | null>(null);
@@ -13,7 +14,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   const addExpense = (expense: Omit<Expense, 'id'>) => {
     const newExpense: Expense = {
       ...expense,
-      id: Math.random().toString(36).substr(2, 9), // Simple ID generation for now
+      id: Crypto.randomUUID(),
     };
     setExpenses(prev => [...prev, newExpense]);
   };
@@ -21,7 +22,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   const addJournalEntry = (entry: Omit<JournalEntry, 'id'>) => {
     const newEntry: JournalEntry = {
       ...entry,
-      id: Math.random().toString(36).substr(2, 9), // Simple ID generation for now
+      id: Crypto.randomUUID(),
     };
     setJournalEntries(prev => [...prev, newEntry]);
   };
@@ -29,7 +30,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   const addTrip = (trip: Omit<Trip, 'id'>) => {
     const newTrip: Trip = {
       ...trip,
-      id: Math.random().toString(36).substr(2, 9), // Simple ID generation for now
+      id: Crypto.randomUUID(),
     };
     setTrips(prev => [...prev, newTrip]);
   };
