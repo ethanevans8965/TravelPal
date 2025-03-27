@@ -1,3 +1,5 @@
+import { CategoryPercentages } from './utils/countryData';
+
 export interface Expense {
   id: string;
   amount: number;
@@ -27,14 +29,7 @@ export interface Trip {
   dailyBudget?: number;
   emergencyFundPercentage: number;
   pretrip?: number;
-  categories: BudgetCategory[];
-}
-
-export interface BudgetCategory {
-  name: string;
-  percentage: number;
-  icon: string;
-  color: string;
+  categories: CategoryPercentages;
 }
 
 export interface AppContextType {
