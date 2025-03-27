@@ -2,9 +2,9 @@ import { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
 import { useRouter, useLocalSearchParams } from 'expo-router';
 import { FontAwesome } from '@expo/vector-icons';
-import Slider from '@react-native-community/slider';
 import { getDefaultCategoryPercentages, CategoryPercentages } from '../utils/countryData';
 import { FontAwesomeIconName } from '../types/icons';
+import RecommendedSlider from '../components/RecommendedSlider';
 
 // Define budget categories with icons
 const BUDGET_CATEGORIES = [
@@ -15,55 +15,6 @@ const BUDGET_CATEGORIES = [
   { id: 'shopping', name: 'Shopping', icon: 'shopping-bag' as FontAwesomeIconName },
   { id: 'other', name: 'Other', icon: 'ellipsis-h' as FontAwesomeIconName },
 ];
-
-// Custom slider component that shows recommended value
-const RecommendedSlider = ({ 
-  value, 
-  recommendedValue, 
-  onValueChange, 
-  minimumValue = 0, 
-  maximumValue = 100,
-  step = 1,
-  style
-}: {
-  value: number;
-  recommendedValue: number;
-  onValueChange: (value: number) => void;
-  minimumValue?: number;
-  maximumValue?: number;
-  step?: number;
-  style?: any;
-}) => {
-  return (
-    <View style={[styles.sliderContainer, style]}>
-      <View style={styles.sliderTrack}>
-        <View 
-          style={[
-            styles.recommendedTrack,
-            { width: `${(recommendedValue / maximumValue) * 100}%` }
-          ]} 
-        />
-        <View 
-          style={[
-            styles.activeTrack,
-            { width: `${(value / maximumValue) * 100}%` }
-          ]} 
-        />
-      </View>
-      <Slider
-        style={styles.slider}
-        minimumValue={minimumValue}
-        maximumValue={maximumValue}
-        step={step}
-        value={value}
-        onValueChange={onValueChange}
-        minimumTrackTintColor="transparent"
-        maximumTrackTintColor="transparent"
-        thumbTintColor="#FF6B6B"
-      />
-    </View>
-  );
-};
 
 export default function CategoryAllocationScreen() {
   const router = useRouter();
@@ -528,40 +479,5 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     color: '#FFFFFF',
     marginRight: 8,
-  },
-  sliderContainer: {
-    position: 'relative',
-    width: '100%',
-    height: 40,
-  },
-  sliderTrack: {
-    position: 'absolute',
-    top: 18,
-    left: 0,
-    right: 0,
-    height: 4,
-    backgroundColor: '#E5E5E5',
-    borderRadius: 2,
-    overflow: 'hidden',
-  },
-  recommendedTrack: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    height: '100%',
-    backgroundColor: '#FFB5B5',
-    borderRadius: 2,
-  },
-  activeTrack: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    height: '100%',
-    backgroundColor: '#FF6B6B',
-    borderRadius: 2,
-  },
-  slider: {
-    width: '100%',
-    height: 40,
   },
 }); 
