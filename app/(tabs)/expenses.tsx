@@ -1,5 +1,6 @@
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from "react-native";
 import { FontAwesome } from '@expo/vector-icons';
+import { FontAwesomeIconName } from '../types/icons';
 
 export default function ExpensesScreen() {
   const transactions = [
@@ -9,7 +10,7 @@ export default function ExpensesScreen() {
       amount: -450.00,
       date: 'Mar 20, 2024',
       category: 'Transportation',
-      icon: 'rocket',
+      icon: 'rocket' as FontAwesomeIconName,
       color: '#FF6B6B',
     },
     {
@@ -18,7 +19,7 @@ export default function ExpensesScreen() {
       amount: -200.00,
       date: 'Mar 19, 2024',
       category: 'Accommodation',
-      icon: 'home',
+      icon: 'home' as FontAwesomeIconName,
       color: '#4A90E2',
     },
     {
@@ -27,7 +28,7 @@ export default function ExpensesScreen() {
       amount: -85.00,
       date: 'Mar 18, 2024',
       category: 'Food',
-      icon: 'cutlery',
+      icon: 'cutlery' as FontAwesomeIconName,
       color: '#4CAF50',
     },
     {
@@ -36,7 +37,7 @@ export default function ExpensesScreen() {
       amount: -25.00,
       date: 'Mar 17, 2024',
       category: 'Activities',
-      icon: 'map-marker',
+      icon: 'map-marker' as FontAwesomeIconName,
       color: '#E91E63',
     },
   ];
@@ -65,7 +66,7 @@ export default function ExpensesScreen() {
         {transactions.map((transaction) => (
           <TouchableOpacity key={transaction.id} style={styles.transactionCard}>
             <View style={[styles.transactionIcon, { backgroundColor: `${transaction.color}20` }]}>
-              <FontAwesome name={transaction.icon as any} size={20} color={transaction.color} />
+              <FontAwesome name={transaction.icon} size={20} color={transaction.color} />
             </View>
             <View style={styles.transactionInfo}>
               <Text style={styles.transactionTitle}>{transaction.title}</Text>
