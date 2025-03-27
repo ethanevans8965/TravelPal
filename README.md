@@ -102,7 +102,6 @@ TravelPal/
 │   │   ├── _layout.tsx   # Tab navigation configuration
 │   │   ├── index.tsx     # Budget overview with trip list and creation
 │   │   ├── expenses.tsx  # Expense tracking with transaction history
-│   │   ├── journal.tsx   # Travel journal entries and memories
 │   │   └── settings.tsx  # App settings and preferences
 │   ├── trip/             # Trip creation flow screens
 │   │   ├── _layout.tsx   # Stack navigation for trip creation flow
@@ -114,12 +113,18 @@ TravelPal/
 │   │   └── review.tsx           # Final trip review and confirmation
 │   ├── components/       # Reusable components
 │   │   ├── DatePickerField.tsx  # Custom date picker with validation
-│   │   └── CountryPicker.tsx    # Country selection with search
+│   │   ├── CountryPicker.tsx    # Country selection with search
+│   │   └── RecommendedSlider.tsx # Custom slider with recommended value indicator
+│   ├── utils/            # Utility functions
+│   │   ├── countryData.ts # Country-specific budget calculations
+│   │   └── dateUtils.ts   # Date formatting and calculation utilities
 │   ├── context.tsx       # App-wide state management
 │   └── types.ts          # TypeScript definitions
-├── assets/               # Images and fonts
-├── utils/                # Utility functions
-│   └── countryData.ts    # Country-specific budget calculations
+├── assets/               # Static assets
+│   ├── data/             # JSON and other data files
+│   │   └── all_countries.json  # Country information database
+│   ├── images/           # Image assets
+│   └── fonts/            # Custom fonts
 └── scripts/              # Helper scripts
 ```
 
@@ -183,17 +188,27 @@ The app features a step-by-step trip creation process:
    - Visual expense breakdown
    - Sample transactions for new users
 
-3. **Journal** (`journal.tsx`)
-   - Travel memories and experiences
-   - Location-based entries
-   - Mood tracking
-   - Photo integration (coming soon)
-
-4. **Settings** (`settings.tsx`)
+3. **Settings** (`settings.tsx`)
    - App preferences
    - Currency settings
    - User preferences
    - App configuration
+
+## Code Organization
+
+### Component Refactoring
+The app has been refactored to follow best practices:
+- Reusable components are extracted to the `components/` directory
+- Complex UI elements like `RecommendedSlider` are modularized
+- Common utilities like date formatting are centralized in utility files
+
+### Utilities
+- `dateUtils.ts`: Contains centralized date formatting and calculation functions
+- `countryData.ts`: Processes country data and provides budget recommendations
+
+### Static Assets
+- All static data is organized in the `assets/data/` directory
+- Images and fonts are properly categorized in respective directories
 
 ## State Management
 
