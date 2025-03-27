@@ -4,15 +4,16 @@ import { useRouter, useLocalSearchParams } from 'expo-router';
 import { FontAwesome } from '@expo/vector-icons';
 import Slider from '@react-native-community/slider';
 import { getDefaultCategoryPercentages, CategoryPercentages } from '../utils/countryData';
+import { FontAwesomeIconName } from '../types/icons';
 
 // Define budget categories with icons
 const BUDGET_CATEGORIES = [
-  { id: 'accommodation', name: 'Accommodation', icon: 'bed' },
-  { id: 'food', name: 'Food & Drinks', icon: 'cutlery' },
-  { id: 'transportation', name: 'Transportation', icon: 'car' },
-  { id: 'activities', name: 'Activities', icon: 'ticket' },
-  { id: 'shopping', name: 'Shopping', icon: 'shopping-bag' },
-  { id: 'other', name: 'Other', icon: 'ellipsis-h' },
+  { id: 'accommodation', name: 'Accommodation', icon: 'bed' as FontAwesomeIconName },
+  { id: 'food', name: 'Food & Drinks', icon: 'cutlery' as FontAwesomeIconName },
+  { id: 'transportation', name: 'Transportation', icon: 'car' as FontAwesomeIconName },
+  { id: 'activities', name: 'Activities', icon: 'ticket' as FontAwesomeIconName },
+  { id: 'shopping', name: 'Shopping', icon: 'shopping-bag' as FontAwesomeIconName },
+  { id: 'other', name: 'Other', icon: 'ellipsis-h' as FontAwesomeIconName },
 ];
 
 // Custom slider component that shows recommended value
@@ -168,10 +169,20 @@ export default function CategoryAllocationScreen() {
     router.push({
       pathname: '/trip/review',
       params: {
-        ...params,
+        destination: params.destination,
+        country: params.country,
+        startDate: params.startDate,
+        endDate: params.endDate,
+        travelStyle: params.travelStyle,
+        numTravelers: params.numTravelers,
+        dailyBudget: params.dailyBudget,
+        preTripExpenses: params.preTripExpenses,
+        emergencyPercentage: params.emergencyPercentage,
+        totalBudget: params.totalBudget,
+        tripDuration: params.tripDuration,
         categories: JSON.stringify(roundedCategories),
       },
-    } as any);
+    });
   };
 
   return (
@@ -244,7 +255,7 @@ export default function CategoryAllocationScreen() {
           <View key={category.id} style={styles.categoryCard}>
             <View style={styles.categoryHeader}>
               <View style={styles.categoryIconContainer}>
-                <FontAwesome name={category.icon as any} size={16} color="#FFFFFF" />
+                <FontAwesome name={category.icon} size={16} color="#FFFFFF" />
               </View>
               <Text style={styles.categoryName}>{category.name}</Text>
               <View style={styles.percentageContainer}>

@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-nati
 import { useRouter, useLocalSearchParams } from 'expo-router';
 import { FontAwesome } from '@expo/vector-icons';
 import { useAppContext } from '../context';
+import { FontAwesomeIconName } from '../types/icons';
 
 export default function ReviewScreen() {
   const router = useRouter();
@@ -92,8 +93,17 @@ export default function ReviewScreen() {
     setTimeout(() => {
       setIsLoading(false);
       setSavedSuccessfully(true);
-      router.push('/(tabs)/' as any);
+      router.push('/(tabs)');
     }, 500);
+  };
+
+  const categoryIconMap: Record<string, FontAwesomeIconName> = {
+    'accommodation': 'bed',
+    'food': 'cutlery',
+    'transportation': 'car',
+    'activities': 'ticket',
+    'shopping': 'shopping-bag',
+    'other': 'ellipsis-h'
   };
 
   return (
@@ -196,22 +206,14 @@ export default function ReviewScreen() {
               'other': 'Other'
             }[id] || id;
             
-            const categoryIcon = {
-              'accommodation': 'bed',
-              'food': 'cutlery',
-              'transportation': 'car',
-              'activities': 'ticket',
-              'shopping': 'shopping-bag',
-              'other': 'ellipsis-h'
-            }[id] || 'circle';
-            
+            const categoryIcon = categoryIconMap[id] || 'circle';
             const amount = (dailyBudget * numTravelers * tripDuration * (catPercentage / 100));
             
             return (
               <View key={id} style={styles.categoryItem}>
                 <View style={styles.categoryHeader}>
                   <View style={styles.categoryIconContainer}>
-                    <FontAwesome name={categoryIcon as any} size={14} color="#FFFFFF" />
+                    <FontAwesome name={categoryIcon} size={14} color="#FFFFFF" />
                   </View>
                   <Text style={styles.categoryName}>{categoryName}</Text>
                   <Text style={styles.categoryPercentage}>{catPercentage}%</Text>

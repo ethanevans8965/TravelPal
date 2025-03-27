@@ -1,6 +1,7 @@
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Switch } from "react-native";
 import { FontAwesome } from '@expo/vector-icons';
 import { useState } from 'react';
+import { FontAwesomeIconName } from '../types/icons';
 
 export default function SettingsScreen() {
   const [notifications, setNotifications] = useState(true);
@@ -11,14 +12,14 @@ export default function SettingsScreen() {
     {
       id: 'profile',
       title: 'Profile',
-      icon: 'user-circle',
+      icon: 'user-circle' as FontAwesomeIconName,
       color: '#FF6B6B',
       action: () => {},
     },
     {
       id: 'notifications',
       title: 'Notifications',
-      icon: 'bell-o',
+      icon: 'bell-o' as FontAwesomeIconName,
       color: '#4A90E2',
       action: () => setNotifications(!notifications),
       rightComponent: (
@@ -33,7 +34,7 @@ export default function SettingsScreen() {
     {
       id: 'darkMode',
       title: 'Dark Mode',
-      icon: 'moon-o',
+      icon: 'moon-o' as FontAwesomeIconName,
       color: '#4CAF50',
       action: () => setDarkMode(!darkMode),
       rightComponent: (
@@ -48,7 +49,7 @@ export default function SettingsScreen() {
     {
       id: 'currency',
       title: 'Currency',
-      icon: 'dollar',
+      icon: 'dollar' as FontAwesomeIconName,
       color: '#E91E63',
       action: () => {},
       rightComponent: (
@@ -61,7 +62,7 @@ export default function SettingsScreen() {
     {
       id: 'privacy',
       title: 'Privacy Policy',
-      icon: 'lock',
+      icon: 'lock' as FontAwesomeIconName,
       color: '#9C27B0',
       action: () => {},
       rightComponent: (
@@ -71,7 +72,7 @@ export default function SettingsScreen() {
     {
       id: 'help',
       title: 'Help & Support',
-      icon: 'question-circle',
+      icon: 'question-circle' as FontAwesomeIconName,
       color: '#FF9800',
       action: () => {},
       rightComponent: (
@@ -81,7 +82,7 @@ export default function SettingsScreen() {
     {
       id: 'about',
       title: 'About',
-      icon: 'info-circle',
+      icon: 'info-circle' as FontAwesomeIconName,
       color: '#607D8B',
       action: () => {},
       rightComponent: (
@@ -105,7 +106,7 @@ export default function SettingsScreen() {
             onPress={setting.action}
           >
             <View style={[styles.settingIcon, { backgroundColor: `${setting.color}20` }]}>
-              <FontAwesome name={setting.icon as any} size={20} color={setting.color} />
+              <FontAwesome name={setting.icon} size={20} color={setting.color} />
             </View>
             <Text style={styles.settingTitle}>{setting.title}</Text>
             {setting.rightComponent}
