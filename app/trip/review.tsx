@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, ScrollView, ActivityIndicator } from 'react-native';
 import { useRouter, useLocalSearchParams } from 'expo-router';
 import { FontAwesome } from '@expo/vector-icons';
 import { useAppContext } from '../context';
 import { FontAwesomeIconName } from '../types/icons';
+import { formatDate, calculateDurationInDays } from '../utils/dateUtils';
 
 export default function ReviewScreen() {
   const router = useRouter();
@@ -25,16 +26,6 @@ export default function ReviewScreen() {
   
   const [isLoading, setIsLoading] = useState(false);
   const [savedSuccessfully, setSavedSuccessfully] = useState(false);
-
-  const formatDate = (dateString: string) => {
-    const date = new Date(dateString);
-    return date.toLocaleDateString('en-US', {
-      weekday: 'short',
-      month: 'short',
-      day: 'numeric',
-      year: 'numeric',
-    });
-  };
 
   const calculateTripDuration = () => {
     if (params.startDate && params.endDate) {
@@ -134,7 +125,7 @@ export default function ReviewScreen() {
         <View style={styles.infoRow}>
           <Text style={styles.infoLabel}>Dates:</Text>
           <Text style={styles.infoValue}>
-            {formatDate(params.startDate as string)} - {formatDate(params.endDate as string)}
+            {formatDate(params.startDate as string, { includeWeekday: true })} - {formatDate(params.endDate as string, { includeWeekday: true })}
           </Text>
         </View>
         

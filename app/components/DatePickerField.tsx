@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Platform } from 'react-native';
 import DateTimePicker, { DateTimePickerEvent } from '@react-native-community/datetimepicker';
 import { FontAwesome } from '@expo/vector-icons';
+import { formatDate, formatDateISO } from '../utils/dateUtils';
 
 type DatePickerFieldProps = {
   label: string;
@@ -21,24 +22,10 @@ export default function DatePickerField({
   // Convert string date to Date object for the picker
   const dateValue = value ? new Date(value) : new Date();
 
-  const formatDate = (date: Date): string => {
-    return date.toISOString().split('T')[0]; // YYYY-MM-DD format
-  };
-
-  const formatDisplayDate = (dateStr: string): string => {
-    if (!dateStr) return '';
-    const date = new Date(dateStr);
-    return date.toLocaleDateString('en-US', {
-      month: 'short',
-      day: 'numeric',
-      year: 'numeric',
-    });
-  };
-
   const handleChange = (event: DateTimePickerEvent, selectedDate?: Date) => {
     setShow(Platform.OS === 'ios');
     if (selectedDate) {
-      onChange(formatDate(selectedDate));
+      onChange(formatDateISO(selectedDate));
     }
   };
 
@@ -51,7 +38,7 @@ export default function DatePickerField({
         onPress={() => setShow(true)}
       >
         <Text style={value ? styles.dateText : styles.placeholder}>
-          {value ? formatDisplayDate(value) : 'Select a date'}
+          {value ? formatDate(value) : 'Select a date'}
         </Text>
         <FontAwesome name="calendar" size={16} color="#666666" />
       </TouchableOpacity>

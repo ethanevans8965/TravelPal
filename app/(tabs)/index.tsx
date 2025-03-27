@@ -2,6 +2,7 @@ import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from "react-nati
 import { FontAwesome } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import { useAppContext } from '../context';
+import { formatDate } from '../utils/dateUtils';
 
 export default function BudgetScreen() {
   const router = useRouter();
@@ -33,11 +34,6 @@ export default function BudgetScreen() {
 
   // Use trips from context if available, otherwise use placeholder data
   const displayTrips = trips.length > 0 ? trips : placeholderTrips;
-
-  const formatDate = (dateString: string) => {
-    const date = new Date(dateString);
-    return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
-  };
 
   const navigateToAddTrip = () => {
     router.push('/trip/select-method' as any);
