@@ -1,0 +1,5392 @@
+[
+    {
+        "Category": "Accommodation",
+        "Budget": "$13",
+        "Mid-Range": "$30",
+        "Luxury": "$57",
+        "Country": "Albania"
+    },
+    {
+        "Category": "Transportation",
+        "Budget": "$5.74",
+        "Mid-Range": "$15",
+        "Luxury": "$44",
+        "Country": "Albania"
+    },
+    {
+        "Category": "Food",
+        "Budget": "$14",
+        "Mid-Range": "$35",
+        "Luxury": "$80",
+        "Country": "Albania"
+    },
+    {
+        "Category": "Entertainment",
+        "Budget": "$3.50",
+        "Mid-Range": "$8.92",
+        "Luxury": "$23",
+        "Country": "Albania"
+    },
+    {
+        "Category": "Alcohol",
+        "Budget": "$2-5",
+        "Mid-Range": "$5-14",
+        "Luxury": "$12-37",
+        "Country": "Albania"
+    },
+    {
+        "Category": "Accommodation",
+        "Budget": "$32",
+        "Mid-Range": "$75",
+        "Luxury": "$150",
+        "Country": "Andorra"
+    },
+    {
+        "Category": "Transportation",
+        "Budget": "$18",
+        "Mid-Range": "$42",
+        "Luxury": "$86",
+        "Country": "Andorra"
+    },
+    {
+        "Category": "Food",
+        "Budget": "$35",
+        "Mid-Range": "$80",
+        "Luxury": "$158",
+        "Country": "Andorra"
+    },
+    {
+        "Category": "Entertainment",
+        "Budget": "$12",
+        "Mid-Range": "$28",
+        "Luxury": "$54",
+        "Country": "Andorra"
+    },
+    {
+        "Category": "Alcohol",
+        "Budget": "$2-5",
+        "Mid-Range": "$4-12",
+        "Luxury": "$8-25",
+        "Country": "Andorra"
+    },
+    {
+        "Category": "Accommodation",
+        "Budget": "$92",
+        "Mid-Range": "$225",
+        "Luxury": "$523",
+        "Country": "Antigua And Barbuda"
+    },
+    {
+        "Category": "Transportation",
+        "Budget": "$9.71",
+        "Mid-Range": "$23",
+        "Luxury": "$52",
+        "Country": "Antigua And Barbuda"
+    },
+    {
+        "Category": "Food",
+        "Budget": "$57",
+        "Mid-Range": "$137",
+        "Luxury": "$305",
+        "Country": "Antigua And Barbuda"
+    },
+    {
+        "Category": "Entertainment",
+        "Budget": "$45",
+        "Mid-Range": "$109",
+        "Luxury": "$252",
+        "Country": "Antigua And Barbuda"
+    },
+    {
+        "Category": "Alcohol",
+        "Budget": "$5-15",
+        "Mid-Range": "$12-35",
+        "Luxury": "$24-73",
+        "Country": "Antigua And Barbuda"
+    },
+    {
+        "Category": "Accommodation",
+        "Budget": "$26",
+        "Mid-Range": "$61",
+        "Luxury": "$119",
+        "Country": "Argentina"
+    },
+    {
+        "Category": "Transportation",
+        "Budget": "$1.78",
+        "Mid-Range": "$4.10",
+        "Luxury": "$8.06",
+        "Country": "Argentina"
+    },
+    {
+        "Category": "Food",
+        "Budget": "$3.47",
+        "Mid-Range": "$8.18",
+        "Luxury": "$17",
+        "Country": "Argentina"
+    },
+    {
+        "Category": "Entertainment",
+        "Budget": "$16",
+        "Mid-Range": "$37",
+        "Luxury": "$75",
+        "Country": "Argentina"
+    },
+    {
+        "Category": "Alcohol",
+        "Budget": "$2-6",
+        "Mid-Range": "$5-16",
+        "Luxury": "$13-40",
+        "Country": "Argentina"
+    },
+    {
+        "Category": "Accommodation",
+        "Budget": "$5.64",
+        "Mid-Range": "$13",
+        "Luxury": "$24",
+        "Country": "Armenia"
+    },
+    {
+        "Category": "Transportation",
+        "Budget": "$1.21",
+        "Mid-Range": "$3.65",
+        "Luxury": "$13",
+        "Country": "Armenia"
+    },
+    {
+        "Category": "Food",
+        "Budget": "$9.07",
+        "Mid-Range": "$21",
+        "Luxury": "$43",
+        "Country": "Armenia"
+    },
+    {
+        "Category": "Entertainment",
+        "Budget": "$0.64",
+        "Mid-Range": "$1.67",
+        "Luxury": "$4.54",
+        "Country": "Armenia"
+    },
+    {
+        "Category": "Alcohol",
+        "Budget": "$4-11",
+        "Mid-Range": "$8-25",
+        "Luxury": "$17-51",
+        "Country": "Armenia"
+    },
+    {
+        "Category": "Accommodation",
+        "Budget": "$89",
+        "Mid-Range": "$209",
+        "Luxury": "$440",
+        "Country": "Aruba"
+    },
+    {
+        "Category": "Transportation",
+        "Budget": "$14",
+        "Mid-Range": "$32",
+        "Luxury": "$62",
+        "Country": "Aruba"
+    },
+    {
+        "Category": "Food",
+        "Budget": "$46",
+        "Mid-Range": "$112",
+        "Luxury": "$247",
+        "Country": "Aruba"
+    },
+    {
+        "Category": "Entertainment",
+        "Budget": "$42",
+        "Mid-Range": "$96",
+        "Luxury": "$179",
+        "Country": "Aruba"
+    },
+    {
+        "Category": "Alcohol",
+        "Budget": "$6-17",
+        "Mid-Range": "$14-41",
+        "Luxury": "$32-96",
+        "Country": "Aruba"
+    },
+    {
+        "Category": "Accommodation",
+        "Budget": "$26",
+        "Mid-Range": "$68",
+        "Luxury": "$184",
+        "Country": "Australia"
+    },
+    {
+        "Category": "Transportation",
+        "Budget": "$10",
+        "Mid-Range": "$29",
+        "Luxury": "$89",
+        "Country": "Australia"
+    },
+    {
+        "Category": "Food",
+        "Budget": "$22",
+        "Mid-Range": "$55",
+        "Luxury": "$134",
+        "Country": "Australia"
+    },
+    {
+        "Category": "Entertainment",
+        "Budget": "$11",
+        "Mid-Range": "$30",
+        "Luxury": "$80",
+        "Country": "Australia"
+    },
+    {
+        "Category": "Alcohol",
+        "Budget": "$3-8",
+        "Mid-Range": "$7-21",
+        "Luxury": "$17-50",
+        "Country": "Australia"
+    },
+    {
+        "Category": "Accommodation",
+        "Budget": "$34",
+        "Mid-Range": "$88",
+        "Luxury": "$227",
+        "Country": "Austria"
+    },
+    {
+        "Category": "Transportation",
+        "Budget": "$11",
+        "Mid-Range": "$27",
+        "Luxury": "$73",
+        "Country": "Austria"
+    },
+    {
+        "Category": "Food",
+        "Budget": "$27",
+        "Mid-Range": "$67",
+        "Luxury": "$162",
+        "Country": "Austria"
+    },
+    {
+        "Category": "Entertainment",
+        "Budget": "$9.95",
+        "Mid-Range": "$24",
+        "Luxury": "$57",
+        "Country": "Austria"
+    },
+    {
+        "Category": "Alcohol",
+        "Budget": "$4-11",
+        "Mid-Range": "$9-28",
+        "Luxury": "$22-66",
+        "Country": "Austria"
+    },
+    {
+        "Category": "Accommodation",
+        "Budget": "$0.00",
+        "Mid-Range": "$0.00",
+        "Luxury": "$0.00",
+        "Country": "Azerbaijan"
+    },
+    {
+        "Category": "Transportation",
+        "Budget": "$0.00",
+        "Mid-Range": "$0.00",
+        "Luxury": "$0.00",
+        "Country": "Azerbaijan"
+    },
+    {
+        "Category": "Food",
+        "Budget": "$0.00",
+        "Mid-Range": "$0.00",
+        "Luxury": "$0.00",
+        "Country": "Azerbaijan"
+    },
+    {
+        "Category": "Entertainment",
+        "Budget": "$0.00",
+        "Mid-Range": "$0.00",
+        "Luxury": "$0.00",
+        "Country": "Azerbaijan"
+    },
+    {
+        "Category": "Alcohol",
+        "Budget": "$0-0",
+        "Mid-Range": "$0-0",
+        "Luxury": "$0-0",
+        "Country": "Azerbaijan"
+    },
+    {
+        "Category": "Accommodation",
+        "Budget": "$53",
+        "Mid-Range": "$124",
+        "Luxury": "$245",
+        "Country": "Bahamas"
+    },
+    {
+        "Category": "Transportation",
+        "Budget": "$17",
+        "Mid-Range": "$39",
+        "Luxury": "$85",
+        "Country": "Bahamas"
+    },
+    {
+        "Category": "Food",
+        "Budget": "$41",
+        "Mid-Range": "$93",
+        "Luxury": "$175",
+        "Country": "Bahamas"
+    },
+    {
+        "Category": "Entertainment",
+        "Budget": "$15",
+        "Mid-Range": "$38",
+        "Luxury": "$91",
+        "Country": "Bahamas"
+    },
+    {
+        "Category": "Alcohol",
+        "Budget": "$5-16",
+        "Mid-Range": "$13-39",
+        "Luxury": "$29-86",
+        "Country": "Bahamas"
+    },
+    {
+        "Category": "Accommodation",
+        "Budget": "$29",
+        "Mid-Range": "$66",
+        "Luxury": "$127",
+        "Country": "Bahrain"
+    },
+    {
+        "Category": "Transportation",
+        "Budget": "$13",
+        "Mid-Range": "$30",
+        "Luxury": "$58",
+        "Country": "Bahrain"
+    },
+    {
+        "Category": "Food",
+        "Budget": "$41",
+        "Mid-Range": "$93",
+        "Luxury": "$169",
+        "Country": "Bahrain"
+    },
+    {
+        "Category": "Entertainment",
+        "Budget": "$15",
+        "Mid-Range": "$34",
+        "Luxury": "$65",
+        "Country": "Bahrain"
+    },
+    {
+        "Category": "Alcohol",
+        "Budget": "$2-7",
+        "Mid-Range": "$6-17",
+        "Luxury": "$11-33",
+        "Country": "Bahrain"
+    },
+    {
+        "Category": "Accommodation",
+        "Budget": "$12",
+        "Mid-Range": "$28",
+        "Luxury": "$53",
+        "Country": "Bangladesh"
+    },
+    {
+        "Category": "Transportation",
+        "Budget": "$2.58",
+        "Mid-Range": "$5.89",
+        "Luxury": "$11",
+        "Country": "Bangladesh"
+    },
+    {
+        "Category": "Food",
+        "Budget": "$8.51",
+        "Mid-Range": "$19",
+        "Luxury": "$37",
+        "Country": "Bangladesh"
+    },
+    {
+        "Category": "Entertainment",
+        "Budget": "$6.45",
+        "Mid-Range": "$15",
+        "Luxury": "$28",
+        "Country": "Bangladesh"
+    },
+    {
+        "Category": "Alcohol",
+        "Budget": "$2-6",
+        "Mid-Range": "$5-14",
+        "Luxury": "$9-26",
+        "Country": "Bangladesh"
+    },
+    {
+        "Category": "Accommodation",
+        "Budget": "$93",
+        "Mid-Range": "$235",
+        "Luxury": "$587",
+        "Country": "Barbados"
+    },
+    {
+        "Category": "Transportation",
+        "Budget": "$13",
+        "Mid-Range": "$31",
+        "Luxury": "$68",
+        "Country": "Barbados"
+    },
+    {
+        "Category": "Food",
+        "Budget": "$64",
+        "Mid-Range": "$158",
+        "Luxury": "$376",
+        "Country": "Barbados"
+    },
+    {
+        "Category": "Entertainment",
+        "Budget": "$42",
+        "Mid-Range": "$106",
+        "Luxury": "$264",
+        "Country": "Barbados"
+    },
+    {
+        "Category": "Alcohol",
+        "Budget": "$5-16",
+        "Mid-Range": "$13-39",
+        "Luxury": "$30-90",
+        "Country": "Barbados"
+    },
+    {
+        "Category": "Accommodation",
+        "Budget": "$11",
+        "Mid-Range": "$26",
+        "Luxury": "$61",
+        "Country": "Belarus"
+    },
+    {
+        "Category": "Transportation",
+        "Budget": "$4.13",
+        "Mid-Range": "$11",
+        "Luxury": "$31",
+        "Country": "Belarus"
+    },
+    {
+        "Category": "Food",
+        "Budget": "$11",
+        "Mid-Range": "$28",
+        "Luxury": "$69",
+        "Country": "Belarus"
+    },
+    {
+        "Category": "Entertainment",
+        "Budget": "$8.49",
+        "Mid-Range": "$19",
+        "Luxury": "$38",
+        "Country": "Belarus"
+    },
+    {
+        "Category": "Alcohol",
+        "Budget": "$3-8",
+        "Mid-Range": "$6-18",
+        "Luxury": "$14-42",
+        "Country": "Belarus"
+    },
+    {
+        "Category": "Accommodation",
+        "Budget": "$32",
+        "Mid-Range": "$77",
+        "Luxury": "$171",
+        "Country": "Belgium"
+    },
+    {
+        "Category": "Transportation",
+        "Budget": "$7.90",
+        "Mid-Range": "$19",
+        "Luxury": "$41",
+        "Country": "Belgium"
+    },
+    {
+        "Category": "Food",
+        "Budget": "$30",
+        "Mid-Range": "$76",
+        "Luxury": "$188",
+        "Country": "Belgium"
+    },
+    {
+        "Category": "Entertainment",
+        "Budget": "$8.21",
+        "Mid-Range": "$21",
+        "Luxury": "$54",
+        "Country": "Belgium"
+    },
+    {
+        "Category": "Alcohol",
+        "Budget": "$4-11",
+        "Mid-Range": "$9-26",
+        "Luxury": "$20-61",
+        "Country": "Belgium"
+    },
+    {
+        "Category": "Accommodation",
+        "Budget": "$17",
+        "Mid-Range": "$47",
+        "Luxury": "$134",
+        "Country": "Belize"
+    },
+    {
+        "Category": "Transportation",
+        "Budget": "$7.97",
+        "Mid-Range": "$21",
+        "Luxury": "$59",
+        "Country": "Belize"
+    },
+    {
+        "Category": "Food",
+        "Budget": "$19",
+        "Mid-Range": "$47",
+        "Luxury": "$112",
+        "Country": "Belize"
+    },
+    {
+        "Category": "Entertainment",
+        "Budget": "$13",
+        "Mid-Range": "$34",
+        "Luxury": "$90",
+        "Country": "Belize"
+    },
+    {
+        "Category": "Alcohol",
+        "Budget": "$3-9",
+        "Mid-Range": "$7-22",
+        "Luxury": "$16-47",
+        "Country": "Belize"
+    },
+    {
+        "Category": "Accommodation",
+        "Budget": "$62",
+        "Mid-Range": "$144",
+        "Luxury": "$293",
+        "Country": "Bermuda"
+    },
+    {
+        "Category": "Transportation",
+        "Budget": "$15",
+        "Mid-Range": "$34",
+        "Luxury": "$64",
+        "Country": "Bermuda"
+    },
+    {
+        "Category": "Food",
+        "Budget": "$49",
+        "Mid-Range": "$112",
+        "Luxury": "$217",
+        "Country": "Bermuda"
+    },
+    {
+        "Category": "Entertainment",
+        "Budget": "$17",
+        "Mid-Range": "$40",
+        "Luxury": "$76",
+        "Country": "Bermuda"
+    },
+    {
+        "Category": "Alcohol",
+        "Budget": "$8-23",
+        "Mid-Range": "$17-51",
+        "Luxury": "$33-98",
+        "Country": "Bermuda"
+    },
+    {
+        "Category": "Accommodation",
+        "Budget": "$14",
+        "Mid-Range": "$32",
+        "Luxury": "$61",
+        "Country": "Bhutan"
+    },
+    {
+        "Category": "Transportation",
+        "Budget": "$12",
+        "Mid-Range": "$27",
+        "Luxury": "$52",
+        "Country": "Bhutan"
+    },
+    {
+        "Category": "Food",
+        "Budget": "$21",
+        "Mid-Range": "$47",
+        "Luxury": "$90",
+        "Country": "Bhutan"
+    },
+    {
+        "Category": "Entertainment",
+        "Budget": "$9.91",
+        "Mid-Range": "$23",
+        "Luxury": "$43",
+        "Country": "Bhutan"
+    },
+    {
+        "Category": "Accommodation",
+        "Budget": "$6.62",
+        "Mid-Range": "$16",
+        "Luxury": "$40",
+        "Country": "Bolivia"
+    },
+    {
+        "Category": "Transportation",
+        "Budget": "$4.25",
+        "Mid-Range": "$11",
+        "Luxury": "$33",
+        "Country": "Bolivia"
+    },
+    {
+        "Category": "Food",
+        "Budget": "$11",
+        "Mid-Range": "$28",
+        "Luxury": "$64",
+        "Country": "Bolivia"
+    },
+    {
+        "Category": "Entertainment",
+        "Budget": "$7.25",
+        "Mid-Range": "$18",
+        "Luxury": "$46",
+        "Country": "Bolivia"
+    },
+    {
+        "Category": "Alcohol",
+        "Budget": "$2-7",
+        "Mid-Range": "$6-17",
+        "Luxury": "$13-40",
+        "Country": "Bolivia"
+    },
+    {
+        "Category": "Accommodation",
+        "Budget": "$13",
+        "Mid-Range": "$33",
+        "Luxury": "$78",
+        "Country": "Bosnia And Herzegowina"
+    },
+    {
+        "Category": "Transportation",
+        "Budget": "$3.29",
+        "Mid-Range": "$8.07",
+        "Luxury": "$19",
+        "Country": "Bosnia And Herzegowina"
+    },
+    {
+        "Category": "Food",
+        "Budget": "$19",
+        "Mid-Range": "$47",
+        "Luxury": "$118",
+        "Country": "Bosnia And Herzegowina"
+    },
+    {
+        "Category": "Entertainment",
+        "Budget": "$3.81",
+        "Mid-Range": "$9.17",
+        "Luxury": "$20",
+        "Country": "Bosnia And Herzegowina"
+    },
+    {
+        "Category": "Alcohol",
+        "Budget": "$1-3",
+        "Mid-Range": "$2-6",
+        "Luxury": "$5-15",
+        "Country": "Bosnia And Herzegowina"
+    },
+    {
+        "Category": "Accommodation",
+        "Budget": "$13",
+        "Mid-Range": "$30",
+        "Luxury": "$54",
+        "Country": "Botswana"
+    },
+    {
+        "Category": "Transportation",
+        "Budget": "$1.87",
+        "Mid-Range": "$4.43",
+        "Luxury": "$9.36",
+        "Country": "Botswana"
+    },
+    {
+        "Category": "Food",
+        "Budget": "$11",
+        "Mid-Range": "$27",
+        "Luxury": "$57",
+        "Country": "Botswana"
+    },
+    {
+        "Category": "Entertainment",
+        "Budget": "$15",
+        "Mid-Range": "$34",
+        "Luxury": "$65",
+        "Country": "Botswana"
+    },
+    {
+        "Category": "Alcohol",
+        "Budget": "$2-5",
+        "Mid-Range": "$4-11",
+        "Luxury": "$8-23",
+        "Country": "Botswana"
+    },
+    {
+        "Category": "Accommodation",
+        "Budget": "$14",
+        "Mid-Range": "$37",
+        "Luxury": "$107",
+        "Country": "Brazil"
+    },
+    {
+        "Category": "Transportation",
+        "Budget": "$4.19",
+        "Mid-Range": "$11",
+        "Luxury": "$30",
+        "Country": "Brazil"
+    },
+    {
+        "Category": "Food",
+        "Budget": "$11",
+        "Mid-Range": "$29",
+        "Luxury": "$74",
+        "Country": "Brazil"
+    },
+    {
+        "Category": "Entertainment",
+        "Budget": "$5.05",
+        "Mid-Range": "$13",
+        "Luxury": "$37",
+        "Country": "Brazil"
+    },
+    {
+        "Category": "Alcohol",
+        "Budget": "$2-5",
+        "Mid-Range": "$5-14",
+        "Luxury": "$13-38",
+        "Country": "Brazil"
+    },
+    {
+        "Category": "Accommodation",
+        "Budget": "$94",
+        "Mid-Range": "$220",
+        "Luxury": "$449",
+        "Country": "British Virgin Islands"
+    },
+    {
+        "Category": "Transportation",
+        "Budget": "$12",
+        "Mid-Range": "$29",
+        "Luxury": "$61",
+        "Country": "British Virgin Islands"
+    },
+    {
+        "Category": "Food",
+        "Budget": "$51",
+        "Mid-Range": "$118",
+        "Luxury": "$238",
+        "Country": "British Virgin Islands"
+    },
+    {
+        "Category": "Entertainment",
+        "Budget": "$34",
+        "Mid-Range": "$79",
+        "Luxury": "$155",
+        "Country": "British Virgin Islands"
+    },
+    {
+        "Category": "Alcohol",
+        "Budget": "$5-16",
+        "Mid-Range": "$12-37",
+        "Luxury": "$25-75",
+        "Country": "British Virgin Islands"
+    },
+    {
+        "Category": "Accommodation",
+        "Budget": "$16",
+        "Mid-Range": "$38",
+        "Luxury": "$77",
+        "Country": "Bulgaria"
+    },
+    {
+        "Category": "Transportation",
+        "Budget": "$5.67",
+        "Mid-Range": "$14",
+        "Luxury": "$35",
+        "Country": "Bulgaria"
+    },
+    {
+        "Category": "Food",
+        "Budget": "$11",
+        "Mid-Range": "$28",
+        "Luxury": "$77",
+        "Country": "Bulgaria"
+    },
+    {
+        "Category": "Entertainment",
+        "Budget": "$4.41",
+        "Mid-Range": "$11",
+        "Luxury": "$25",
+        "Country": "Bulgaria"
+    },
+    {
+        "Category": "Alcohol",
+        "Budget": "$2-5",
+        "Mid-Range": "$4-12",
+        "Luxury": "$9-28",
+        "Country": "Bulgaria"
+    },
+    {
+        "Category": "Accommodation",
+        "Budget": "$6.09",
+        "Mid-Range": "$13",
+        "Luxury": "$22",
+        "Country": "Burkina Faso"
+    },
+    {
+        "Category": "Transportation",
+        "Budget": "$4.68",
+        "Mid-Range": "$11",
+        "Luxury": "$24",
+        "Country": "Burkina Faso"
+    },
+    {
+        "Category": "Food",
+        "Budget": "$5.27",
+        "Mid-Range": "$11",
+        "Luxury": "$17",
+        "Country": "Burkina Faso"
+    },
+    {
+        "Category": "Alcohol",
+        "Budget": "$1-2",
+        "Mid-Range": "$1-2",
+        "Luxury": "$1-2",
+        "Country": "Burkina Faso"
+    },
+    {
+        "Category": "Accommodation",
+        "Budget": "$7.71",
+        "Mid-Range": "$23",
+        "Luxury": "$78",
+        "Country": "Cambodia"
+    },
+    {
+        "Category": "Transportation",
+        "Budget": "$2.88",
+        "Mid-Range": "$7.59",
+        "Luxury": "$21",
+        "Country": "Cambodia"
+    },
+    {
+        "Category": "Food",
+        "Budget": "$11",
+        "Mid-Range": "$27",
+        "Luxury": "$61",
+        "Country": "Cambodia"
+    },
+    {
+        "Category": "Entertainment",
+        "Budget": "$5.58",
+        "Mid-Range": "$15",
+        "Luxury": "$44",
+        "Country": "Cambodia"
+    },
+    {
+        "Category": "Alcohol",
+        "Budget": "$1-4",
+        "Mid-Range": "$3-9",
+        "Luxury": "$8-24",
+        "Country": "Cambodia"
+    },
+    {
+        "Category": "Accommodation",
+        "Budget": "$22",
+        "Mid-Range": "$24",
+        "Luxury": "$28",
+        "Country": "Cameroon"
+    },
+    {
+        "Category": "Transportation",
+        "Budget": "$13",
+        "Mid-Range": "$30",
+        "Luxury": "$58",
+        "Country": "Cameroon"
+    },
+    {
+        "Category": "Food",
+        "Budget": "$17",
+        "Mid-Range": "$21",
+        "Luxury": "$27",
+        "Country": "Cameroon"
+    },
+    {
+        "Category": "Entertainment",
+        "Budget": "$3.87",
+        "Mid-Range": "$8.66",
+        "Luxury": "$15",
+        "Country": "Cameroon"
+    },
+    {
+        "Category": "Alcohol",
+        "Budget": "$2-5",
+        "Mid-Range": "$4-11",
+        "Luxury": "$7-20",
+        "Country": "Cameroon"
+    },
+    {
+        "Category": "Accommodation",
+        "Budget": "$31",
+        "Mid-Range": "$89",
+        "Luxury": "$279",
+        "Country": "Canada"
+    },
+    {
+        "Category": "Transportation",
+        "Budget": "$7.90",
+        "Mid-Range": "$21",
+        "Luxury": "$59",
+        "Country": "Canada"
+    },
+    {
+        "Category": "Food",
+        "Budget": "$23",
+        "Mid-Range": "$60",
+        "Luxury": "$172",
+        "Country": "Canada"
+    },
+    {
+        "Category": "Entertainment",
+        "Budget": "$8.95",
+        "Mid-Range": "$23",
+        "Luxury": "$62",
+        "Country": "Canada"
+    },
+    {
+        "Category": "Alcohol",
+        "Budget": "$3-9",
+        "Mid-Range": "$8-24",
+        "Luxury": "$22-65",
+        "Country": "Canada"
+    },
+    {
+        "Category": "Accommodation",
+        "Budget": "$29",
+        "Mid-Range": "$66",
+        "Luxury": "$127",
+        "Country": "Cape Verde"
+    },
+    {
+        "Category": "Transportation",
+        "Budget": "$13",
+        "Mid-Range": "$30",
+        "Luxury": "$57",
+        "Country": "Cape Verde"
+    },
+    {
+        "Category": "Food",
+        "Budget": "$21",
+        "Mid-Range": "$49",
+        "Luxury": "$98",
+        "Country": "Cape Verde"
+    },
+    {
+        "Category": "Entertainment",
+        "Budget": "$7.17",
+        "Mid-Range": "$16",
+        "Luxury": "$31",
+        "Country": "Cape Verde"
+    },
+    {
+        "Category": "Alcohol",
+        "Budget": "$3-9",
+        "Mid-Range": "$4-12",
+        "Luxury": "$6-18",
+        "Country": "Cape Verde"
+    },
+    {
+        "Category": "Accommodation",
+        "Budget": "$47",
+        "Mid-Range": "$108",
+        "Luxury": "$217",
+        "Country": "Caribbean Netherlands"
+    },
+    {
+        "Category": "Transportation",
+        "Budget": "$29",
+        "Mid-Range": "$67",
+        "Luxury": "$137",
+        "Country": "Caribbean Netherlands"
+    },
+    {
+        "Category": "Food",
+        "Budget": "$39",
+        "Mid-Range": "$91",
+        "Luxury": "$177",
+        "Country": "Caribbean Netherlands"
+    },
+    {
+        "Category": "Entertainment",
+        "Budget": "$17",
+        "Mid-Range": "$39",
+        "Luxury": "$75",
+        "Country": "Caribbean Netherlands"
+    },
+    {
+        "Category": "Alcohol",
+        "Budget": "$6-19",
+        "Mid-Range": "$15-45",
+        "Luxury": "$34-101",
+        "Country": "Caribbean Netherlands"
+    },
+    {
+        "Category": "Accommodation",
+        "Budget": "$94",
+        "Mid-Range": "$228",
+        "Luxury": "$519",
+        "Country": "Cayman Islands"
+    },
+    {
+        "Category": "Transportation",
+        "Budget": "$13",
+        "Mid-Range": "$30",
+        "Luxury": "$53",
+        "Country": "Cayman Islands"
+    },
+    {
+        "Category": "Food",
+        "Budget": "$41",
+        "Mid-Range": "$100",
+        "Luxury": "$225",
+        "Country": "Cayman Islands"
+    },
+    {
+        "Category": "Entertainment",
+        "Budget": "$26",
+        "Mid-Range": "$63",
+        "Luxury": "$142",
+        "Country": "Cayman Islands"
+    },
+    {
+        "Category": "Alcohol",
+        "Budget": "$5-14",
+        "Mid-Range": "$11-33",
+        "Luxury": "$24-73",
+        "Country": "Cayman Islands"
+    },
+    {
+        "Category": "Accommodation",
+        "Budget": "$22",
+        "Mid-Range": "$61",
+        "Luxury": "$183",
+        "Country": "Chile"
+    },
+    {
+        "Category": "Transportation",
+        "Budget": "$5.76",
+        "Mid-Range": "$15",
+        "Luxury": "$41",
+        "Country": "Chile"
+    },
+    {
+        "Category": "Food",
+        "Budget": "$15",
+        "Mid-Range": "$40",
+        "Luxury": "$105",
+        "Country": "Chile"
+    },
+    {
+        "Category": "Entertainment",
+        "Budget": "$11",
+        "Mid-Range": "$27",
+        "Luxury": "$68",
+        "Country": "Chile"
+    },
+    {
+        "Category": "Alcohol",
+        "Budget": "$2-7",
+        "Mid-Range": "$6-19",
+        "Luxury": "$18-54",
+        "Country": "Chile"
+    },
+    {
+        "Category": "Accommodation",
+        "Budget": "$14",
+        "Mid-Range": "$34",
+        "Luxury": "$86",
+        "Country": "China"
+    },
+    {
+        "Category": "Transportation",
+        "Budget": "$5.94",
+        "Mid-Range": "$16",
+        "Luxury": "$44",
+        "Country": "China"
+    },
+    {
+        "Category": "Food",
+        "Budget": "$15",
+        "Mid-Range": "$37",
+        "Luxury": "$88",
+        "Country": "China"
+    },
+    {
+        "Category": "Entertainment",
+        "Budget": "$6.82",
+        "Mid-Range": "$17",
+        "Luxury": "$41",
+        "Country": "China"
+    },
+    {
+        "Category": "Alcohol",
+        "Budget": "$2-7",
+        "Mid-Range": "$6-17",
+        "Luxury": "$14-43",
+        "Country": "China"
+    },
+    {
+        "Category": "Accommodation",
+        "Budget": "$4.96",
+        "Mid-Range": "$14",
+        "Luxury": "$43",
+        "Country": "Colombia"
+    },
+    {
+        "Category": "Transportation",
+        "Budget": "$2.64",
+        "Mid-Range": "$7.45",
+        "Luxury": "$23",
+        "Country": "Colombia"
+    },
+    {
+        "Category": "Food",
+        "Budget": "$7.08",
+        "Mid-Range": "$18",
+        "Luxury": "$50",
+        "Country": "Colombia"
+    },
+    {
+        "Category": "Entertainment",
+        "Budget": "$5.23",
+        "Mid-Range": "$14",
+        "Luxury": "$36",
+        "Country": "Colombia"
+    },
+    {
+        "Category": "Alcohol",
+        "Budget": "$2-5",
+        "Mid-Range": "$4-13",
+        "Luxury": "$12-36",
+        "Country": "Colombia"
+    },
+    {
+        "Category": "Accommodation",
+        "Budget": "$24",
+        "Mid-Range": "$61",
+        "Luxury": "$157",
+        "Country": "Costa Rica"
+    },
+    {
+        "Category": "Transportation",
+        "Budget": "$9.71",
+        "Mid-Range": "$26",
+        "Luxury": "$76",
+        "Country": "Costa Rica"
+    },
+    {
+        "Category": "Food",
+        "Budget": "$18",
+        "Mid-Range": "$43",
+        "Luxury": "$96",
+        "Country": "Costa Rica"
+    },
+    {
+        "Category": "Entertainment",
+        "Budget": "$13",
+        "Mid-Range": "$32",
+        "Luxury": "$79",
+        "Country": "Costa Rica"
+    },
+    {
+        "Category": "Alcohol",
+        "Budget": "$3-8",
+        "Mid-Range": "$7-20",
+        "Luxury": "$15-44",
+        "Country": "Costa Rica"
+    },
+    {
+        "Category": "Accommodation",
+        "Budget": "$22",
+        "Mid-Range": "$53",
+        "Luxury": "$122",
+        "Country": "Croatia"
+    },
+    {
+        "Category": "Transportation",
+        "Budget": "$5.13",
+        "Mid-Range": "$13",
+        "Luxury": "$35",
+        "Country": "Croatia"
+    },
+    {
+        "Category": "Food",
+        "Budget": "$21",
+        "Mid-Range": "$52",
+        "Luxury": "$123",
+        "Country": "Croatia"
+    },
+    {
+        "Category": "Entertainment",
+        "Budget": "$5.47",
+        "Mid-Range": "$14",
+        "Luxury": "$37",
+        "Country": "Croatia"
+    },
+    {
+        "Category": "Alcohol",
+        "Budget": "$2-7",
+        "Mid-Range": "$6-18",
+        "Luxury": "$15-44",
+        "Country": "Croatia"
+    },
+    {
+        "Category": "Accommodation",
+        "Budget": "$8.22",
+        "Mid-Range": "$23",
+        "Luxury": "$75",
+        "Country": "Cuba"
+    },
+    {
+        "Category": "Transportation",
+        "Budget": "$3.19",
+        "Mid-Range": "$9.64",
+        "Luxury": "$33",
+        "Country": "Cuba"
+    },
+    {
+        "Category": "Food",
+        "Budget": "$5.77",
+        "Mid-Range": "$16",
+        "Luxury": "$52",
+        "Country": "Cuba"
+    },
+    {
+        "Category": "Entertainment",
+        "Budget": "$3.23",
+        "Mid-Range": "$8.27",
+        "Luxury": "$21",
+        "Country": "Cuba"
+    },
+    {
+        "Category": "Alcohol",
+        "Budget": "$1-2",
+        "Mid-Range": "$2-6",
+        "Luxury": "$6-18",
+        "Country": "Cuba"
+    },
+    {
+        "Category": "Accommodation",
+        "Budget": "$100",
+        "Mid-Range": "$230",
+        "Luxury": "$446",
+        "Country": "Curacao"
+    },
+    {
+        "Category": "Transportation",
+        "Budget": "$11",
+        "Mid-Range": "$24",
+        "Luxury": "$47",
+        "Country": "Curacao"
+    },
+    {
+        "Category": "Food",
+        "Budget": "$44",
+        "Mid-Range": "$105",
+        "Luxury": "$229",
+        "Country": "Curacao"
+    },
+    {
+        "Category": "Entertainment",
+        "Budget": "$40",
+        "Mid-Range": "$91",
+        "Luxury": "$174",
+        "Country": "Curacao"
+    },
+    {
+        "Category": "Alcohol",
+        "Budget": "$5-15",
+        "Mid-Range": "$12-37",
+        "Luxury": "$27-82",
+        "Country": "Curacao"
+    },
+    {
+        "Category": "Accommodation",
+        "Budget": "$22",
+        "Mid-Range": "$51",
+        "Luxury": "$108",
+        "Country": "Cyprus"
+    },
+    {
+        "Category": "Transportation",
+        "Budget": "$5.27",
+        "Mid-Range": "$13",
+        "Luxury": "$33",
+        "Country": "Cyprus"
+    },
+    {
+        "Category": "Food",
+        "Budget": "$32",
+        "Mid-Range": "$74",
+        "Luxury": "$154",
+        "Country": "Cyprus"
+    },
+    {
+        "Category": "Entertainment",
+        "Budget": "$5.60",
+        "Mid-Range": "$13",
+        "Luxury": "$26",
+        "Country": "Cyprus"
+    },
+    {
+        "Category": "Alcohol",
+        "Budget": "$2-7",
+        "Mid-Range": "$5-16",
+        "Luxury": "$12-37",
+        "Country": "Cyprus"
+    },
+    {
+        "Category": "Accommodation",
+        "Budget": "$24",
+        "Mid-Range": "$62",
+        "Luxury": "$158",
+        "Country": "Czech Republic"
+    },
+    {
+        "Category": "Transportation",
+        "Budget": "$3.80",
+        "Mid-Range": "$9.63",
+        "Luxury": "$24",
+        "Country": "Czech Republic"
+    },
+    {
+        "Category": "Food",
+        "Budget": "$18",
+        "Mid-Range": "$44",
+        "Luxury": "$96",
+        "Country": "Czech Republic"
+    },
+    {
+        "Category": "Entertainment",
+        "Budget": "$6.41",
+        "Mid-Range": "$16",
+        "Luxury": "$38",
+        "Country": "Czech Republic"
+    },
+    {
+        "Category": "Alcohol",
+        "Budget": "$2-7",
+        "Mid-Range": "$6-18",
+        "Luxury": "$14-43",
+        "Country": "Czech Republic"
+    },
+    {
+        "Category": "Accommodation",
+        "Budget": "$36",
+        "Mid-Range": "$89",
+        "Luxury": "$203",
+        "Country": "Denmark"
+    },
+    {
+        "Category": "Transportation",
+        "Budget": "$14",
+        "Mid-Range": "$35",
+        "Luxury": "$85",
+        "Country": "Denmark"
+    },
+    {
+        "Category": "Food",
+        "Budget": "$37",
+        "Mid-Range": "$91",
+        "Luxury": "$212",
+        "Country": "Denmark"
+    },
+    {
+        "Category": "Entertainment",
+        "Budget": "$14",
+        "Mid-Range": "$44",
+        "Luxury": "$155",
+        "Country": "Denmark"
+    },
+    {
+        "Category": "Alcohol",
+        "Budget": "$4-12",
+        "Mid-Range": "$10-29",
+        "Luxury": "$21-63",
+        "Country": "Denmark"
+    },
+    {
+        "Category": "Accommodation",
+        "Budget": "$59",
+        "Mid-Range": "$135",
+        "Luxury": "$257",
+        "Country": "Dominica"
+    },
+    {
+        "Category": "Transportation",
+        "Budget": "$6.65",
+        "Mid-Range": "$15",
+        "Luxury": "$28",
+        "Country": "Dominica"
+    },
+    {
+        "Category": "Food",
+        "Budget": "$34",
+        "Mid-Range": "$78",
+        "Luxury": "$153",
+        "Country": "Dominica"
+    },
+    {
+        "Category": "Entertainment",
+        "Budget": "$16",
+        "Mid-Range": "$38",
+        "Luxury": "$78",
+        "Country": "Dominica"
+    },
+    {
+        "Category": "Alcohol",
+        "Budget": "$4-11",
+        "Mid-Range": "$9-26",
+        "Luxury": "$16-49",
+        "Country": "Dominica"
+    },
+    {
+        "Category": "Accommodation",
+        "Budget": "$33",
+        "Mid-Range": "$84",
+        "Luxury": "$224",
+        "Country": "Dominican Republic"
+    },
+    {
+        "Category": "Transportation",
+        "Budget": "$3.72",
+        "Mid-Range": "$10",
+        "Luxury": "$32",
+        "Country": "Dominican Republic"
+    },
+    {
+        "Category": "Food",
+        "Budget": "$25",
+        "Mid-Range": "$60",
+        "Luxury": "$139",
+        "Country": "Dominican Republic"
+    },
+    {
+        "Category": "Entertainment",
+        "Budget": "$11",
+        "Mid-Range": "$29",
+        "Luxury": "$75",
+        "Country": "Dominican Republic"
+    },
+    {
+        "Category": "Alcohol",
+        "Budget": "$2-7",
+        "Mid-Range": "$6-17",
+        "Luxury": "$14-43",
+        "Country": "Dominican Republic"
+    },
+    {
+        "Category": "Accommodation",
+        "Budget": "$8.26",
+        "Mid-Range": "$20",
+        "Luxury": "$47",
+        "Country": "Ecuador"
+    },
+    {
+        "Category": "Transportation",
+        "Budget": "$3.49",
+        "Mid-Range": "$10",
+        "Luxury": "$34",
+        "Country": "Ecuador"
+    },
+    {
+        "Category": "Food",
+        "Budget": "$12",
+        "Mid-Range": "$31",
+        "Luxury": "$75",
+        "Country": "Ecuador"
+    },
+    {
+        "Category": "Entertainment",
+        "Budget": "$8.33",
+        "Mid-Range": "$21",
+        "Luxury": "$55",
+        "Country": "Ecuador"
+    },
+    {
+        "Category": "Alcohol",
+        "Budget": "$2-7",
+        "Mid-Range": "$6-18",
+        "Luxury": "$16-49",
+        "Country": "Ecuador"
+    },
+    {
+        "Category": "Accommodation",
+        "Budget": "$2.77",
+        "Mid-Range": "$6.93",
+        "Luxury": "$17",
+        "Country": "Egypt"
+    },
+    {
+        "Category": "Transportation",
+        "Budget": "$0.99",
+        "Mid-Range": "$2.66",
+        "Luxury": "$7.56",
+        "Country": "Egypt"
+    },
+    {
+        "Category": "Food",
+        "Budget": "$2.99",
+        "Mid-Range": "$7.94",
+        "Luxury": "$22",
+        "Country": "Egypt"
+    },
+    {
+        "Category": "Entertainment",
+        "Budget": "$2.05",
+        "Mid-Range": "$5.25",
+        "Luxury": "$14",
+        "Country": "Egypt"
+    },
+    {
+        "Category": "Alcohol",
+        "Budget": "$0-1",
+        "Mid-Range": "$1-2",
+        "Luxury": "$2-5",
+        "Country": "Egypt"
+    },
+    {
+        "Category": "Accommodation",
+        "Budget": "$19",
+        "Mid-Range": "$46",
+        "Luxury": "$106",
+        "Country": "Estonia"
+    },
+    {
+        "Category": "Transportation",
+        "Budget": "$9.91",
+        "Mid-Range": "$25",
+        "Luxury": "$59",
+        "Country": "Estonia"
+    },
+    {
+        "Category": "Food",
+        "Budget": "$23",
+        "Mid-Range": "$58",
+        "Luxury": "$148",
+        "Country": "Estonia"
+    },
+    {
+        "Category": "Entertainment",
+        "Budget": "$6.01",
+        "Mid-Range": "$15",
+        "Luxury": "$37",
+        "Country": "Estonia"
+    },
+    {
+        "Category": "Alcohol",
+        "Budget": "$3-9",
+        "Mid-Range": "$7-21",
+        "Luxury": "$15-46",
+        "Country": "Estonia"
+    },
+    {
+        "Category": "Accommodation",
+        "Budget": "$4.74",
+        "Mid-Range": "$13",
+        "Luxury": "$39",
+        "Country": "Ethiopia"
+    },
+    {
+        "Category": "Transportation",
+        "Budget": "$1.00",
+        "Mid-Range": "$2.74",
+        "Luxury": "$8.16",
+        "Country": "Ethiopia"
+    },
+    {
+        "Category": "Food",
+        "Budget": "$3.76",
+        "Mid-Range": "$11",
+        "Luxury": "$33",
+        "Country": "Ethiopia"
+    },
+    {
+        "Category": "Entertainment",
+        "Budget": "$3.01",
+        "Mid-Range": "$8.55",
+        "Luxury": "$27",
+        "Country": "Ethiopia"
+    },
+    {
+        "Category": "Alcohol",
+        "Budget": "$1-2",
+        "Mid-Range": "$2-5",
+        "Luxury": "$4-12",
+        "Country": "Ethiopia"
+    },
+    {
+        "Category": "Accommodation",
+        "Budget": "$44",
+        "Mid-Range": "$105",
+        "Luxury": "$237",
+        "Country": "Fiji"
+    },
+    {
+        "Category": "Transportation",
+        "Budget": "$3.46",
+        "Mid-Range": "$8.68",
+        "Luxury": "$22",
+        "Country": "Fiji"
+    },
+    {
+        "Category": "Food",
+        "Budget": "$27",
+        "Mid-Range": "$64",
+        "Luxury": "$135",
+        "Country": "Fiji"
+    },
+    {
+        "Category": "Entertainment",
+        "Budget": "$9.19",
+        "Mid-Range": "$31",
+        "Luxury": "$122",
+        "Country": "Fiji"
+    },
+    {
+        "Category": "Alcohol",
+        "Budget": "$2-7",
+        "Mid-Range": "$6-17",
+        "Luxury": "$13-39",
+        "Country": "Fiji"
+    },
+    {
+        "Category": "Accommodation",
+        "Budget": "$34",
+        "Mid-Range": "$79",
+        "Luxury": "$167",
+        "Country": "Finland"
+    },
+    {
+        "Category": "Transportation",
+        "Budget": "$17",
+        "Mid-Range": "$40",
+        "Luxury": "$93",
+        "Country": "Finland"
+    },
+    {
+        "Category": "Food",
+        "Budget": "$27",
+        "Mid-Range": "$66",
+        "Luxury": "$150",
+        "Country": "Finland"
+    },
+    {
+        "Category": "Entertainment",
+        "Budget": "$12",
+        "Mid-Range": "$28",
+        "Luxury": "$58",
+        "Country": "Finland"
+    },
+    {
+        "Category": "Alcohol",
+        "Budget": "$3-9",
+        "Mid-Range": "$7-22",
+        "Luxury": "$16-48",
+        "Country": "Finland"
+    },
+    {
+        "Category": "Accommodation",
+        "Budget": "$52",
+        "Mid-Range": "$164",
+        "Luxury": "$597",
+        "Country": "France"
+    },
+    {
+        "Category": "Transportation",
+        "Budget": "$13",
+        "Mid-Range": "$32",
+        "Luxury": "$80",
+        "Country": "France"
+    },
+    {
+        "Category": "Food",
+        "Budget": "$31",
+        "Mid-Range": "$77",
+        "Luxury": "$186",
+        "Country": "France"
+    },
+    {
+        "Category": "Entertainment",
+        "Budget": "$13",
+        "Mid-Range": "$36",
+        "Luxury": "$109",
+        "Country": "France"
+    },
+    {
+        "Category": "Alcohol",
+        "Budget": "$4-12",
+        "Mid-Range": "$10-31",
+        "Luxury": "$27-82",
+        "Country": "France"
+    },
+    {
+        "Category": "Accommodation",
+        "Budget": "$37",
+        "Mid-Range": "$84",
+        "Luxury": "$160",
+        "Country": "French Polynesia"
+    },
+    {
+        "Category": "Transportation",
+        "Budget": "$24",
+        "Mid-Range": "$54",
+        "Luxury": "$104",
+        "Country": "French Polynesia"
+    },
+    {
+        "Category": "Food",
+        "Budget": "$35",
+        "Mid-Range": "$79",
+        "Luxury": "$152",
+        "Country": "French Polynesia"
+    },
+    {
+        "Category": "Entertainment",
+        "Budget": "$9.30",
+        "Mid-Range": "$21",
+        "Luxury": "$41",
+        "Country": "French Polynesia"
+    },
+    {
+        "Category": "Alcohol",
+        "Budget": "$6-18",
+        "Mid-Range": "$14-42",
+        "Luxury": "$27-80",
+        "Country": "French Polynesia"
+    },
+    {
+        "Category": "Accommodation",
+        "Budget": "$3.79",
+        "Mid-Range": "$11",
+        "Luxury": "$39",
+        "Country": "Georgia"
+    },
+    {
+        "Category": "Transportation",
+        "Budget": "$1.96",
+        "Mid-Range": "$5.58",
+        "Luxury": "$18",
+        "Country": "Georgia"
+    },
+    {
+        "Category": "Food",
+        "Budget": "$5.65",
+        "Mid-Range": "$14",
+        "Luxury": "$33",
+        "Country": "Georgia"
+    },
+    {
+        "Category": "Entertainment",
+        "Budget": "$5.54",
+        "Mid-Range": "$13",
+        "Luxury": "$29",
+        "Country": "Georgia"
+    },
+    {
+        "Category": "Alcohol",
+        "Budget": "$3-9",
+        "Mid-Range": "$8-23",
+        "Luxury": "$19-56",
+        "Country": "Georgia"
+    },
+    {
+        "Category": "Accommodation",
+        "Budget": "$33",
+        "Mid-Range": "$81",
+        "Luxury": "$182",
+        "Country": "Germany"
+    },
+    {
+        "Category": "Transportation",
+        "Budget": "$10",
+        "Mid-Range": "$26",
+        "Luxury": "$65",
+        "Country": "Germany"
+    },
+    {
+        "Category": "Food",
+        "Budget": "$29",
+        "Mid-Range": "$71",
+        "Luxury": "$171",
+        "Country": "Germany"
+    },
+    {
+        "Category": "Entertainment",
+        "Budget": "$12",
+        "Mid-Range": "$31",
+        "Luxury": "$78",
+        "Country": "Germany"
+    },
+    {
+        "Category": "Alcohol",
+        "Budget": "$5-14",
+        "Mid-Range": "$12-35",
+        "Luxury": "$29-87",
+        "Country": "Germany"
+    },
+    {
+        "Category": "Accommodation",
+        "Budget": "$3.20",
+        "Mid-Range": "$8.77",
+        "Luxury": "$26",
+        "Country": "Ghana"
+    },
+    {
+        "Category": "Transportation",
+        "Budget": "$3.17",
+        "Mid-Range": "$7.62",
+        "Luxury": "$17",
+        "Country": "Ghana"
+    },
+    {
+        "Category": "Food",
+        "Budget": "$3.43",
+        "Mid-Range": "$9.24",
+        "Luxury": "$27",
+        "Country": "Ghana"
+    },
+    {
+        "Category": "Entertainment",
+        "Budget": "$1.04",
+        "Mid-Range": "$2.45",
+        "Luxury": "$5.14",
+        "Country": "Ghana"
+    },
+    {
+        "Category": "Alcohol",
+        "Budget": "$1-2",
+        "Mid-Range": "$1-4",
+        "Luxury": "$4-11",
+        "Country": "Ghana"
+    },
+    {
+        "Category": "Accommodation",
+        "Budget": "$36",
+        "Mid-Range": "$93",
+        "Luxury": "$242",
+        "Country": "Greece"
+    },
+    {
+        "Category": "Transportation",
+        "Budget": "$16",
+        "Mid-Range": "$40",
+        "Luxury": "$99",
+        "Country": "Greece"
+    },
+    {
+        "Category": "Food",
+        "Budget": "$36",
+        "Mid-Range": "$88",
+        "Luxury": "$206",
+        "Country": "Greece"
+    },
+    {
+        "Category": "Entertainment",
+        "Budget": "$13",
+        "Mid-Range": "$32",
+        "Luxury": "$76",
+        "Country": "Greece"
+    },
+    {
+        "Category": "Alcohol",
+        "Budget": "$5-14",
+        "Mid-Range": "$12-35",
+        "Luxury": "$27-81",
+        "Country": "Greece"
+    },
+    {
+        "Category": "Accommodation",
+        "Budget": "$62",
+        "Mid-Range": "$142",
+        "Luxury": "$277",
+        "Country": "Greenland"
+    },
+    {
+        "Category": "Transportation",
+        "Budget": "$23",
+        "Mid-Range": "$52",
+        "Luxury": "$100",
+        "Country": "Greenland"
+    },
+    {
+        "Category": "Food",
+        "Budget": "$53",
+        "Mid-Range": "$120",
+        "Luxury": "$230",
+        "Country": "Greenland"
+    },
+    {
+        "Category": "Entertainment",
+        "Budget": "$20",
+        "Mid-Range": "$46",
+        "Luxury": "$89",
+        "Country": "Greenland"
+    },
+    {
+        "Category": "Alcohol",
+        "Budget": "$7-21",
+        "Mid-Range": "$16-47",
+        "Luxury": "$30-90",
+        "Country": "Greenland"
+    },
+    {
+        "Category": "Accommodation",
+        "Budget": "$86",
+        "Mid-Range": "$211",
+        "Luxury": "$487",
+        "Country": "Grenada"
+    },
+    {
+        "Category": "Transportation",
+        "Budget": "$6.86",
+        "Mid-Range": "$16",
+        "Luxury": "$32",
+        "Country": "Grenada"
+    },
+    {
+        "Category": "Food",
+        "Budget": "$45",
+        "Mid-Range": "$102",
+        "Luxury": "$200",
+        "Country": "Grenada"
+    },
+    {
+        "Category": "Entertainment",
+        "Budget": "$19",
+        "Mid-Range": "$45",
+        "Luxury": "$93",
+        "Country": "Grenada"
+    },
+    {
+        "Category": "Alcohol",
+        "Budget": "$4-13",
+        "Mid-Range": "$10-30",
+        "Luxury": "$20-61",
+        "Country": "Grenada"
+    },
+    {
+        "Category": "Accommodation",
+        "Budget": "$64",
+        "Mid-Range": "$163",
+        "Luxury": "$412",
+        "Country": "Guadeloupe"
+    },
+    {
+        "Category": "Transportation",
+        "Budget": "$10",
+        "Mid-Range": "$26",
+        "Luxury": "$68",
+        "Country": "Guadeloupe"
+    },
+    {
+        "Category": "Food",
+        "Budget": "$43",
+        "Mid-Range": "$101",
+        "Luxury": "$208",
+        "Country": "Guadeloupe"
+    },
+    {
+        "Category": "Entertainment",
+        "Budget": "$20",
+        "Mid-Range": "$47",
+        "Luxury": "$102",
+        "Country": "Guadeloupe"
+    },
+    {
+        "Category": "Alcohol",
+        "Budget": "$6-19",
+        "Mid-Range": "$15-46",
+        "Luxury": "$37-111",
+        "Country": "Guadeloupe"
+    },
+    {
+        "Category": "Accommodation",
+        "Budget": "$6.64",
+        "Mid-Range": "$17",
+        "Luxury": "$41",
+        "Country": "Guatemala"
+    },
+    {
+        "Category": "Transportation",
+        "Budget": "$3.53",
+        "Mid-Range": "$8.99",
+        "Luxury": "$23",
+        "Country": "Guatemala"
+    },
+    {
+        "Category": "Food",
+        "Budget": "$9.18",
+        "Mid-Range": "$23",
+        "Luxury": "$58",
+        "Country": "Guatemala"
+    },
+    {
+        "Category": "Entertainment",
+        "Budget": "$9.20",
+        "Mid-Range": "$23",
+        "Luxury": "$53",
+        "Country": "Guatemala"
+    },
+    {
+        "Category": "Alcohol",
+        "Budget": "$2-5",
+        "Mid-Range": "$4-12",
+        "Luxury": "$10-30",
+        "Country": "Guatemala"
+    },
+    {
+        "Category": "Accommodation",
+        "Budget": "$23",
+        "Mid-Range": "$27",
+        "Luxury": "$34",
+        "Country": "Haiti"
+    },
+    {
+        "Category": "Transportation",
+        "Budget": "$1.13",
+        "Mid-Range": "$2.98",
+        "Luxury": "$8.25",
+        "Country": "Haiti"
+    },
+    {
+        "Category": "Food",
+        "Budget": "$4.06",
+        "Mid-Range": "$9.86",
+        "Luxury": "$22",
+        "Country": "Haiti"
+    },
+    {
+        "Category": "Entertainment",
+        "Budget": "$3.01",
+        "Mid-Range": "$7.87",
+        "Luxury": "$21",
+        "Country": "Haiti"
+    },
+    {
+        "Category": "Alcohol",
+        "Budget": "$0-0",
+        "Mid-Range": "$0-0",
+        "Luxury": "$0-0",
+        "Country": "Haiti"
+    },
+    {
+        "Category": "Accommodation",
+        "Budget": "$5.08",
+        "Mid-Range": "$14",
+        "Luxury": "$40",
+        "Country": "Honduras"
+    },
+    {
+        "Category": "Transportation",
+        "Budget": "$12",
+        "Mid-Range": "$30",
+        "Luxury": "$76",
+        "Country": "Honduras"
+    },
+    {
+        "Category": "Food",
+        "Budget": "$7.86",
+        "Mid-Range": "$20",
+        "Luxury": "$53",
+        "Country": "Honduras"
+    },
+    {
+        "Category": "Entertainment",
+        "Budget": "$11",
+        "Mid-Range": "$25",
+        "Luxury": "$53",
+        "Country": "Honduras"
+    },
+    {
+        "Category": "Alcohol",
+        "Budget": "$1-4",
+        "Mid-Range": "$4-11",
+        "Luxury": "$10-31",
+        "Country": "Honduras"
+    },
+    {
+        "Category": "Accommodation",
+        "Budget": "$32",
+        "Mid-Range": "$77",
+        "Luxury": "$172",
+        "Country": "Hong Kong"
+    },
+    {
+        "Category": "Transportation",
+        "Budget": "$3.21",
+        "Mid-Range": "$8.78",
+        "Luxury": "$26",
+        "Country": "Hong Kong"
+    },
+    {
+        "Category": "Food",
+        "Budget": "$22",
+        "Mid-Range": "$54",
+        "Luxury": "$126",
+        "Country": "Hong Kong"
+    },
+    {
+        "Category": "Entertainment",
+        "Budget": "$35",
+        "Mid-Range": "$95",
+        "Luxury": "$283",
+        "Country": "Hong Kong"
+    },
+    {
+        "Category": "Alcohol",
+        "Budget": "$4-13",
+        "Mid-Range": "$10-31",
+        "Luxury": "$24-71",
+        "Country": "Hong Kong"
+    },
+    {
+        "Category": "Accommodation",
+        "Budget": "$17",
+        "Mid-Range": "$42",
+        "Luxury": "$109",
+        "Country": "Hungary"
+    },
+    {
+        "Category": "Transportation",
+        "Budget": "$4.72",
+        "Mid-Range": "$12",
+        "Luxury": "$28",
+        "Country": "Hungary"
+    },
+    {
+        "Category": "Food",
+        "Budget": "$14",
+        "Mid-Range": "$36",
+        "Luxury": "$91",
+        "Country": "Hungary"
+    },
+    {
+        "Category": "Entertainment",
+        "Budget": "$5.96",
+        "Mid-Range": "$15",
+        "Luxury": "$40",
+        "Country": "Hungary"
+    },
+    {
+        "Category": "Alcohol",
+        "Budget": "$2-6",
+        "Mid-Range": "$6-17",
+        "Luxury": "$16-48",
+        "Country": "Hungary"
+    },
+    {
+        "Category": "Accommodation",
+        "Budget": "$40",
+        "Mid-Range": "$98",
+        "Luxury": "$229",
+        "Country": "Iceland"
+    },
+    {
+        "Category": "Transportation",
+        "Budget": "$13",
+        "Mid-Range": "$32",
+        "Luxury": "$74",
+        "Country": "Iceland"
+    },
+    {
+        "Category": "Food",
+        "Budget": "$25",
+        "Mid-Range": "$60",
+        "Luxury": "$138",
+        "Country": "Iceland"
+    },
+    {
+        "Category": "Entertainment",
+        "Budget": "$16",
+        "Mid-Range": "$43",
+        "Luxury": "$127",
+        "Country": "Iceland"
+    },
+    {
+        "Category": "Alcohol",
+        "Budget": "$3-10",
+        "Mid-Range": "$8-24",
+        "Luxury": "$17-50",
+        "Country": "Iceland"
+    },
+    {
+        "Category": "Accommodation",
+        "Budget": "$6.31",
+        "Mid-Range": "$16",
+        "Luxury": "$44",
+        "Country": "India"
+    },
+    {
+        "Category": "Transportation",
+        "Budget": "$2.31",
+        "Mid-Range": "$6.36",
+        "Luxury": "$19",
+        "Country": "India"
+    },
+    {
+        "Category": "Food",
+        "Budget": "$6.39",
+        "Mid-Range": "$17",
+        "Luxury": "$44",
+        "Country": "India"
+    },
+    {
+        "Category": "Entertainment",
+        "Budget": "$3.69",
+        "Mid-Range": "$9.92",
+        "Luxury": "$28",
+        "Country": "India"
+    },
+    {
+        "Category": "Alcohol",
+        "Budget": "$1-4",
+        "Mid-Range": "$3-10",
+        "Luxury": "$9-28",
+        "Country": "India"
+    },
+    {
+        "Category": "Accommodation",
+        "Budget": "$11",
+        "Mid-Range": "$30",
+        "Luxury": "$95",
+        "Country": "Indonesia"
+    },
+    {
+        "Category": "Transportation",
+        "Budget": "$2.78",
+        "Mid-Range": "$8.61",
+        "Luxury": "$31",
+        "Country": "Indonesia"
+    },
+    {
+        "Category": "Food",
+        "Budget": "$9.75",
+        "Mid-Range": "$25",
+        "Luxury": "$67",
+        "Country": "Indonesia"
+    },
+    {
+        "Category": "Entertainment",
+        "Budget": "$3.45",
+        "Mid-Range": "$9.38",
+        "Luxury": "$27",
+        "Country": "Indonesia"
+    },
+    {
+        "Category": "Alcohol",
+        "Budget": "$1-3",
+        "Mid-Range": "$2-7",
+        "Luxury": "$5-16",
+        "Country": "Indonesia"
+    },
+    {
+        "Category": "Accommodation",
+        "Budget": "$16",
+        "Mid-Range": "$43",
+        "Luxury": "$124",
+        "Country": "Iran"
+    },
+    {
+        "Category": "Transportation",
+        "Budget": "$0.63",
+        "Mid-Range": "$1.92",
+        "Luxury": "$6.77",
+        "Country": "Iran"
+    },
+    {
+        "Category": "Food",
+        "Budget": "$5.68",
+        "Mid-Range": "$13",
+        "Luxury": "$29",
+        "Country": "Iran"
+    },
+    {
+        "Category": "Entertainment",
+        "Budget": "$2.29",
+        "Mid-Range": "$5.14",
+        "Luxury": "$9.17",
+        "Country": "Iran"
+    },
+    {
+        "Category": "Accommodation",
+        "Budget": "$29",
+        "Mid-Range": "$73",
+        "Luxury": "$178",
+        "Country": "Ireland"
+    },
+    {
+        "Category": "Transportation",
+        "Budget": "$11",
+        "Mid-Range": "$27",
+        "Luxury": "$62",
+        "Country": "Ireland"
+    },
+    {
+        "Category": "Food",
+        "Budget": "$29",
+        "Mid-Range": "$73",
+        "Luxury": "$180",
+        "Country": "Ireland"
+    },
+    {
+        "Category": "Entertainment",
+        "Budget": "$8.43",
+        "Mid-Range": "$21",
+        "Luxury": "$49",
+        "Country": "Ireland"
+    },
+    {
+        "Category": "Alcohol",
+        "Budget": "$4-11",
+        "Mid-Range": "$8-25",
+        "Luxury": "$18-54",
+        "Country": "Ireland"
+    },
+    {
+        "Category": "Accommodation",
+        "Budget": "$29",
+        "Mid-Range": "$71",
+        "Luxury": "$168",
+        "Country": "Israel"
+    },
+    {
+        "Category": "Transportation",
+        "Budget": "$3.13",
+        "Mid-Range": "$8.39",
+        "Luxury": "$24",
+        "Country": "Israel"
+    },
+    {
+        "Category": "Food",
+        "Budget": "$23",
+        "Mid-Range": "$57",
+        "Luxury": "$126",
+        "Country": "Israel"
+    },
+    {
+        "Category": "Entertainment",
+        "Budget": "$5.38",
+        "Mid-Range": "$13",
+        "Luxury": "$30",
+        "Country": "Israel"
+    },
+    {
+        "Category": "Alcohol",
+        "Budget": "$4-12",
+        "Mid-Range": "$10-29",
+        "Luxury": "$21-62",
+        "Country": "Israel"
+    },
+    {
+        "Category": "Accommodation",
+        "Budget": "$37",
+        "Mid-Range": "$93",
+        "Luxury": "$229",
+        "Country": "Italy"
+    },
+    {
+        "Category": "Transportation",
+        "Budget": "$11",
+        "Mid-Range": "$29",
+        "Luxury": "$77",
+        "Country": "Italy"
+    },
+    {
+        "Category": "Food",
+        "Budget": "$33",
+        "Mid-Range": "$82",
+        "Luxury": "$198",
+        "Country": "Italy"
+    },
+    {
+        "Category": "Entertainment",
+        "Budget": "$11",
+        "Mid-Range": "$29",
+        "Luxury": "$79",
+        "Country": "Italy"
+    },
+    {
+        "Category": "Alcohol",
+        "Budget": "$4-11",
+        "Mid-Range": "$10-29",
+        "Luxury": "$24-72",
+        "Country": "Italy"
+    },
+    {
+        "Category": "Accommodation",
+        "Budget": "$32",
+        "Mid-Range": "$81",
+        "Luxury": "$200",
+        "Country": "Jamaica"
+    },
+    {
+        "Category": "Transportation",
+        "Budget": "$5.27",
+        "Mid-Range": "$13",
+        "Luxury": "$34",
+        "Country": "Jamaica"
+    },
+    {
+        "Category": "Food",
+        "Budget": "$17",
+        "Mid-Range": "$40",
+        "Luxury": "$89",
+        "Country": "Jamaica"
+    },
+    {
+        "Category": "Entertainment",
+        "Budget": "$8.42",
+        "Mid-Range": "$21",
+        "Luxury": "$53",
+        "Country": "Jamaica"
+    },
+    {
+        "Category": "Alcohol",
+        "Budget": "$2-6",
+        "Mid-Range": "$5-15",
+        "Luxury": "$11-34",
+        "Country": "Jamaica"
+    },
+    {
+        "Category": "Accommodation",
+        "Budget": "$24",
+        "Mid-Range": "$60",
+        "Luxury": "$148",
+        "Country": "Japan"
+    },
+    {
+        "Category": "Transportation",
+        "Budget": "$6.89",
+        "Mid-Range": "$18",
+        "Luxury": "$51",
+        "Country": "Japan"
+    },
+    {
+        "Category": "Food",
+        "Budget": "$20",
+        "Mid-Range": "$51",
+        "Luxury": "$123",
+        "Country": "Japan"
+    },
+    {
+        "Category": "Entertainment",
+        "Budget": "$6.89",
+        "Mid-Range": "$20",
+        "Luxury": "$62",
+        "Country": "Japan"
+    },
+    {
+        "Category": "Alcohol",
+        "Budget": "$3-9",
+        "Mid-Range": "$8-24",
+        "Luxury": "$21-64",
+        "Country": "Japan"
+    },
+    {
+        "Category": "Accommodation",
+        "Budget": "$23",
+        "Mid-Range": "$55",
+        "Luxury": "$115",
+        "Country": "Jordan"
+    },
+    {
+        "Category": "Transportation",
+        "Budget": "$10",
+        "Mid-Range": "$23",
+        "Luxury": "$47",
+        "Country": "Jordan"
+    },
+    {
+        "Category": "Food",
+        "Budget": "$25",
+        "Mid-Range": "$60",
+        "Luxury": "$137",
+        "Country": "Jordan"
+    },
+    {
+        "Category": "Entertainment",
+        "Budget": "$19",
+        "Mid-Range": "$45",
+        "Luxury": "$93",
+        "Country": "Jordan"
+    },
+    {
+        "Category": "Alcohol",
+        "Budget": "$3-9",
+        "Mid-Range": "$7-20",
+        "Luxury": "$14-41",
+        "Country": "Jordan"
+    },
+    {
+        "Category": "Accommodation",
+        "Budget": "$3.06",
+        "Mid-Range": "$7.11",
+        "Luxury": "$14",
+        "Country": "Kazakhstan"
+    },
+    {
+        "Category": "Transportation",
+        "Budget": "$0.24",
+        "Mid-Range": "$0.69",
+        "Luxury": "$2.22",
+        "Country": "Kazakhstan"
+    },
+    {
+        "Category": "Food",
+        "Budget": "$4.12",
+        "Mid-Range": "$9.56",
+        "Luxury": "$19",
+        "Country": "Kazakhstan"
+    },
+    {
+        "Category": "Entertainment",
+        "Budget": "$1.03",
+        "Mid-Range": "$2.58",
+        "Luxury": "$6.36",
+        "Country": "Kazakhstan"
+    },
+    {
+        "Category": "Alcohol",
+        "Budget": "$2-7",
+        "Mid-Range": "$6-18",
+        "Luxury": "$17-51",
+        "Country": "Kazakhstan"
+    },
+    {
+        "Category": "Accommodation",
+        "Budget": "$14",
+        "Mid-Range": "$33",
+        "Luxury": "$68",
+        "Country": "Kenya"
+    },
+    {
+        "Category": "Transportation",
+        "Budget": "$14",
+        "Mid-Range": "$33",
+        "Luxury": "$78",
+        "Country": "Kenya"
+    },
+    {
+        "Category": "Food",
+        "Budget": "$18",
+        "Mid-Range": "$46",
+        "Luxury": "$109",
+        "Country": "Kenya"
+    },
+    {
+        "Category": "Entertainment",
+        "Budget": "$16",
+        "Mid-Range": "$39",
+        "Luxury": "$96",
+        "Country": "Kenya"
+    },
+    {
+        "Category": "Alcohol",
+        "Budget": "$3-10",
+        "Mid-Range": "$8-25",
+        "Luxury": "$20-61",
+        "Country": "Kenya"
+    },
+    {
+        "Category": "Accommodation",
+        "Budget": "$3.21",
+        "Mid-Range": "$7.97",
+        "Luxury": "$19",
+        "Country": "Laos"
+    },
+    {
+        "Category": "Transportation",
+        "Budget": "$0.78",
+        "Mid-Range": "$1.97",
+        "Luxury": "$4.94",
+        "Country": "Laos"
+    },
+    {
+        "Category": "Food",
+        "Budget": "$4.70",
+        "Mid-Range": "$11",
+        "Luxury": "$26",
+        "Country": "Laos"
+    },
+    {
+        "Category": "Entertainment",
+        "Budget": "$1.07",
+        "Mid-Range": "$3.09",
+        "Luxury": "$9.92",
+        "Country": "Laos"
+    },
+    {
+        "Category": "Alcohol",
+        "Budget": "$0-1",
+        "Mid-Range": "$1-3",
+        "Luxury": "$2-6",
+        "Country": "Laos"
+    },
+    {
+        "Category": "Accommodation",
+        "Budget": "$22",
+        "Mid-Range": "$55",
+        "Luxury": "$125",
+        "Country": "Latvia"
+    },
+    {
+        "Category": "Transportation",
+        "Budget": "$7.86",
+        "Mid-Range": "$21",
+        "Luxury": "$57",
+        "Country": "Latvia"
+    },
+    {
+        "Category": "Food",
+        "Budget": "$24",
+        "Mid-Range": "$61",
+        "Luxury": "$147",
+        "Country": "Latvia"
+    },
+    {
+        "Category": "Entertainment",
+        "Budget": "$6.07",
+        "Mid-Range": "$16",
+        "Luxury": "$41",
+        "Country": "Latvia"
+    },
+    {
+        "Category": "Alcohol",
+        "Budget": "$4-12",
+        "Mid-Range": "$10-30",
+        "Luxury": "$23-70",
+        "Country": "Latvia"
+    },
+    {
+        "Category": "Accommodation",
+        "Budget": "$0.54",
+        "Mid-Range": "$1.25",
+        "Luxury": "$2.46",
+        "Country": "Lebanon"
+    },
+    {
+        "Category": "Transportation",
+        "Budget": "$0.19",
+        "Mid-Range": "$0.44",
+        "Luxury": "$0.83",
+        "Country": "Lebanon"
+    },
+    {
+        "Category": "Food",
+        "Budget": "$0.51",
+        "Mid-Range": "$1.17",
+        "Luxury": "$2.21",
+        "Country": "Lebanon"
+    },
+    {
+        "Category": "Entertainment",
+        "Budget": "$0.11",
+        "Mid-Range": "$0.26",
+        "Luxury": "$0.53",
+        "Country": "Lebanon"
+    },
+    {
+        "Category": "Alcohol",
+        "Budget": "$0-0",
+        "Mid-Range": "$0-0",
+        "Luxury": "$0-1",
+        "Country": "Lebanon"
+    },
+    {
+        "Category": "Accommodation",
+        "Budget": "$9.88",
+        "Mid-Range": "$23",
+        "Luxury": "$43",
+        "Country": "Lesotho"
+    },
+    {
+        "Category": "Transportation",
+        "Budget": "$4.40",
+        "Mid-Range": "$10",
+        "Luxury": "$19",
+        "Country": "Lesotho"
+    },
+    {
+        "Category": "Food",
+        "Budget": "$21",
+        "Mid-Range": "$47",
+        "Luxury": "$90",
+        "Country": "Lesotho"
+    },
+    {
+        "Category": "Entertainment",
+        "Budget": "$6.70",
+        "Mid-Range": "$15",
+        "Luxury": "$29",
+        "Country": "Lesotho"
+    },
+    {
+        "Category": "Alcohol",
+        "Budget": "$1-3",
+        "Mid-Range": "$2-6",
+        "Luxury": "$4-12",
+        "Country": "Lesotho"
+    },
+    {
+        "Category": "Accommodation",
+        "Budget": "$60",
+        "Mid-Range": "$136",
+        "Luxury": "$260",
+        "Country": "Liechtenstein"
+    },
+    {
+        "Category": "Transportation",
+        "Budget": "$21",
+        "Mid-Range": "$47",
+        "Luxury": "$91",
+        "Country": "Liechtenstein"
+    },
+    {
+        "Category": "Food",
+        "Budget": "$55",
+        "Mid-Range": "$125",
+        "Luxury": "$240",
+        "Country": "Liechtenstein"
+    },
+    {
+        "Category": "Entertainment",
+        "Budget": "$14",
+        "Mid-Range": "$32",
+        "Luxury": "$61",
+        "Country": "Liechtenstein"
+    },
+    {
+        "Category": "Alcohol",
+        "Budget": "$6-19",
+        "Mid-Range": "$14-42",
+        "Luxury": "$27-81",
+        "Country": "Liechtenstein"
+    },
+    {
+        "Category": "Accommodation",
+        "Budget": "$20",
+        "Mid-Range": "$46",
+        "Luxury": "$91",
+        "Country": "Lithuania"
+    },
+    {
+        "Category": "Transportation",
+        "Budget": "$5.08",
+        "Mid-Range": "$13",
+        "Luxury": "$31",
+        "Country": "Lithuania"
+    },
+    {
+        "Category": "Food",
+        "Budget": "$26",
+        "Mid-Range": "$65",
+        "Luxury": "$164",
+        "Country": "Lithuania"
+    },
+    {
+        "Category": "Entertainment",
+        "Budget": "$5.81",
+        "Mid-Range": "$14",
+        "Luxury": "$34",
+        "Country": "Lithuania"
+    },
+    {
+        "Category": "Alcohol",
+        "Budget": "$3-8",
+        "Mid-Range": "$6-19",
+        "Luxury": "$15-45",
+        "Country": "Lithuania"
+    },
+    {
+        "Category": "Accommodation",
+        "Budget": "$42",
+        "Mid-Range": "$96",
+        "Luxury": "$187",
+        "Country": "Luxembourg"
+    },
+    {
+        "Category": "Transportation",
+        "Budget": "$5.64",
+        "Mid-Range": "$14",
+        "Luxury": "$32",
+        "Country": "Luxembourg"
+    },
+    {
+        "Category": "Food",
+        "Budget": "$62",
+        "Mid-Range": "$144",
+        "Luxury": "$284",
+        "Country": "Luxembourg"
+    },
+    {
+        "Category": "Entertainment",
+        "Budget": "$5.08",
+        "Mid-Range": "$12",
+        "Luxury": "$23",
+        "Country": "Luxembourg"
+    },
+    {
+        "Category": "Alcohol",
+        "Budget": "$3-8",
+        "Mid-Range": "$6-18",
+        "Luxury": "$12-36",
+        "Country": "Luxembourg"
+    },
+    {
+        "Category": "Accommodation",
+        "Budget": "$14",
+        "Mid-Range": "$34",
+        "Luxury": "$72",
+        "Country": "Madagascar"
+    },
+    {
+        "Category": "Transportation",
+        "Budget": "$5.83",
+        "Mid-Range": "$13",
+        "Luxury": "$26",
+        "Country": "Madagascar"
+    },
+    {
+        "Category": "Food",
+        "Budget": "$21",
+        "Mid-Range": "$48",
+        "Luxury": "$101",
+        "Country": "Madagascar"
+    },
+    {
+        "Category": "Entertainment",
+        "Budget": "$7.18",
+        "Mid-Range": "$17",
+        "Luxury": "$36",
+        "Country": "Madagascar"
+    },
+    {
+        "Category": "Alcohol",
+        "Budget": "$2-6",
+        "Mid-Range": "$4-13",
+        "Luxury": "$9-28",
+        "Country": "Madagascar"
+    },
+    {
+        "Category": "Accommodation",
+        "Budget": "$6.22",
+        "Mid-Range": "$14",
+        "Luxury": "$27",
+        "Country": "Malawi"
+    },
+    {
+        "Category": "Transportation",
+        "Budget": "$5.55",
+        "Mid-Range": "$13",
+        "Luxury": "$24",
+        "Country": "Malawi"
+    },
+    {
+        "Category": "Food",
+        "Budget": "$7.44",
+        "Mid-Range": "$17",
+        "Luxury": "$34",
+        "Country": "Malawi"
+    },
+    {
+        "Category": "Entertainment",
+        "Budget": "$6.15",
+        "Mid-Range": "$14",
+        "Luxury": "$27",
+        "Country": "Malawi"
+    },
+    {
+        "Category": "Alcohol",
+        "Budget": "$1-4",
+        "Mid-Range": "$3-9",
+        "Luxury": "$5-16",
+        "Country": "Malawi"
+    },
+    {
+        "Category": "Accommodation",
+        "Budget": "$16",
+        "Mid-Range": "$47",
+        "Luxury": "$151",
+        "Country": "Malaysia"
+    },
+    {
+        "Category": "Transportation",
+        "Budget": "$4.47",
+        "Mid-Range": "$13",
+        "Luxury": "$40",
+        "Country": "Malaysia"
+    },
+    {
+        "Category": "Food",
+        "Budget": "$12",
+        "Mid-Range": "$32",
+        "Luxury": "$95",
+        "Country": "Malaysia"
+    },
+    {
+        "Category": "Entertainment",
+        "Budget": "$9.72",
+        "Mid-Range": "$28",
+        "Luxury": "$87",
+        "Country": "Malaysia"
+    },
+    {
+        "Category": "Alcohol",
+        "Budget": "$2-7",
+        "Mid-Range": "$6-17",
+        "Luxury": "$14-43",
+        "Country": "Malaysia"
+    },
+    {
+        "Category": "Accommodation",
+        "Budget": "$48",
+        "Mid-Range": "$117",
+        "Luxury": "$274",
+        "Country": "Maldives"
+    },
+    {
+        "Category": "Transportation",
+        "Budget": "$55",
+        "Mid-Range": "$139",
+        "Luxury": "$342",
+        "Country": "Maldives"
+    },
+    {
+        "Category": "Food",
+        "Budget": "$50",
+        "Mid-Range": "$129",
+        "Luxury": "$337",
+        "Country": "Maldives"
+    },
+    {
+        "Category": "Entertainment",
+        "Budget": "$16",
+        "Mid-Range": "$36",
+        "Luxury": "$70",
+        "Country": "Maldives"
+    },
+    {
+        "Category": "Alcohol",
+        "Budget": "$7-22",
+        "Mid-Range": "$17-51",
+        "Luxury": "$33-98",
+        "Country": "Maldives"
+    },
+    {
+        "Category": "Accommodation",
+        "Budget": "$13",
+        "Mid-Range": "$15",
+        "Luxury": "$19",
+        "Country": "Mali"
+    },
+    {
+        "Category": "Transportation",
+        "Budget": "$1.44",
+        "Mid-Range": "$3.78",
+        "Luxury": "$10",
+        "Country": "Mali"
+    },
+    {
+        "Category": "Food",
+        "Budget": "$6.58",
+        "Mid-Range": "$15",
+        "Luxury": "$30",
+        "Country": "Mali"
+    },
+    {
+        "Category": "Entertainment",
+        "Budget": "$3.64",
+        "Mid-Range": "$9.70",
+        "Luxury": "$27",
+        "Country": "Mali"
+    },
+    {
+        "Category": "Alcohol",
+        "Budget": "$0-1",
+        "Mid-Range": "$1-3",
+        "Luxury": "$2-5",
+        "Country": "Mali"
+    },
+    {
+        "Category": "Accommodation",
+        "Budget": "$31",
+        "Mid-Range": "$70",
+        "Luxury": "$131",
+        "Country": "Malta"
+    },
+    {
+        "Category": "Transportation",
+        "Budget": "$9.73",
+        "Mid-Range": "$25",
+        "Luxury": "$64",
+        "Country": "Malta"
+    },
+    {
+        "Category": "Food",
+        "Budget": "$25",
+        "Mid-Range": "$58",
+        "Luxury": "$112",
+        "Country": "Malta"
+    },
+    {
+        "Category": "Entertainment",
+        "Budget": "$12",
+        "Mid-Range": "$29",
+        "Luxury": "$68",
+        "Country": "Malta"
+    },
+    {
+        "Category": "Alcohol",
+        "Budget": "$4-11",
+        "Mid-Range": "$9-26",
+        "Luxury": "$18-54",
+        "Country": "Malta"
+    },
+    {
+        "Category": "Accommodation",
+        "Budget": "$39",
+        "Mid-Range": "$89",
+        "Luxury": "$171",
+        "Country": "Martinique"
+    },
+    {
+        "Category": "Transportation",
+        "Budget": "$6.43",
+        "Mid-Range": "$15",
+        "Luxury": "$29",
+        "Country": "Martinique"
+    },
+    {
+        "Category": "Food",
+        "Budget": "$47",
+        "Mid-Range": "$109",
+        "Luxury": "$215",
+        "Country": "Martinique"
+    },
+    {
+        "Category": "Entertainment",
+        "Budget": "$20",
+        "Mid-Range": "$46",
+        "Luxury": "$96",
+        "Country": "Martinique"
+    },
+    {
+        "Category": "Alcohol",
+        "Budget": "$3-8",
+        "Mid-Range": "$6-18",
+        "Luxury": "$12-36",
+        "Country": "Martinique"
+    },
+    {
+        "Category": "Accommodation",
+        "Budget": "$0.00",
+        "Mid-Range": "$0.00",
+        "Luxury": "$0.00",
+        "Country": "Mauritania"
+    },
+    {
+        "Category": "Transportation",
+        "Budget": "$0.00",
+        "Mid-Range": "$0.00",
+        "Luxury": "$0.00",
+        "Country": "Mauritania"
+    },
+    {
+        "Category": "Food",
+        "Budget": "$0.00",
+        "Mid-Range": "$0.00",
+        "Luxury": "$0.00",
+        "Country": "Mauritania"
+    },
+    {
+        "Category": "Accommodation",
+        "Budget": "$16",
+        "Mid-Range": "$43",
+        "Luxury": "$125",
+        "Country": "Mexico"
+    },
+    {
+        "Category": "Transportation",
+        "Budget": "$6.27",
+        "Mid-Range": "$17",
+        "Luxury": "$52",
+        "Country": "Mexico"
+    },
+    {
+        "Category": "Food",
+        "Budget": "$16",
+        "Mid-Range": "$42",
+        "Luxury": "$118",
+        "Country": "Mexico"
+    },
+    {
+        "Category": "Entertainment",
+        "Budget": "$7.53",
+        "Mid-Range": "$22",
+        "Luxury": "$70",
+        "Country": "Mexico"
+    },
+    {
+        "Category": "Alcohol",
+        "Budget": "$3-8",
+        "Mid-Range": "$8-23",
+        "Luxury": "$22-65",
+        "Country": "Mexico"
+    },
+    {
+        "Category": "Accommodation",
+        "Budget": "$55",
+        "Mid-Range": "$126",
+        "Luxury": "$240",
+        "Country": "Micronesia"
+    },
+    {
+        "Category": "Transportation",
+        "Budget": "$13",
+        "Mid-Range": "$30",
+        "Luxury": "$57",
+        "Country": "Micronesia"
+    },
+    {
+        "Category": "Food",
+        "Budget": "$32",
+        "Mid-Range": "$74",
+        "Luxury": "$142",
+        "Country": "Micronesia"
+    },
+    {
+        "Category": "Entertainment",
+        "Budget": "$12",
+        "Mid-Range": "$26",
+        "Luxury": "$51",
+        "Country": "Micronesia"
+    },
+    {
+        "Category": "Alcohol",
+        "Budget": "$3-8",
+        "Mid-Range": "$6-18",
+        "Luxury": "$12-35",
+        "Country": "Micronesia"
+    },
+    {
+        "Category": "Accommodation",
+        "Budget": "$4.11",
+        "Mid-Range": "$11",
+        "Luxury": "$29",
+        "Country": "Mongolia"
+    },
+    {
+        "Category": "Transportation",
+        "Budget": "$1.09",
+        "Mid-Range": "$2.86",
+        "Luxury": "$7.73",
+        "Country": "Mongolia"
+    },
+    {
+        "Category": "Food",
+        "Budget": "$5.16",
+        "Mid-Range": "$13",
+        "Luxury": "$34",
+        "Country": "Mongolia"
+    },
+    {
+        "Category": "Entertainment",
+        "Budget": "$1.69",
+        "Mid-Range": "$4.10",
+        "Luxury": "$9.36",
+        "Country": "Mongolia"
+    },
+    {
+        "Category": "Alcohol",
+        "Budget": "$1-2",
+        "Mid-Range": "$2-6",
+        "Luxury": "$4-13",
+        "Country": "Mongolia"
+    },
+    {
+        "Category": "Accommodation",
+        "Budget": "$19",
+        "Mid-Range": "$46",
+        "Luxury": "$102",
+        "Country": "Montenegro"
+    },
+    {
+        "Category": "Transportation",
+        "Budget": "$7.07",
+        "Mid-Range": "$17",
+        "Luxury": "$38",
+        "Country": "Montenegro"
+    },
+    {
+        "Category": "Food",
+        "Budget": "$26",
+        "Mid-Range": "$65",
+        "Luxury": "$153",
+        "Country": "Montenegro"
+    },
+    {
+        "Category": "Entertainment",
+        "Budget": "$6.94",
+        "Mid-Range": "$17",
+        "Luxury": "$39",
+        "Country": "Montenegro"
+    },
+    {
+        "Category": "Alcohol",
+        "Budget": "$3-9",
+        "Mid-Range": "$7-22",
+        "Luxury": "$15-46",
+        "Country": "Montenegro"
+    },
+    {
+        "Category": "Accommodation",
+        "Budget": "$15",
+        "Mid-Range": "$40",
+        "Luxury": "$115",
+        "Country": "Morocco"
+    },
+    {
+        "Category": "Transportation",
+        "Budget": "$3.82",
+        "Mid-Range": "$10",
+        "Luxury": "$29",
+        "Country": "Morocco"
+    },
+    {
+        "Category": "Food",
+        "Budget": "$13",
+        "Mid-Range": "$31",
+        "Luxury": "$71",
+        "Country": "Morocco"
+    },
+    {
+        "Category": "Entertainment",
+        "Budget": "$4.23",
+        "Mid-Range": "$11",
+        "Luxury": "$29",
+        "Country": "Morocco"
+    },
+    {
+        "Category": "Alcohol",
+        "Budget": "$2-7",
+        "Mid-Range": "$5-16",
+        "Luxury": "$11-34",
+        "Country": "Morocco"
+    },
+    {
+        "Category": "Accommodation",
+        "Budget": "$0.00",
+        "Mid-Range": "$0.00",
+        "Luxury": "$0.00",
+        "Country": "Mozambique"
+    },
+    {
+        "Category": "Transportation",
+        "Budget": "$0.00",
+        "Mid-Range": "$0.00",
+        "Luxury": "$0.00",
+        "Country": "Mozambique"
+    },
+    {
+        "Category": "Food",
+        "Budget": "$0.00",
+        "Mid-Range": "$0.00",
+        "Luxury": "$0.00",
+        "Country": "Mozambique"
+    },
+    {
+        "Category": "Entertainment",
+        "Budget": "$0.00",
+        "Mid-Range": "$0.00",
+        "Luxury": "$0.00",
+        "Country": "Mozambique"
+    },
+    {
+        "Category": "Alcohol",
+        "Budget": "$0-0",
+        "Mid-Range": "$0-0",
+        "Luxury": "$0-0",
+        "Country": "Mozambique"
+    },
+    {
+        "Category": "Accommodation",
+        "Budget": "$4.79",
+        "Mid-Range": "$12",
+        "Luxury": "$29",
+        "Country": "Myanmar"
+    },
+    {
+        "Category": "Transportation",
+        "Budget": "$2.61",
+        "Mid-Range": "$3.37",
+        "Luxury": "$4.80",
+        "Country": "Myanmar"
+    },
+    {
+        "Category": "Food",
+        "Budget": "$6.14",
+        "Mid-Range": "$14",
+        "Luxury": "$23",
+        "Country": "Myanmar"
+    },
+    {
+        "Category": "Entertainment",
+        "Budget": "$57",
+        "Mid-Range": "$57",
+        "Luxury": "$57",
+        "Country": "Myanmar"
+    },
+    {
+        "Category": "Accommodation",
+        "Budget": "$9.46",
+        "Mid-Range": "$22",
+        "Luxury": "$45",
+        "Country": "Namibia"
+    },
+    {
+        "Category": "Transportation",
+        "Budget": "$14",
+        "Mid-Range": "$14",
+        "Luxury": "$14",
+        "Country": "Namibia"
+    },
+    {
+        "Category": "Food",
+        "Budget": "$4.29",
+        "Mid-Range": "$11",
+        "Luxury": "$28",
+        "Country": "Namibia"
+    },
+    {
+        "Category": "Entertainment",
+        "Budget": "$53",
+        "Mid-Range": "$139",
+        "Luxury": "$389",
+        "Country": "Namibia"
+    },
+    {
+        "Category": "Alcohol",
+        "Budget": "$2-5",
+        "Mid-Range": "$4-13",
+        "Luxury": "$11-33",
+        "Country": "Namibia"
+    },
+    {
+        "Category": "Accommodation",
+        "Budget": "$5.26",
+        "Mid-Range": "$16",
+        "Luxury": "$57",
+        "Country": "Nepal"
+    },
+    {
+        "Category": "Transportation",
+        "Budget": "$3.64",
+        "Mid-Range": "$9.90",
+        "Luxury": "$29",
+        "Country": "Nepal"
+    },
+    {
+        "Category": "Food",
+        "Budget": "$5.59",
+        "Mid-Range": "$13",
+        "Luxury": "$30",
+        "Country": "Nepal"
+    },
+    {
+        "Category": "Entertainment",
+        "Budget": "$3.04",
+        "Mid-Range": "$7.94",
+        "Luxury": "$22",
+        "Country": "Nepal"
+    },
+    {
+        "Category": "Alcohol",
+        "Budget": "$1-4",
+        "Mid-Range": "$3-9",
+        "Luxury": "$7-21",
+        "Country": "Nepal"
+    },
+    {
+        "Category": "Accommodation",
+        "Budget": "$40",
+        "Mid-Range": "$100",
+        "Luxury": "$248",
+        "Country": "Netherlands"
+    },
+    {
+        "Category": "Transportation",
+        "Budget": "$11",
+        "Mid-Range": "$29",
+        "Luxury": "$76",
+        "Country": "Netherlands"
+    },
+    {
+        "Category": "Food",
+        "Budget": "$34",
+        "Mid-Range": "$82",
+        "Luxury": "$185",
+        "Country": "Netherlands"
+    },
+    {
+        "Category": "Entertainment",
+        "Budget": "$12",
+        "Mid-Range": "$28",
+        "Luxury": "$67",
+        "Country": "Netherlands"
+    },
+    {
+        "Category": "Alcohol",
+        "Budget": "$5-15",
+        "Mid-Range": "$12-36",
+        "Luxury": "$27-80",
+        "Country": "Netherlands"
+    },
+    {
+        "Category": "Accommodation",
+        "Budget": "$24",
+        "Mid-Range": "$67",
+        "Luxury": "$203",
+        "Country": "New Zealand"
+    },
+    {
+        "Category": "Transportation",
+        "Budget": "$7.88",
+        "Mid-Range": "$20",
+        "Luxury": "$48",
+        "Country": "New Zealand"
+    },
+    {
+        "Category": "Food",
+        "Budget": "$20",
+        "Mid-Range": "$50",
+        "Luxury": "$125",
+        "Country": "New Zealand"
+    },
+    {
+        "Category": "Entertainment",
+        "Budget": "$13",
+        "Mid-Range": "$35",
+        "Luxury": "$106",
+        "Country": "New Zealand"
+    },
+    {
+        "Category": "Alcohol",
+        "Budget": "$3-8",
+        "Mid-Range": "$6-19",
+        "Luxury": "$15-44",
+        "Country": "New Zealand"
+    },
+    {
+        "Category": "Accommodation",
+        "Budget": "$6.64",
+        "Mid-Range": "$17",
+        "Luxury": "$41",
+        "Country": "Nicaragua"
+    },
+    {
+        "Category": "Transportation",
+        "Budget": "$3.56",
+        "Mid-Range": "$9.91",
+        "Luxury": "$30",
+        "Country": "Nicaragua"
+    },
+    {
+        "Category": "Food",
+        "Budget": "$9.75",
+        "Mid-Range": "$24",
+        "Luxury": "$59",
+        "Country": "Nicaragua"
+    },
+    {
+        "Category": "Entertainment",
+        "Budget": "$4.81",
+        "Mid-Range": "$12",
+        "Luxury": "$33",
+        "Country": "Nicaragua"
+    },
+    {
+        "Category": "Alcohol",
+        "Budget": "$2-5",
+        "Mid-Range": "$4-13",
+        "Luxury": "$12-35",
+        "Country": "Nicaragua"
+    },
+    {
+        "Category": "Accommodation",
+        "Budget": "$20",
+        "Mid-Range": "$51",
+        "Luxury": "$129",
+        "Country": "Norway"
+    },
+    {
+        "Category": "Transportation",
+        "Budget": "$5.70",
+        "Mid-Range": "$15",
+        "Luxury": "$45",
+        "Country": "Norway"
+    },
+    {
+        "Category": "Food",
+        "Budget": "$18",
+        "Mid-Range": "$45",
+        "Luxury": "$109",
+        "Country": "Norway"
+    },
+    {
+        "Category": "Entertainment",
+        "Budget": "$5.45",
+        "Mid-Range": "$14",
+        "Luxury": "$35",
+        "Country": "Norway"
+    },
+    {
+        "Category": "Alcohol",
+        "Budget": "$1-4",
+        "Mid-Range": "$3-10",
+        "Luxury": "$9-26",
+        "Country": "Norway"
+    },
+    {
+        "Category": "Accommodation",
+        "Budget": "$28",
+        "Mid-Range": "$65",
+        "Luxury": "$128",
+        "Country": "Oman"
+    },
+    {
+        "Category": "Transportation",
+        "Budget": "$30",
+        "Mid-Range": "$68",
+        "Luxury": "$130",
+        "Country": "Oman"
+    },
+    {
+        "Category": "Food",
+        "Budget": "$61",
+        "Mid-Range": "$139",
+        "Luxury": "$266",
+        "Country": "Oman"
+    },
+    {
+        "Category": "Entertainment",
+        "Budget": "$20",
+        "Mid-Range": "$45",
+        "Luxury": "$86",
+        "Country": "Oman"
+    },
+    {
+        "Category": "Alcohol",
+        "Budget": "$2-6",
+        "Mid-Range": "$4-13",
+        "Luxury": "$8-25",
+        "Country": "Oman"
+    },
+    {
+        "Category": "Accommodation",
+        "Budget": "$9.54",
+        "Mid-Range": "$24",
+        "Luxury": "$58",
+        "Country": "Pakistan"
+    },
+    {
+        "Category": "Transportation",
+        "Budget": "$3.22",
+        "Mid-Range": "$7.61",
+        "Luxury": "$16",
+        "Country": "Pakistan"
+    },
+    {
+        "Category": "Food",
+        "Budget": "$9.51",
+        "Mid-Range": "$22",
+        "Luxury": "$43",
+        "Country": "Pakistan"
+    },
+    {
+        "Category": "Entertainment",
+        "Budget": "$2.42",
+        "Mid-Range": "$5.56",
+        "Luxury": "$11",
+        "Country": "Pakistan"
+    },
+    {
+        "Category": "Alcohol",
+        "Budget": "$1-2",
+        "Mid-Range": "$2-6",
+        "Luxury": "$4-12",
+        "Country": "Pakistan"
+    },
+    {
+        "Category": "Accommodation",
+        "Budget": "$14",
+        "Mid-Range": "$35",
+        "Luxury": "$84",
+        "Country": "Panama"
+    },
+    {
+        "Category": "Transportation",
+        "Budget": "$4.44",
+        "Mid-Range": "$11",
+        "Luxury": "$30",
+        "Country": "Panama"
+    },
+    {
+        "Category": "Food",
+        "Budget": "$15",
+        "Mid-Range": "$37",
+        "Luxury": "$85",
+        "Country": "Panama"
+    },
+    {
+        "Category": "Entertainment",
+        "Budget": "$11",
+        "Mid-Range": "$28",
+        "Luxury": "$82",
+        "Country": "Panama"
+    },
+    {
+        "Category": "Alcohol",
+        "Budget": "$3-8",
+        "Mid-Range": "$7-21",
+        "Luxury": "$19-58",
+        "Country": "Panama"
+    },
+    {
+        "Category": "Accommodation",
+        "Budget": "$38",
+        "Mid-Range": "$88",
+        "Luxury": "$184",
+        "Country": "Papua New Guinea"
+    },
+    {
+        "Category": "Transportation",
+        "Budget": "$65",
+        "Mid-Range": "$177",
+        "Luxury": "$522",
+        "Country": "Papua New Guinea"
+    },
+    {
+        "Category": "Food",
+        "Budget": "$15",
+        "Mid-Range": "$35",
+        "Luxury": "$66",
+        "Country": "Papua New Guinea"
+    },
+    {
+        "Category": "Entertainment",
+        "Budget": "$2.81",
+        "Mid-Range": "$6.43",
+        "Luxury": "$12",
+        "Country": "Papua New Guinea"
+    },
+    {
+        "Category": "Alcohol",
+        "Budget": "$2-5",
+        "Mid-Range": "$4-11",
+        "Luxury": "$7-21",
+        "Country": "Papua New Guinea"
+    },
+    {
+        "Category": "Accommodation",
+        "Budget": "$8.88",
+        "Mid-Range": "$21",
+        "Luxury": "$42",
+        "Country": "Paraguay"
+    },
+    {
+        "Category": "Transportation",
+        "Budget": "$3.62",
+        "Mid-Range": "$8.17",
+        "Luxury": "$15",
+        "Country": "Paraguay"
+    },
+    {
+        "Category": "Food",
+        "Budget": "$11",
+        "Mid-Range": "$26",
+        "Luxury": "$57",
+        "Country": "Paraguay"
+    },
+    {
+        "Category": "Entertainment",
+        "Budget": "$6.61",
+        "Mid-Range": "$15",
+        "Luxury": "$29",
+        "Country": "Paraguay"
+    },
+    {
+        "Category": "Alcohol",
+        "Budget": "$2-6",
+        "Mid-Range": "$5-14",
+        "Luxury": "$9-27",
+        "Country": "Paraguay"
+    },
+    {
+        "Category": "Accommodation",
+        "Budget": "$8.89",
+        "Mid-Range": "$26",
+        "Luxury": "$83",
+        "Country": "Peru"
+    },
+    {
+        "Category": "Transportation",
+        "Budget": "$2.86",
+        "Mid-Range": "$8.54",
+        "Luxury": "$29",
+        "Country": "Peru"
+    },
+    {
+        "Category": "Food",
+        "Budget": "$11",
+        "Mid-Range": "$27",
+        "Luxury": "$71",
+        "Country": "Peru"
+    },
+    {
+        "Category": "Entertainment",
+        "Budget": "$8.60",
+        "Mid-Range": "$23",
+        "Luxury": "$69",
+        "Country": "Peru"
+    },
+    {
+        "Category": "Alcohol",
+        "Budget": "$2-5",
+        "Mid-Range": "$5-14",
+        "Luxury": "$13-39",
+        "Country": "Peru"
+    },
+    {
+        "Category": "Accommodation",
+        "Budget": "$9.48",
+        "Mid-Range": "$25",
+        "Luxury": "$67",
+        "Country": "Philippines"
+    },
+    {
+        "Category": "Transportation",
+        "Budget": "$7.88",
+        "Mid-Range": "$21",
+        "Luxury": "$60",
+        "Country": "Philippines"
+    },
+    {
+        "Category": "Food",
+        "Budget": "$10",
+        "Mid-Range": "$25",
+        "Luxury": "$59",
+        "Country": "Philippines"
+    },
+    {
+        "Category": "Entertainment",
+        "Budget": "$5.70",
+        "Mid-Range": "$14",
+        "Luxury": "$34",
+        "Country": "Philippines"
+    },
+    {
+        "Category": "Alcohol",
+        "Budget": "$2-6",
+        "Mid-Range": "$5-16",
+        "Luxury": "$14-42",
+        "Country": "Philippines"
+    },
+    {
+        "Category": "Accommodation",
+        "Budget": "$14",
+        "Mid-Range": "$36",
+        "Luxury": "$97",
+        "Country": "Poland"
+    },
+    {
+        "Category": "Transportation",
+        "Budget": "$2.60",
+        "Mid-Range": "$6.26",
+        "Luxury": "$14",
+        "Country": "Poland"
+    },
+    {
+        "Category": "Food",
+        "Budget": "$11",
+        "Mid-Range": "$28",
+        "Luxury": "$69",
+        "Country": "Poland"
+    },
+    {
+        "Category": "Entertainment",
+        "Budget": "$3.37",
+        "Mid-Range": "$9.62",
+        "Luxury": "$31",
+        "Country": "Poland"
+    },
+    {
+        "Category": "Alcohol",
+        "Budget": "$1-4",
+        "Mid-Range": "$3-10",
+        "Luxury": "$8-23",
+        "Country": "Poland"
+    },
+    {
+        "Category": "Accommodation",
+        "Budget": "$27",
+        "Mid-Range": "$64",
+        "Luxury": "$138",
+        "Country": "Portugal"
+    },
+    {
+        "Category": "Transportation",
+        "Budget": "$11",
+        "Mid-Range": "$29",
+        "Luxury": "$74",
+        "Country": "Portugal"
+    },
+    {
+        "Category": "Food",
+        "Budget": "$30",
+        "Mid-Range": "$72",
+        "Luxury": "$162",
+        "Country": "Portugal"
+    },
+    {
+        "Category": "Entertainment",
+        "Budget": "$9.32",
+        "Mid-Range": "$24",
+        "Luxury": "$60",
+        "Country": "Portugal"
+    },
+    {
+        "Category": "Alcohol",
+        "Budget": "$4-11",
+        "Mid-Range": "$9-27",
+        "Luxury": "$20-61",
+        "Country": "Portugal"
+    },
+    {
+        "Category": "Accommodation",
+        "Budget": "$58",
+        "Mid-Range": "$139",
+        "Luxury": "$297",
+        "Country": "Puerto Rico"
+    },
+    {
+        "Category": "Transportation",
+        "Budget": "$7.26",
+        "Mid-Range": "$18",
+        "Luxury": "$40",
+        "Country": "Puerto Rico"
+    },
+    {
+        "Category": "Food",
+        "Budget": "$27",
+        "Mid-Range": "$64",
+        "Luxury": "$134",
+        "Country": "Puerto Rico"
+    },
+    {
+        "Category": "Entertainment",
+        "Budget": "$19",
+        "Mid-Range": "$46",
+        "Luxury": "$105",
+        "Country": "Puerto Rico"
+    },
+    {
+        "Category": "Alcohol",
+        "Budget": "$3-9",
+        "Mid-Range": "$7-22",
+        "Luxury": "$15-44",
+        "Country": "Puerto Rico"
+    },
+    {
+        "Category": "Accommodation",
+        "Budget": "$52",
+        "Mid-Range": "$120",
+        "Luxury": "$234",
+        "Country": "Qatar"
+    },
+    {
+        "Category": "Transportation",
+        "Budget": "$10",
+        "Mid-Range": "$23",
+        "Luxury": "$44",
+        "Country": "Qatar"
+    },
+    {
+        "Category": "Food",
+        "Budget": "$45",
+        "Mid-Range": "$101",
+        "Luxury": "$185",
+        "Country": "Qatar"
+    },
+    {
+        "Category": "Entertainment",
+        "Budget": "$8.08",
+        "Mid-Range": "$18",
+        "Luxury": "$35",
+        "Country": "Qatar"
+    },
+    {
+        "Category": "Alcohol",
+        "Budget": "$3-10",
+        "Mid-Range": "$7-22",
+        "Luxury": "$14-42",
+        "Country": "Qatar"
+    },
+    {
+        "Category": "Accommodation",
+        "Budget": "$13",
+        "Mid-Range": "$31",
+        "Luxury": "$69",
+        "Country": "Romania"
+    },
+    {
+        "Category": "Transportation",
+        "Budget": "$9.13",
+        "Mid-Range": "$22",
+        "Luxury": "$47",
+        "Country": "Romania"
+    },
+    {
+        "Category": "Food",
+        "Budget": "$19",
+        "Mid-Range": "$47",
+        "Luxury": "$108",
+        "Country": "Romania"
+    },
+    {
+        "Category": "Entertainment",
+        "Budget": "$4.02",
+        "Mid-Range": "$9.34",
+        "Luxury": "$19",
+        "Country": "Romania"
+    },
+    {
+        "Category": "Alcohol",
+        "Budget": "$2-5",
+        "Mid-Range": "$4-13",
+        "Luxury": "$9-26",
+        "Country": "Romania"
+    },
+    {
+        "Category": "Accommodation",
+        "Budget": "$13",
+        "Mid-Range": "$32",
+        "Luxury": "$82",
+        "Country": "Russia"
+    },
+    {
+        "Category": "Transportation",
+        "Budget": "$2.45",
+        "Mid-Range": "$7.23",
+        "Luxury": "$24",
+        "Country": "Russia"
+    },
+    {
+        "Category": "Food",
+        "Budget": "$9.64",
+        "Mid-Range": "$25",
+        "Luxury": "$64",
+        "Country": "Russia"
+    },
+    {
+        "Category": "Entertainment",
+        "Budget": "$6.22",
+        "Mid-Range": "$16",
+        "Luxury": "$42",
+        "Country": "Russia"
+    },
+    {
+        "Category": "Alcohol",
+        "Budget": "$2-5",
+        "Mid-Range": "$5-14",
+        "Luxury": "$13-40",
+        "Country": "Russia"
+    },
+    {
+        "Category": "Accommodation",
+        "Budget": "$13",
+        "Mid-Range": "$13",
+        "Luxury": "$13",
+        "Country": "Rwanda"
+    },
+    {
+        "Category": "Transportation",
+        "Budget": "$1.37",
+        "Mid-Range": "$3.69",
+        "Luxury": "$11",
+        "Country": "Rwanda"
+    },
+    {
+        "Category": "Food",
+        "Budget": "$3.29",
+        "Mid-Range": "$8.24",
+        "Luxury": "$20",
+        "Country": "Rwanda"
+    },
+    {
+        "Category": "Alcohol",
+        "Budget": "$1-4",
+        "Mid-Range": "$3-10",
+        "Luxury": "$9-27",
+        "Country": "Rwanda"
+    },
+    {
+        "Category": "Accommodation",
+        "Budget": "$84",
+        "Mid-Range": "$207",
+        "Luxury": "$493",
+        "Country": "Saint Barthelemy"
+    },
+    {
+        "Category": "Transportation",
+        "Budget": "$10",
+        "Mid-Range": "$24",
+        "Luxury": "$53",
+        "Country": "Saint Barthelemy"
+    },
+    {
+        "Category": "Food",
+        "Budget": "$39",
+        "Mid-Range": "$95",
+        "Luxury": "$227",
+        "Country": "Saint Barthelemy"
+    },
+    {
+        "Category": "Entertainment",
+        "Budget": "$40",
+        "Mid-Range": "$96",
+        "Luxury": "$213",
+        "Country": "Saint Barthelemy"
+    },
+    {
+        "Category": "Alcohol",
+        "Budget": "$4-11",
+        "Mid-Range": "$9-26",
+        "Luxury": "$19-58",
+        "Country": "Saint Barthelemy"
+    },
+    {
+        "Category": "Accommodation",
+        "Budget": "$86",
+        "Mid-Range": "$208",
+        "Luxury": "$463",
+        "Country": "Saint Kitts And Nevis"
+    },
+    {
+        "Category": "Transportation",
+        "Budget": "$18",
+        "Mid-Range": "$53",
+        "Luxury": "$170",
+        "Country": "Saint Kitts And Nevis"
+    },
+    {
+        "Category": "Food",
+        "Budget": "$32",
+        "Mid-Range": "$79",
+        "Luxury": "$184",
+        "Country": "Saint Kitts And Nevis"
+    },
+    {
+        "Category": "Entertainment",
+        "Budget": "$43",
+        "Mid-Range": "$100",
+        "Luxury": "$208",
+        "Country": "Saint Kitts And Nevis"
+    },
+    {
+        "Category": "Alcohol",
+        "Budget": "$4-13",
+        "Mid-Range": "$10-31",
+        "Luxury": "$22-67",
+        "Country": "Saint Kitts And Nevis"
+    },
+    {
+        "Category": "Accommodation",
+        "Budget": "$56",
+        "Mid-Range": "$132",
+        "Luxury": "$282",
+        "Country": "Saint Lucia"
+    },
+    {
+        "Category": "Transportation",
+        "Budget": "$9.14",
+        "Mid-Range": "$21",
+        "Luxury": "$44",
+        "Country": "Saint Lucia"
+    },
+    {
+        "Category": "Food",
+        "Budget": "$36",
+        "Mid-Range": "$87",
+        "Luxury": "$189",
+        "Country": "Saint Lucia"
+    },
+    {
+        "Category": "Entertainment",
+        "Budget": "$21",
+        "Mid-Range": "$52",
+        "Luxury": "$129",
+        "Country": "Saint Lucia"
+    },
+    {
+        "Category": "Alcohol",
+        "Budget": "$4-11",
+        "Mid-Range": "$9-27",
+        "Luxury": "$20-59",
+        "Country": "Saint Lucia"
+    },
+    {
+        "Category": "Accommodation",
+        "Budget": "$74",
+        "Mid-Range": "$169",
+        "Luxury": "$323",
+        "Country": "Saint Martin"
+    },
+    {
+        "Category": "Transportation",
+        "Budget": "$20",
+        "Mid-Range": "$46",
+        "Luxury": "$87",
+        "Country": "Saint Martin"
+    },
+    {
+        "Category": "Food",
+        "Budget": "$62",
+        "Mid-Range": "$143",
+        "Luxury": "$273",
+        "Country": "Saint Martin"
+    },
+    {
+        "Category": "Entertainment",
+        "Budget": "$8.11",
+        "Mid-Range": "$19",
+        "Luxury": "$36",
+        "Country": "Saint Martin"
+    },
+    {
+        "Category": "Alcohol",
+        "Budget": "$9-26",
+        "Mid-Range": "$20-59",
+        "Luxury": "$38-113",
+        "Country": "Saint Martin"
+    },
+    {
+        "Category": "Accommodation",
+        "Budget": "$47",
+        "Mid-Range": "$107",
+        "Luxury": "$205",
+        "Country": "Saint Vincent And The Grenadines"
+    },
+    {
+        "Category": "Transportation",
+        "Budget": "$13",
+        "Mid-Range": "$29",
+        "Luxury": "$52",
+        "Country": "Saint Vincent And The Grenadines"
+    },
+    {
+        "Category": "Food",
+        "Budget": "$25",
+        "Mid-Range": "$57",
+        "Luxury": "$107",
+        "Country": "Saint Vincent And The Grenadines"
+    },
+    {
+        "Category": "Entertainment",
+        "Budget": "$12",
+        "Mid-Range": "$27",
+        "Luxury": "$50",
+        "Country": "Saint Vincent And The Grenadines"
+    },
+    {
+        "Category": "Alcohol",
+        "Budget": "$3-8",
+        "Mid-Range": "$6-17",
+        "Luxury": "$11-33",
+        "Country": "Saint Vincent And The Grenadines"
+    },
+    {
+        "Category": "Accommodation",
+        "Budget": "$50",
+        "Mid-Range": "$114",
+        "Luxury": "$218",
+        "Country": "Sao Tome And Principe"
+    },
+    {
+        "Category": "Transportation",
+        "Budget": "$21",
+        "Mid-Range": "$49",
+        "Luxury": "$93",
+        "Country": "Sao Tome And Principe"
+    },
+    {
+        "Category": "Food",
+        "Budget": "$44",
+        "Mid-Range": "$100",
+        "Luxury": "$192",
+        "Country": "Sao Tome And Principe"
+    },
+    {
+        "Category": "Entertainment",
+        "Budget": "$16",
+        "Mid-Range": "$36",
+        "Luxury": "$69",
+        "Country": "Sao Tome And Principe"
+    },
+    {
+        "Category": "Alcohol",
+        "Budget": "$6-18",
+        "Mid-Range": "$14-42",
+        "Luxury": "$27-81",
+        "Country": "Sao Tome And Principe"
+    },
+    {
+        "Category": "Accommodation",
+        "Budget": "$13",
+        "Mid-Range": "$29",
+        "Luxury": "$59",
+        "Country": "Senegal"
+    },
+    {
+        "Category": "Transportation",
+        "Budget": "$1.89",
+        "Mid-Range": "$5.23",
+        "Luxury": "$16",
+        "Country": "Senegal"
+    },
+    {
+        "Category": "Food",
+        "Budget": "$12",
+        "Mid-Range": "$31",
+        "Luxury": "$81",
+        "Country": "Senegal"
+    },
+    {
+        "Category": "Entertainment",
+        "Budget": "$5.49",
+        "Mid-Range": "$13",
+        "Luxury": "$27",
+        "Country": "Senegal"
+    },
+    {
+        "Category": "Alcohol",
+        "Budget": "$2-6",
+        "Mid-Range": "$5-14",
+        "Luxury": "$10-30",
+        "Country": "Senegal"
+    },
+    {
+        "Category": "Accommodation",
+        "Budget": "$9.53",
+        "Mid-Range": "$25",
+        "Luxury": "$68",
+        "Country": "Serbia"
+    },
+    {
+        "Category": "Transportation",
+        "Budget": "$2.33",
+        "Mid-Range": "$5.65",
+        "Luxury": "$13",
+        "Country": "Serbia"
+    },
+    {
+        "Category": "Food",
+        "Budget": "$6.36",
+        "Mid-Range": "$15",
+        "Luxury": "$35",
+        "Country": "Serbia"
+    },
+    {
+        "Category": "Entertainment",
+        "Budget": "$2.07",
+        "Mid-Range": "$4.56",
+        "Luxury": "$7.65",
+        "Country": "Serbia"
+    },
+    {
+        "Category": "Alcohol",
+        "Budget": "$11-32",
+        "Mid-Range": "$11-32",
+        "Luxury": "$11-32",
+        "Country": "Serbia"
+    },
+    {
+        "Category": "Accommodation",
+        "Budget": "$33",
+        "Mid-Range": "$76",
+        "Luxury": "$143",
+        "Country": "Seychelles"
+    },
+    {
+        "Category": "Transportation",
+        "Budget": "$27",
+        "Mid-Range": "$62",
+        "Luxury": "$118",
+        "Country": "Seychelles"
+    },
+    {
+        "Category": "Food",
+        "Budget": "$34",
+        "Mid-Range": "$78",
+        "Luxury": "$148",
+        "Country": "Seychelles"
+    },
+    {
+        "Category": "Entertainment",
+        "Budget": "$15",
+        "Mid-Range": "$35",
+        "Luxury": "$68",
+        "Country": "Seychelles"
+    },
+    {
+        "Category": "Alcohol",
+        "Budget": "$7-20",
+        "Mid-Range": "$15-45",
+        "Luxury": "$29-86",
+        "Country": "Seychelles"
+    },
+    {
+        "Category": "Accommodation",
+        "Budget": "$37",
+        "Mid-Range": "$99",
+        "Luxury": "$280",
+        "Country": "Singapore"
+    },
+    {
+        "Category": "Transportation",
+        "Budget": "$4.13",
+        "Mid-Range": "$10",
+        "Luxury": "$26",
+        "Country": "Singapore"
+    },
+    {
+        "Category": "Food",
+        "Budget": "$18",
+        "Mid-Range": "$46",
+        "Luxury": "$116",
+        "Country": "Singapore"
+    },
+    {
+        "Category": "Entertainment",
+        "Budget": "$13",
+        "Mid-Range": "$33",
+        "Luxury": "$85",
+        "Country": "Singapore"
+    },
+    {
+        "Category": "Alcohol",
+        "Budget": "$6-17",
+        "Mid-Range": "$14-41",
+        "Luxury": "$31-94",
+        "Country": "Singapore"
+    },
+    {
+        "Category": "Accommodation",
+        "Budget": "$176",
+        "Mid-Range": "$206",
+        "Luxury": "$262",
+        "Country": "Sint Maarten"
+    },
+    {
+        "Category": "Food",
+        "Budget": "$185",
+        "Mid-Range": "$185",
+        "Luxury": "$185",
+        "Country": "Sint Maarten"
+    },
+    {
+        "Category": "Alcohol",
+        "Budget": "$224-671",
+        "Mid-Range": "$224-671",
+        "Luxury": "$224-671",
+        "Country": "Sint Maarten"
+    },
+    {
+        "Category": "Accommodation",
+        "Budget": "$27",
+        "Mid-Range": "$64",
+        "Luxury": "$132",
+        "Country": "Slovakia"
+    },
+    {
+        "Category": "Transportation",
+        "Budget": "$10",
+        "Mid-Range": "$26",
+        "Luxury": "$70",
+        "Country": "Slovakia"
+    },
+    {
+        "Category": "Food",
+        "Budget": "$27",
+        "Mid-Range": "$67",
+        "Luxury": "$156",
+        "Country": "Slovakia"
+    },
+    {
+        "Category": "Entertainment",
+        "Budget": "$10",
+        "Mid-Range": "$24",
+        "Luxury": "$54",
+        "Country": "Slovakia"
+    },
+    {
+        "Category": "Alcohol",
+        "Budget": "$5-14",
+        "Mid-Range": "$11-32",
+        "Luxury": "$23-68",
+        "Country": "Slovakia"
+    },
+    {
+        "Category": "Accommodation",
+        "Budget": "$24",
+        "Mid-Range": "$57",
+        "Luxury": "$119",
+        "Country": "Slovenia"
+    },
+    {
+        "Category": "Transportation",
+        "Budget": "$7.47",
+        "Mid-Range": "$18",
+        "Luxury": "$43",
+        "Country": "Slovenia"
+    },
+    {
+        "Category": "Food",
+        "Budget": "$18",
+        "Mid-Range": "$42",
+        "Luxury": "$86",
+        "Country": "Slovenia"
+    },
+    {
+        "Category": "Entertainment",
+        "Budget": "$5.61",
+        "Mid-Range": "$13",
+        "Luxury": "$28",
+        "Country": "Slovenia"
+    },
+    {
+        "Category": "Alcohol",
+        "Budget": "$3-8",
+        "Mid-Range": "$7-20",
+        "Luxury": "$13-39",
+        "Country": "Slovenia"
+    },
+    {
+        "Category": "Accommodation",
+        "Budget": "$28",
+        "Mid-Range": "$64",
+        "Luxury": "$122",
+        "Country": "Solomon Islands"
+    },
+    {
+        "Category": "Transportation",
+        "Budget": "$9.46",
+        "Mid-Range": "$22",
+        "Luxury": "$41",
+        "Country": "Solomon Islands"
+    },
+    {
+        "Category": "Food",
+        "Budget": "$22",
+        "Mid-Range": "$51",
+        "Luxury": "$97",
+        "Country": "Solomon Islands"
+    },
+    {
+        "Category": "Entertainment",
+        "Budget": "$10",
+        "Mid-Range": "$24",
+        "Luxury": "$46",
+        "Country": "Solomon Islands"
+    },
+    {
+        "Category": "Alcohol",
+        "Budget": "$2-7",
+        "Mid-Range": "$5-16",
+        "Luxury": "$10-31",
+        "Country": "Solomon Islands"
+    },
+    {
+        "Category": "Accommodation",
+        "Budget": "$18",
+        "Mid-Range": "$48",
+        "Luxury": "$142",
+        "Country": "South Africa"
+    },
+    {
+        "Category": "Transportation",
+        "Budget": "$6.52",
+        "Mid-Range": "$16",
+        "Luxury": "$36",
+        "Country": "South Africa"
+    },
+    {
+        "Category": "Food",
+        "Budget": "$14",
+        "Mid-Range": "$35",
+        "Luxury": "$78",
+        "Country": "South Africa"
+    },
+    {
+        "Category": "Entertainment",
+        "Budget": "$6.60",
+        "Mid-Range": "$17",
+        "Luxury": "$47",
+        "Country": "South Africa"
+    },
+    {
+        "Category": "Alcohol",
+        "Budget": "$2-6",
+        "Mid-Range": "$5-16",
+        "Luxury": "$14-43",
+        "Country": "South Africa"
+    },
+    {
+        "Category": "Accommodation",
+        "Budget": "$19",
+        "Mid-Range": "$46",
+        "Luxury": "$106",
+        "Country": "South Korea"
+    },
+    {
+        "Category": "Transportation",
+        "Budget": "$5.32",
+        "Mid-Range": "$15",
+        "Luxury": "$45",
+        "Country": "South Korea"
+    },
+    {
+        "Category": "Food",
+        "Budget": "$17",
+        "Mid-Range": "$43",
+        "Luxury": "$114",
+        "Country": "South Korea"
+    },
+    {
+        "Category": "Entertainment",
+        "Budget": "$8.91",
+        "Mid-Range": "$25",
+        "Luxury": "$73",
+        "Country": "South Korea"
+    },
+    {
+        "Category": "Alcohol",
+        "Budget": "$2-7",
+        "Mid-Range": "$5-16",
+        "Luxury": "$12-37",
+        "Country": "South Korea"
+    },
+    {
+        "Category": "Accommodation",
+        "Budget": "$31",
+        "Mid-Range": "$79",
+        "Luxury": "$200",
+        "Country": "Spain"
+    },
+    {
+        "Category": "Transportation",
+        "Budget": "$12",
+        "Mid-Range": "$31",
+        "Luxury": "$75",
+        "Country": "Spain"
+    },
+    {
+        "Category": "Food",
+        "Budget": "$29",
+        "Mid-Range": "$73",
+        "Luxury": "$181",
+        "Country": "Spain"
+    },
+    {
+        "Category": "Entertainment",
+        "Budget": "$12",
+        "Mid-Range": "$29",
+        "Luxury": "$67",
+        "Country": "Spain"
+    },
+    {
+        "Category": "Alcohol",
+        "Budget": "$4-13",
+        "Mid-Range": "$11-33",
+        "Luxury": "$31-93",
+        "Country": "Spain"
+    },
+    {
+        "Category": "Accommodation",
+        "Budget": "$8.72",
+        "Mid-Range": "$25",
+        "Luxury": "$80",
+        "Country": "Sri Lanka"
+    },
+    {
+        "Category": "Transportation",
+        "Budget": "$1.84",
+        "Mid-Range": "$5.12",
+        "Luxury": "$16",
+        "Country": "Sri Lanka"
+    },
+    {
+        "Category": "Food",
+        "Budget": "$10",
+        "Mid-Range": "$27",
+        "Luxury": "$75",
+        "Country": "Sri Lanka"
+    },
+    {
+        "Category": "Entertainment",
+        "Budget": "$3.10",
+        "Mid-Range": "$8.51",
+        "Luxury": "$25",
+        "Country": "Sri Lanka"
+    },
+    {
+        "Category": "Alcohol",
+        "Budget": "$1-3",
+        "Mid-Range": "$3-8",
+        "Luxury": "$6-19",
+        "Country": "Sri Lanka"
+    },
+    {
+        "Category": "Accommodation",
+        "Budget": "$18",
+        "Mid-Range": "$41",
+        "Luxury": "$78",
+        "Country": "Swaziland"
+    },
+    {
+        "Category": "Transportation",
+        "Budget": "$5.80",
+        "Mid-Range": "$13",
+        "Luxury": "$25",
+        "Country": "Swaziland"
+    },
+    {
+        "Category": "Food",
+        "Budget": "$22",
+        "Mid-Range": "$49",
+        "Luxury": "$94",
+        "Country": "Swaziland"
+    },
+    {
+        "Category": "Entertainment",
+        "Budget": "$8.83",
+        "Mid-Range": "$20",
+        "Luxury": "$39",
+        "Country": "Swaziland"
+    },
+    {
+        "Category": "Alcohol",
+        "Budget": "$2-7",
+        "Mid-Range": "$5-16",
+        "Luxury": "$10-30",
+        "Country": "Swaziland"
+    },
+    {
+        "Category": "Accommodation",
+        "Budget": "$30",
+        "Mid-Range": "$73",
+        "Luxury": "$163",
+        "Country": "Sweden"
+    },
+    {
+        "Category": "Transportation",
+        "Budget": "$8.16",
+        "Mid-Range": "$19",
+        "Luxury": "$42",
+        "Country": "Sweden"
+    },
+    {
+        "Category": "Food",
+        "Budget": "$24",
+        "Mid-Range": "$57",
+        "Luxury": "$126",
+        "Country": "Sweden"
+    },
+    {
+        "Category": "Entertainment",
+        "Budget": "$9.71",
+        "Mid-Range": "$23",
+        "Luxury": "$53",
+        "Country": "Sweden"
+    },
+    {
+        "Category": "Alcohol",
+        "Budget": "$5-16",
+        "Mid-Range": "$13-39",
+        "Luxury": "$29-86",
+        "Country": "Sweden"
+    },
+    {
+        "Category": "Accommodation",
+        "Budget": "$70",
+        "Mid-Range": "$173",
+        "Luxury": "$413",
+        "Country": "Switzerland"
+    },
+    {
+        "Category": "Transportation",
+        "Budget": "$16",
+        "Mid-Range": "$39",
+        "Luxury": "$95",
+        "Country": "Switzerland"
+    },
+    {
+        "Category": "Food",
+        "Budget": "$44",
+        "Mid-Range": "$107",
+        "Luxury": "$242",
+        "Country": "Switzerland"
+    },
+    {
+        "Category": "Entertainment",
+        "Budget": "$23",
+        "Mid-Range": "$58",
+        "Luxury": "$145",
+        "Country": "Switzerland"
+    },
+    {
+        "Category": "Alcohol",
+        "Budget": "$6-17",
+        "Mid-Range": "$13-40",
+        "Luxury": "$29-86",
+        "Country": "Switzerland"
+    },
+    {
+        "Category": "Accommodation",
+        "Budget": "$42",
+        "Mid-Range": "$99",
+        "Luxury": "$204",
+        "Country": "Tahiti"
+    },
+    {
+        "Category": "Transportation",
+        "Budget": "$9.27",
+        "Mid-Range": "$22",
+        "Luxury": "$46",
+        "Country": "Tahiti"
+    },
+    {
+        "Category": "Food",
+        "Budget": "$72",
+        "Mid-Range": "$86",
+        "Luxury": "$113",
+        "Country": "Tahiti"
+    },
+    {
+        "Category": "Entertainment",
+        "Budget": "$7.06",
+        "Mid-Range": "$16",
+        "Luxury": "$31",
+        "Country": "Tahiti"
+    },
+    {
+        "Category": "Alcohol",
+        "Budget": "$5-16",
+        "Mid-Range": "$13-38",
+        "Luxury": "$27-81",
+        "Country": "Tahiti"
+    },
+    {
+        "Category": "Accommodation",
+        "Budget": "$25",
+        "Mid-Range": "$69",
+        "Luxury": "$214",
+        "Country": "Taiwan"
+    },
+    {
+        "Category": "Transportation",
+        "Budget": "$4.07",
+        "Mid-Range": "$11",
+        "Luxury": "$32",
+        "Country": "Taiwan"
+    },
+    {
+        "Category": "Food",
+        "Budget": "$10",
+        "Mid-Range": "$27",
+        "Luxury": "$73",
+        "Country": "Taiwan"
+    },
+    {
+        "Category": "Entertainment",
+        "Budget": "$6.47",
+        "Mid-Range": "$16",
+        "Luxury": "$41",
+        "Country": "Taiwan"
+    },
+    {
+        "Category": "Alcohol",
+        "Budget": "$3-10",
+        "Mid-Range": "$8-25",
+        "Luxury": "$19-56",
+        "Country": "Taiwan"
+    },
+    {
+        "Category": "Accommodation",
+        "Budget": "$17",
+        "Mid-Range": "$47",
+        "Luxury": "$140",
+        "Country": "Tanzania"
+    },
+    {
+        "Category": "Transportation",
+        "Budget": "$5.72",
+        "Mid-Range": "$14",
+        "Luxury": "$36",
+        "Country": "Tanzania"
+    },
+    {
+        "Category": "Food",
+        "Budget": "$15",
+        "Mid-Range": "$38",
+        "Luxury": "$97",
+        "Country": "Tanzania"
+    },
+    {
+        "Category": "Entertainment",
+        "Budget": "$15",
+        "Mid-Range": "$41",
+        "Luxury": "$111",
+        "Country": "Tanzania"
+    },
+    {
+        "Category": "Alcohol",
+        "Budget": "$2-6",
+        "Mid-Range": "$5-14",
+        "Luxury": "$12-35",
+        "Country": "Tanzania"
+    },
+    {
+        "Category": "Accommodation",
+        "Budget": "$14",
+        "Mid-Range": "$37",
+        "Luxury": "$107",
+        "Country": "Thailand"
+    },
+    {
+        "Category": "Transportation",
+        "Budget": "$4.52",
+        "Mid-Range": "$13",
+        "Luxury": "$42",
+        "Country": "Thailand"
+    },
+    {
+        "Category": "Food",
+        "Budget": "$12",
+        "Mid-Range": "$30",
+        "Luxury": "$76",
+        "Country": "Thailand"
+    },
+    {
+        "Category": "Entertainment",
+        "Budget": "$7.37",
+        "Mid-Range": "$20",
+        "Luxury": "$58",
+        "Country": "Thailand"
+    },
+    {
+        "Category": "Alcohol",
+        "Budget": "$2-5",
+        "Mid-Range": "$5-14",
+        "Luxury": "$12-35",
+        "Country": "Thailand"
+    },
+    {
+        "Category": "Accommodation",
+        "Budget": "$33",
+        "Mid-Range": "$75",
+        "Luxury": "$135",
+        "Country": "Trinidad And Tobago"
+    },
+    {
+        "Category": "Transportation",
+        "Budget": "$22",
+        "Mid-Range": "$50",
+        "Luxury": "$95",
+        "Country": "Trinidad And Tobago"
+    },
+    {
+        "Category": "Food",
+        "Budget": "$38",
+        "Mid-Range": "$88",
+        "Luxury": "$174",
+        "Country": "Trinidad And Tobago"
+    },
+    {
+        "Category": "Entertainment",
+        "Budget": "$19",
+        "Mid-Range": "$46",
+        "Luxury": "$100",
+        "Country": "Trinidad And Tobago"
+    },
+    {
+        "Category": "Alcohol",
+        "Budget": "$5-15",
+        "Mid-Range": "$11-34",
+        "Luxury": "$22-67",
+        "Country": "Trinidad And Tobago"
+    },
+    {
+        "Category": "Accommodation",
+        "Budget": "$25",
+        "Mid-Range": "$59",
+        "Luxury": "$125",
+        "Country": "Turkey"
+    },
+    {
+        "Category": "Transportation",
+        "Budget": "$16",
+        "Mid-Range": "$41",
+        "Luxury": "$111",
+        "Country": "Turkey"
+    },
+    {
+        "Category": "Food",
+        "Budget": "$24",
+        "Mid-Range": "$59",
+        "Luxury": "$148",
+        "Country": "Turkey"
+    },
+    {
+        "Category": "Entertainment",
+        "Budget": "$16",
+        "Mid-Range": "$42",
+        "Luxury": "$113",
+        "Country": "Turkey"
+    },
+    {
+        "Category": "Alcohol",
+        "Budget": "$3-8",
+        "Mid-Range": "$7-21",
+        "Luxury": "$16-48",
+        "Country": "Turkey"
+    },
+    {
+        "Category": "Accommodation",
+        "Budget": "$90",
+        "Mid-Range": "$205",
+        "Luxury": "$394",
+        "Country": "Turks And Caicos Islands"
+    },
+    {
+        "Category": "Transportation",
+        "Budget": "$10",
+        "Mid-Range": "$24",
+        "Luxury": "$51",
+        "Country": "Turks And Caicos Islands"
+    },
+    {
+        "Category": "Food",
+        "Budget": "$55",
+        "Mid-Range": "$129",
+        "Luxury": "$263",
+        "Country": "Turks And Caicos Islands"
+    },
+    {
+        "Category": "Entertainment",
+        "Budget": "$44",
+        "Mid-Range": "$105",
+        "Luxury": "$235",
+        "Country": "Turks And Caicos Islands"
+    },
+    {
+        "Category": "Alcohol",
+        "Budget": "$3-9",
+        "Mid-Range": "$7-21",
+        "Luxury": "$14-43",
+        "Country": "Turks And Caicos Islands"
+    },
+    {
+        "Category": "Accommodation",
+        "Budget": "$20",
+        "Mid-Range": "$47",
+        "Luxury": "$95",
+        "Country": "Uganda"
+    },
+    {
+        "Category": "Transportation",
+        "Budget": "$9.01",
+        "Mid-Range": "$21",
+        "Luxury": "$39",
+        "Country": "Uganda"
+    },
+    {
+        "Category": "Food",
+        "Budget": "$19",
+        "Mid-Range": "$46",
+        "Luxury": "$109",
+        "Country": "Uganda"
+    },
+    {
+        "Category": "Entertainment",
+        "Budget": "$14",
+        "Mid-Range": "$32",
+        "Luxury": "$66",
+        "Country": "Uganda"
+    },
+    {
+        "Category": "Alcohol",
+        "Budget": "$3-9",
+        "Mid-Range": "$7-21",
+        "Luxury": "$13-40",
+        "Country": "Uganda"
+    },
+    {
+        "Category": "Accommodation",
+        "Budget": "$6.11",
+        "Mid-Range": "$15",
+        "Luxury": "$34",
+        "Country": "Ukraine"
+    },
+    {
+        "Category": "Transportation",
+        "Budget": "$0.32",
+        "Mid-Range": "$0.87",
+        "Luxury": "$2.57",
+        "Country": "Ukraine"
+    },
+    {
+        "Category": "Food",
+        "Budget": "$3.55",
+        "Mid-Range": "$9.01",
+        "Luxury": "$23",
+        "Country": "Ukraine"
+    },
+    {
+        "Category": "Entertainment",
+        "Budget": "$0.73",
+        "Mid-Range": "$1.73",
+        "Luxury": "$3.71",
+        "Country": "Ukraine"
+    },
+    {
+        "Category": "Alcohol",
+        "Budget": "$1-3",
+        "Mid-Range": "$3-9",
+        "Luxury": "$8-24",
+        "Country": "Ukraine"
+    },
+    {
+        "Category": "Accommodation",
+        "Budget": "$61",
+        "Mid-Range": "$160",
+        "Luxury": "$433",
+        "Country": "United Arab Emirates"
+    },
+    {
+        "Category": "Transportation",
+        "Budget": "$5.95",
+        "Mid-Range": "$16",
+        "Luxury": "$49",
+        "Country": "United Arab Emirates"
+    },
+    {
+        "Category": "Food",
+        "Budget": "$34",
+        "Mid-Range": "$86",
+        "Luxury": "$211",
+        "Country": "United Arab Emirates"
+    },
+    {
+        "Category": "Entertainment",
+        "Budget": "$11",
+        "Mid-Range": "$29",
+        "Luxury": "$87",
+        "Country": "United Arab Emirates"
+    },
+    {
+        "Category": "Alcohol",
+        "Budget": "$4-12",
+        "Mid-Range": "$10-29",
+        "Luxury": "$21-62",
+        "Country": "United Arab Emirates"
+    },
+    {
+        "Category": "Accommodation",
+        "Budget": "$39",
+        "Mid-Range": "$99",
+        "Luxury": "$254",
+        "Country": "United Kingdom"
+    },
+    {
+        "Category": "Transportation",
+        "Budget": "$15",
+        "Mid-Range": "$37",
+        "Luxury": "$98",
+        "Country": "United Kingdom"
+    },
+    {
+        "Category": "Food",
+        "Budget": "$32",
+        "Mid-Range": "$80",
+        "Luxury": "$198",
+        "Country": "United Kingdom"
+    },
+    {
+        "Category": "Entertainment",
+        "Budget": "$14",
+        "Mid-Range": "$36",
+        "Luxury": "$96",
+        "Country": "United Kingdom"
+    },
+    {
+        "Category": "Alcohol",
+        "Budget": "$3-10",
+        "Mid-Range": "$8-25",
+        "Luxury": "$21-63",
+        "Country": "United Kingdom"
+    },
+    {
+        "Category": "Accommodation",
+        "Budget": "$50",
+        "Mid-Range": "$131",
+        "Luxury": "$358",
+        "Country": "United States Of America"
+    },
+    {
+        "Category": "Transportation",
+        "Budget": "$18",
+        "Mid-Range": "$46",
+        "Luxury": "$121",
+        "Country": "United States Of America"
+    },
+    {
+        "Category": "Food",
+        "Budget": "$37",
+        "Mid-Range": "$96",
+        "Luxury": "$253",
+        "Country": "United States Of America"
+    },
+    {
+        "Category": "Entertainment",
+        "Budget": "$18",
+        "Mid-Range": "$55",
+        "Luxury": "$191",
+        "Country": "United States Of America"
+    },
+    {
+        "Category": "Alcohol",
+        "Budget": "$5-16",
+        "Mid-Range": "$13-40",
+        "Luxury": "$35-105",
+        "Country": "United States Of America"
+    },
+    {
+        "Category": "Accommodation",
+        "Budget": "$14",
+        "Mid-Range": "$33",
+        "Luxury": "$71",
+        "Country": "Uruguay"
+    },
+    {
+        "Category": "Transportation",
+        "Budget": "$9.09",
+        "Mid-Range": "$21",
+        "Luxury": "$39",
+        "Country": "Uruguay"
+    },
+    {
+        "Category": "Food",
+        "Budget": "$15",
+        "Mid-Range": "$36",
+        "Luxury": "$74",
+        "Country": "Uruguay"
+    },
+    {
+        "Category": "Entertainment",
+        "Budget": "$5.76",
+        "Mid-Range": "$14",
+        "Luxury": "$34",
+        "Country": "Uruguay"
+    },
+    {
+        "Category": "Alcohol",
+        "Budget": "$2-5",
+        "Mid-Range": "$4-12",
+        "Luxury": "$9-27",
+        "Country": "Uruguay"
+    },
+    {
+        "Category": "Accommodation",
+        "Budget": "$57",
+        "Mid-Range": "$131",
+        "Luxury": "$255",
+        "Country": "Us Virgin Islands"
+    },
+    {
+        "Category": "Transportation",
+        "Budget": "$14",
+        "Mid-Range": "$35",
+        "Luxury": "$86",
+        "Country": "Us Virgin Islands"
+    },
+    {
+        "Category": "Food",
+        "Budget": "$36",
+        "Mid-Range": "$85",
+        "Luxury": "$173",
+        "Country": "Us Virgin Islands"
+    },
+    {
+        "Category": "Entertainment",
+        "Budget": "$25",
+        "Mid-Range": "$57",
+        "Luxury": "$111",
+        "Country": "Us Virgin Islands"
+    },
+    {
+        "Category": "Alcohol",
+        "Budget": "$6-17",
+        "Mid-Range": "$14-42",
+        "Luxury": "$33-98",
+        "Country": "Us Virgin Islands"
+    },
+    {
+        "Category": "Accommodation",
+        "Budget": "$173",
+        "Mid-Range": "$401",
+        "Luxury": "$796",
+        "Country": "Vanautu"
+    },
+    {
+        "Category": "Transportation",
+        "Budget": "$11",
+        "Mid-Range": "$25",
+        "Luxury": "$52",
+        "Country": "Vanautu"
+    },
+    {
+        "Category": "Food",
+        "Budget": "$15",
+        "Mid-Range": "$35",
+        "Luxury": "$71",
+        "Country": "Vanautu"
+    },
+    {
+        "Category": "Entertainment",
+        "Budget": "$5.97",
+        "Mid-Range": "$14",
+        "Luxury": "$26",
+        "Country": "Vanautu"
+    },
+    {
+        "Category": "Alcohol",
+        "Budget": "$2-7",
+        "Mid-Range": "$5-16",
+        "Luxury": "$10-30",
+        "Country": "Vanautu"
+    },
+    {
+        "Category": "Accommodation",
+        "Budget": "$9.40",
+        "Mid-Range": "$26",
+        "Luxury": "$80",
+        "Country": "Vietnam"
+    },
+    {
+        "Category": "Transportation",
+        "Budget": "$4.17",
+        "Mid-Range": "$11",
+        "Luxury": "$33",
+        "Country": "Vietnam"
+    },
+    {
+        "Category": "Food",
+        "Budget": "$8.88",
+        "Mid-Range": "$22",
+        "Luxury": "$54",
+        "Country": "Vietnam"
+    },
+    {
+        "Category": "Entertainment",
+        "Budget": "$4.74",
+        "Mid-Range": "$13",
+        "Luxury": "$35",
+        "Country": "Vietnam"
+    },
+    {
+        "Category": "Alcohol",
+        "Budget": "$2-5",
+        "Mid-Range": "$4-11",
+        "Luxury": "$9-28",
+        "Country": "Vietnam"
+    },
+    {
+        "Category": "Accommodation",
+        "Budget": "$337",
+        "Mid-Range": "$910",
+        "Luxury": "$2,621",
+        "Country": "Zambia"
+    },
+    {
+        "Category": "Food",
+        "Budget": "$10",
+        "Mid-Range": "$24",
+        "Luxury": "$50",
+        "Country": "Zambia"
+    },
+    {
+        "Category": "Entertainment",
+        "Budget": "$25",
+        "Mid-Range": "$69",
+        "Luxury": "$214",
+        "Country": "Zambia"
+    },
+    {
+        "Category": "Alcohol",
+        "Budget": "$4-13",
+        "Mid-Range": "$11-33",
+        "Luxury": "$26-79",
+        "Country": "Zambia"
+    },
+    {
+        "Category": "Accommodation",
+        "Budget": "$0.00",
+        "Mid-Range": "$0.00",
+        "Luxury": "$0.00",
+        "Country": "Zimbabwe"
+    },
+    {
+        "Category": "Transportation",
+        "Budget": "$0.00",
+        "Mid-Range": "$0.00",
+        "Luxury": "$0.00",
+        "Country": "Zimbabwe"
+    },
+    {
+        "Category": "Food",
+        "Budget": "$0.00",
+        "Mid-Range": "$0.00",
+        "Luxury": "$0.00",
+        "Country": "Zimbabwe"
+    },
+    {
+        "Category": "Entertainment",
+        "Budget": "$0.00",
+        "Mid-Range": "$0.00",
+        "Luxury": "$0.00",
+        "Country": "Zimbabwe"
+    },
+    {
+        "Category": "Alcohol",
+        "Budget": "$0-0",
+        "Mid-Range": "$0-0",
+        "Luxury": "$0-0",
+        "Country": "Zimbabwe"
+    }
+]

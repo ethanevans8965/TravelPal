@@ -1,4 +1,4 @@
-import countryData from '../../all_countries.json';
+import countryData from '../../assets/data/all_countries.json';
 
 export interface CountryCost {
   country: string;
