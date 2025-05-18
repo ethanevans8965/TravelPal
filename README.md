@@ -1,34 +1,58 @@
 # TravelPal 🌎✈️
 
-TravelPal is a mobile application built with Expo and React Native that helps travelers manage their trip budgets, track expenses, and maintain a travel journal. The app provides a seamless experience for planning trips, managing budgets, and documenting travel memories.
+TravelPal is a mobile application built with Expo and React Native designed to be your ultimate travel companion. It helps you seamlessly manage trip logistics, track expenses, capture memories in a journal, and keep everything organized in one place. Our goal is to create an integrated experience where all features work together harmoniously.
 
 ## Features
 
-- 📊 Trip Planning
-  - Create new trips with destination and travel style
-  - Set trip duration and number of travelers
-  - Choose between total budget or daily budget planning
-  - Country-specific budget recommendations
+Our development focuses on creating a cohesive experience:
 
-- 📊 Budget Management
-  - Set total trip budgets
-  - Configure daily spending limits
-  - Interactive category budget allocation
-  - Emergency fund planning (5-25% of budget)
-  - Pre-trip expense tracking
+- 🗺️ **Integrated Trip Management**:
+  - Create, edit, and delete trips with detailed information (name, dates, style, status).
+  - Associate trips with specific **Locations** (including name, country, coordinates, timezone).
+  - Plan budgets (total/daily, emergency fund, pre-trip costs) linked to expenses.
+  - View trips on a timeline incorporating expenses and journal entries.
 
-- 💰 Expense Tracking
-  - Record and categorize expenses
-  - Track spending against budget
-  - Multiple currency support
-  - Pre-trip expense management
-  - Visual expense breakdown by category
+- 💰 **Contextual Expense Tracking**:
+  - Log expenses linked directly to a **Trip** and optionally a **Location**.
+  - Categorize spending and track against the trip's budget.
+  - Handle multiple currencies with conversion based on location or base settings.
+  - Attach receipt photos and tags for better organization.
+  - Analyze spending patterns per trip or location.
 
-- 📝 Travel Journal
-  - Create and store travel memories
-  - Add locations and dates
-  - Track mood and experiences
-  - Photo integration (coming soon)
+- 📝 **Location-Aware Travel Journal**:
+  - Create journal entries linked to a **Trip** and tagged with a **Location**.
+  - Capture thoughts, experiences, and attach photos.
+  - Optionally link journal entries to related **Expenses**.
+  - Organize entries with tags and view them chronologically or by location.
+
+- ⚙️ **Centralized Settings**:
+  - Manage base currency and other global preferences.
+
+## Phased Rework Plan
+
+We are currently reworking the application to enhance integration and features, following these phases:
+
+1.  **Phase 1: Enhanced Data Model & State Management (Complete)**
+    *   Introduced a `Location` interface.
+    *   Established clear relationships between `Trip`, `Expense`, `JournalEntry`, and `Location` entities.
+    *   Updated the `AppContext` (`app/context.tsx`) to manage the enhanced state and provide CRUD operations and utility functions.
+    *   Implemented basic data persistence strategy (in-memory for now, potential for storage later).
+
+2.  **Phase 2: Feature Development with Integration Points**
+    *   **Trip Management**: Develop flows for creating/editing trips that incorporate location selection and budget setup linked to expense categories.
+    *   **Expense Tracking**: Update expense logging to link with trips/locations and integrate with budget categories.
+    *   **Journal System**: Enhance journal entries with trip/location context and photo management.
+
+3.  **Phase 3: Feature Integration**
+    *   Implement cross-feature navigation and views (e.g., trip dashboards showing related expenses/entries).
+    *   Develop shared components and utilities for consistency.
+    *   Implement global search and filtering capabilities.
+
+4.  **Phase 4: Enhanced User Experience**
+    *   Introduce data visualization (charts, maps).
+    *   Implement offline support.
+    *   Add data import/export functionality.
+    *   Explore potential social/sharing features.
 
 ## Tech Stack
 
@@ -100,124 +124,46 @@ TravelPal/
 │   ├── _layout.tsx       # Root layout with app-wide navigation setup
 │   ├── (tabs)/           # Tab-based screens
 │   │   ├── _layout.tsx   # Tab navigation configuration
-│   │   ├── index.tsx     # Budget overview with trip list and creation
-│   │   ├── expenses.tsx  # Expense tracking with transaction history
+│   │   ├── index.tsx     # Main dashboard (Trip list/overview)
+│   │   ├── expenses.tsx  # Expense tracking screen
+│   │   ├── journal.tsx   # Journal entry screen (Added/Updated)
 │   │   └── settings.tsx  # App settings and preferences
-│   ├── trip/             # Trip creation flow screens
-│   │   ├── _layout.tsx   # Stack navigation for trip creation flow
-│   │   ├── select-method.tsx    # Choose between total or daily budget planning
-│   │   ├── basic-info.tsx       # Enter destination, dates, and travel style
-│   │   ├── daily-budget.tsx     # Configure daily spending and travelers
-│   │   ├── total-budget.tsx     # Set total trip budget and emergency fund
-│   │   ├── category-allocation.tsx  # Allocate budget across categories
-│   │   └── review.tsx           # Final trip review and confirmation
-│   ├── components/       # Reusable components
-│   │   ├── DatePickerField.tsx  # Custom date picker with validation
-│   │   ├── CountryPicker.tsx    # Country selection with search
-│   │   └── RecommendedSlider.tsx # Custom slider with recommended value indicator
-│   ├── utils/            # Utility functions
-│   │   ├── countryData.ts # Country-specific budget calculations
-│   │   └── dateUtils.ts   # Date formatting and calculation utilities
-│   ├── context.tsx       # App-wide state management
-│   └── types.ts          # TypeScript definitions
-├── assets/               # Static assets
-│   ├── data/             # JSON and other data files
-│   │   └── all_countries.json  # Country information database
-│   ├── images/           # Image assets
-│   └── fonts/            # Custom fonts
-└── scripts/              # Helper scripts
+│   ├── trip/             # Trip creation/management screens
+│   │   ├── ...           # (Screens for trip details, editing, etc.)
+│   ├── components/       # Reusable UI components
+│   ├── utils/            # Utility functions (e.g., country data, date utils)
+│   ├── context.tsx       # App-wide state management (Enhanced)
+│   └── types.ts          # TypeScript definitions (Enhanced with Location, updated relations)
+├── assets/               # Static assets (images, fonts, data)
+│   ├── data/
+│   │   └── all_countries.json
+│   ├── ...
+├── scripts/              # Helper scripts
+├── .gitignore
+├── app.json
+├── babel.config.js
+├── package.json
+├── tsconfig.json
+└── README.md
 ```
 
-## Trip Creation Flow
+## Data Model Overview
 
-The app features a step-by-step trip creation process:
+The core data entities are defined in `app/types.ts`:
 
-1. **Select Method** (`select-method.tsx`)
-   - Choose between total budget or daily budget planning
-   - Visual cards with icons for each method
-   - Clear descriptions of when to use each approach
-   - Smooth navigation to next step
+-   `Location`: Represents a geographical place (name, country, coordinates, timezone).
+-   `Trip`: Contains overall trip details, linked to a `Location` destination.
+-   `Expense`: Represents a single expense, linked to a `Trip` and optionally a `Location`.
+-   `JournalEntry`: Represents a journal entry, linked to a `Trip` and optionally a `Location`.
 
-2. **Basic Info** (`basic-info.tsx`)
-   - Enter trip destination and country with search
-   - Date range selection with validation
-   - Travel style selection (Budget, Mid-range, Luxury)
-   - Country-specific recommendations
-   - Form validation before proceeding
-
-3. **Budget Setup**
-   - **Daily Budget** (`daily-budget.tsx`)
-     - Set number of travelers
-     - Configure daily spending limits
-     - Emergency fund planning (5-25%)
-     - Pre-trip expense tracking
-     - Real-time budget calculations
-   
-   - **Total Budget** (`total-budget.tsx`)
-     - Set overall trip budget
-     - Configure emergency fund percentage
-     - Track pre-trip expenses
-     - Calculate daily spending limits
-
-4. **Category Allocation** (`category-allocation.tsx`)
-   - Interactive budget distribution
-   - Default allocations based on travel style
-   - Real-time percentage adjustments
-   - Category-specific recommendations
-   - Visual feedback on allocation changes
-   - Automatic rebalancing of other categories
-
-5. **Review** (`review.tsx`)
-   - Comprehensive trip summary
-   - Detailed budget breakdown
-   - Emergency fund calculations
-   - Category allocation overview
-   - Final confirmation with data persistence
-
-## Tab Navigation
-
-1. **Budget Overview** (`index.tsx`)
-   - List of all trips
-   - Quick access to trip creation
-   - Budget status indicators
-   - Placeholder trips for new users
-
-2. **Expenses** (`expenses.tsx`)
-   - Transaction history
-   - Category-based expense tracking
-   - Visual expense breakdown
-   - Sample transactions for new users
-
-3. **Settings** (`settings.tsx`)
-   - App preferences
-   - Currency settings
-   - User preferences
-   - App configuration
-
-## Code Organization
-
-### Component Refactoring
-The app has been refactored to follow best practices:
-- Reusable components are extracted to the `components/` directory
-- Complex UI elements like `RecommendedSlider` are modularized
-- Common utilities like date formatting are centralized in utility files
-
-### Utilities
-- `dateUtils.ts`: Contains centralized date formatting and calculation functions
-- `countryData.ts`: Processes country data and provides budget recommendations
-
-### Static Assets
-- All static data is organized in the `assets/data/` directory
-- Images and fonts are properly categorized in respective directories
+Relationships are managed via IDs (e.g., `tripId`, `locationId`) within the `Expense` and `JournalEntry` interfaces.
 
 ## State Management
 
-TravelPal uses React Context for state management, providing:
-- Trip management
-- Expense tracking
-- Journal entries
-- User preferences
-- Currency settings
+TravelPal uses React Context (`app/context.tsx`) for state management, providing centralized state and functions for:
+- Managing `Trip`, `Expense`, `JournalEntry`, and `Location` data (CRUD operations).
+- Handling global settings like `baseCurrency` and `dailyBudget`.
+- Utility functions to retrieve related data (e.g., `getTripExpenses(tripId)`).
 
 ## Contributing
 
