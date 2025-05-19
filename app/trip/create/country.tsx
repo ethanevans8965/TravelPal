@@ -2,14 +2,14 @@ import React, { useState, useMemo } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, TextInput, FlatList, KeyboardAvoidingView, Platform } from 'react-native';
 import { useRouter, useLocalSearchParams } from 'expo-router';
 import { FontAwesome } from '@expo/vector-icons';
-import countriesData from '../../../../assets/data/all_countries.json';
+import countriesData from '../../../assets/data/all_countries.json';
 
 // Get unique list of countries
 const countries = [...new Set(countriesData.map(item => item.Country))].sort();
 
 export default function CountrySelectionScreen() {
   const router = useRouter();
-  const { tripName, selectedMethod } = useLocalSearchParams();
+  const { tripName } = useLocalSearchParams();
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCountry, setSelectedCountry] = useState('');
 
@@ -22,16 +22,11 @@ export default function CountrySelectionScreen() {
   const handleNext = () => {
     if (!selectedCountry) return;
 
-    const nextRoute = selectedMethod === 'totalAndLength' 
-      ? '/trip/create/total-length/budget'
-      : '/trip/create/no-budget/dates';
-
     router.push({
-      pathname: nextRoute,
+      pathname: '/trip/create/trip-details',
       params: {
         tripName,
         country: selectedCountry,
-        selectedMethod,
       },
     } as any);
   };
