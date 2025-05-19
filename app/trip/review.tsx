@@ -5,10 +5,12 @@ import { FontAwesome } from '@expo/vector-icons';
 import { useAppContext } from '../context';
 import { FontAwesomeIconName } from '../types/icons';
 import { formatDate, calculateDurationInDays } from '../utils/dateUtils';
+import { Location } from '../types';
+import * as Crypto from 'expo-crypto';
 
 export default function ReviewScreen() {
   const router = useRouter();
-  const { addTrip } = useAppContext();
+  const { addTrip, addLocation } = useAppContext();
   const params = useLocalSearchParams<{
     destination: string;
     country: string;
@@ -62,30 +64,36 @@ export default function ReviewScreen() {
   const emergencyFund = (dailyBudget * tripDuration * numTravelers) * (emergencyPercentage / 100);
   const dailySpending = dailyBudget * numTravelers;
 
-  const handleConfirm = () => {
+  const handleConfirm = async () => {
     setIsLoading(true);
 
-    const newTrip = {
-      destination: params.destination,
+    // Create new location
+    const locationId = await Crypto.randomUUID();
+    const newLocation: Location = {
+      id: locationId,
+      name: params.destination,
       country: params.country,
+      timezone: '', // Placeholder for now
+    };
+
+    // Add location
+    addLocation(newLocation);
+
+    const newTrip = {
+      name: params.destination, // Using destination as trip name
+      locationId,
       startDate: params.startDate,
       endDate: params.endDate,
       travelStyle: params.travelStyle as 'Budget' | 'Mid-range' | 'Luxury',
-      totalBudget: totalBudget,
-      dailyBudget: dailyBudget,
-      emergencyFundPercentage: emergencyPercentage,
-      pretrip: preTripExpenses,
-      categories: categories,
-      numTravelers: numTravelers,
+      budget: parseFloat(params.totalBudget),
+      emergencyFundPercentage: parseFloat(params.emergencyPercentage),
+      pretrip: parseFloat(params.preTripExpenses),
+      categories: JSON.parse(params.categories),
+      status: 'planning' as const,
     };
 
     addTrip(newTrip);
-
-    setTimeout(() => {
-      setIsLoading(false);
-      setSavedSuccessfully(true);
-      router.push('/(tabs)');
-    }, 500);
+    router.replace('/(tabs)');
   };
 
   const categoryIconMap: Record<string, FontAwesomeIconName> = {

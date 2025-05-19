@@ -3,8 +3,15 @@ import { View, StyleSheet } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import { AppProvider } from './context';
 import NavigationBar from './components/NavigationBar';
+import { useRouter } from 'expo-router';
 
 export default function RootLayout() {
+  const router = useRouter();
+
+  const handleNewTripPress = () => {
+    router.push('/trip/' as any);
+  };
+
   // Always show the FAB and keep it active
   return (
     <AppProvider>
@@ -16,7 +23,7 @@ export default function RootLayout() {
         </View>
         
         <View style={styles.navContainer}>
-          <NavigationBar showFAB={true} />
+          <NavigationBar showFAB={true} onNewTripPress={handleNewTripPress} />
         </View>
       </View>
     </AppProvider>

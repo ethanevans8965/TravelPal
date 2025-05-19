@@ -5,15 +5,14 @@ import { FontAwesome } from '@expo/vector-icons';
 
 export default function SelectMethodScreen() {
   const router = useRouter();
-  const [selectedMethod, setSelectedMethod] = useState<'total' | 'daily' | null>(null);
+  const [selectedMethod, setSelectedMethod] = useState<'totalAndLength' | 'budgetOnly' | 'lengthOnly' | 'none' | null>(null);
 
-  const navigateToBasicInfo = () => {
+  const navigateToNextStep = () => {
     if (selectedMethod) {
-      // Store method in URL params
-      router.push({
-        pathname: '/trip/basic-info',
-        params: { method: selectedMethod }
-      } as any);
+      // TODO: Implement navigation based on the selected budget method.
+      // The previous navigation to /trip/basic-info was removed as per user request.
+      console.log('Selected method:', selectedMethod); // Log the selected method for now
+      // router.push({ /* ... navigation params ... */ } as any);
     }
   };
 
@@ -25,20 +24,20 @@ export default function SelectMethodScreen() {
       <TouchableOpacity 
         style={[
           styles.methodCard, 
-          selectedMethod === 'total' && styles.selectedCard
+          selectedMethod === 'totalAndLength' && styles.selectedCard
         ]}
-        onPress={() => setSelectedMethod('total')}
+        onPress={() => setSelectedMethod('totalAndLength')}
       >
         <View style={styles.methodIcon}>
-          <FontAwesome name="money" size={24} color="#FF6B6B" />
+          <FontAwesome name="suitcase" size={24} color="#FF6B6B" />
         </View>
         <View style={styles.methodContent}>
-          <Text style={styles.methodTitle}>I know my total budget</Text>
+          <Text style={styles.methodTitle}>I know my total budget and trip length</Text>
           <Text style={styles.methodDescription}>
-            Best if you have a fixed amount to spend on your trip
+            Best if you have fixed budget and dates
           </Text>
         </View>
-        {selectedMethod === 'total' && (
+        {selectedMethod === 'totalAndLength' && (
           <FontAwesome name="check-circle" size={24} color="#FF6B6B" />
         )}
       </TouchableOpacity>
@@ -46,21 +45,63 @@ export default function SelectMethodScreen() {
       <TouchableOpacity 
         style={[
           styles.methodCard, 
-          selectedMethod === 'daily' && styles.selectedCard
+          selectedMethod === 'budgetOnly' && styles.selectedCard
         ]}
-        onPress={() => setSelectedMethod('daily')}
+        onPress={() => setSelectedMethod('budgetOnly')}
       >
         <View style={styles.methodIcon}>
-          <FontAwesome name="calendar" size={24} color="#4A90E2" />
+          <FontAwesome name="money" size={24} color="#4A90E2" />
         </View>
         <View style={styles.methodContent}>
-          <Text style={styles.methodTitle}>I know my travel duration</Text>
+          <Text style={styles.methodTitle}>I know my total budget only</Text>
           <Text style={styles.methodDescription}>
-            Best if you want to plan based on your preferred trip length
+            Best if you have a fixed budget but flexible dates
           </Text>
         </View>
-        {selectedMethod === 'daily' && (
+        {selectedMethod === 'budgetOnly' && (
           <FontAwesome name="check-circle" size={24} color="#4A90E2" />
+        )}
+      </TouchableOpacity>
+
+      <TouchableOpacity 
+        style={[
+          styles.methodCard, 
+          selectedMethod === 'lengthOnly' && styles.selectedCard
+        ]}
+        onPress={() => setSelectedMethod('lengthOnly')}
+      >
+        <View style={styles.methodIcon}>
+          <FontAwesome name="calendar" size={24} color="#4CAF50" />
+        </View>
+        <View style={styles.methodContent}>
+          <Text style={styles.methodTitle}>I know my trip length only</Text>
+          <Text style={styles.methodDescription}>
+            Best if you have fixed dates but flexible budget
+          </Text>
+        </View>
+        {selectedMethod === 'lengthOnly' && (
+          <FontAwesome name="check-circle" size={24} color="#4CAF50" />
+        )}
+      </TouchableOpacity>
+
+      <TouchableOpacity 
+        style={[
+          styles.methodCard,
+          selectedMethod === 'none' && styles.selectedCard
+        ]}
+        onPress={() => setSelectedMethod('none')}
+      >
+        <View style={styles.methodIcon}>
+          <FontAwesome name="ban" size={24} color="#666666" />
+        </View>
+        <View style={styles.methodContent}>
+          <Text style={styles.methodTitle}>No Budget</Text>
+          <Text style={styles.methodDescription}>
+            Skip budget planning for this trip
+          </Text>
+        </View>
+        {selectedMethod === 'none' && (
+          <FontAwesome name="check-circle" size={24} color="#666666" />
         )}
       </TouchableOpacity>
 
@@ -70,7 +111,7 @@ export default function SelectMethodScreen() {
             styles.continueButton,
             !selectedMethod && styles.disabledButton
           ]}
-          onPress={navigateToBasicInfo}
+          onPress={navigateToNextStep}
           disabled={!selectedMethod}
         >
           <Text style={styles.continueButtonText}>Continue</Text>
