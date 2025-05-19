@@ -21,12 +21,6 @@ export default function TripLayout() {
         }} 
       />
       <Stack.Screen 
-        name="basic-info" 
-        options={{ 
-          title: 'Trip Details',
-        }} 
-      />
-      <Stack.Screen 
         name="total-budget" 
         options={{ 
           title: 'Budget Details',

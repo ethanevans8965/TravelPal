@@ -40,7 +40,9 @@ export interface JournalEntry {
 export interface Trip {
   id: string;
   name: string;
-  destination: Location;
+  /** @deprecated Use locationId instead */
+  destination?: Location;
+  locationId: string;
   startDate: string;
   endDate: string;
   travelStyle: 'Budget' | 'Mid-range' | 'Luxury';

@@ -6,15 +6,18 @@ This document outlines the immediate tasks and priorities for the current develo
 
 ### 1. Enhanced Trip Management Module
 
-*   **Task**: Design and implement the UI for creating a new trip.
-    *   **Details**: Include fields for trip name, start/end dates, travel style, and status (default to 'planning').
-    *   **Integration**: Incorporate `Location` selection for the trip's destination. This will require a new component or flow for selecting/creating a `Location` object.
-*   **Task**: Implement the logic for `addTrip` in the UI, connecting to the `AppContext`.
+*   **Task**: Implement the initial step of the trip creation flow: selecting a budget method.
+    *   **Details**: Ensure the `app/trip/select-method.tsx` screen correctly presents the four budget scenarios (Total & Length Known, Budget Only, Length Only, No Budget) as options.
+    *   **Integration**: This screen is now the direct navigation target from the 'New Trip' button in the FAB menu.
+*   **Task**: Develop branching logic and subsequent screens/components for each budget scenario.
+    *   **Details**: Based on the selected method in `select-method.tsx`, navigate the user to the appropriate screens to collect the necessary trip details (e.g., trip name, dates, destination, budget specifics per scenario, pre-trip expenses).
+    *   **Integration**: Design these screens to collect data required by the updated data models and budget calculation logic.
+*   **Task**: Implement the logic for creating a new trip entity based on collected data, connecting to `AppContext`.
 *   **Task**: Design and implement the UI for viewing a list of trips (e.g., on the main `index.tsx` screen).
-    *   **Details**: Each list item should display key trip information (name, destination, dates).
+    *   **Details**: Each list item should display key trip information (name, destination, dates, and potentially a summary of the budget status if a budget exists).
 *   **Task**: Design and implement the UI for viewing a single trip's details.
-    *   **Details**: This screen will later serve as a dashboard for the trip, showing associated expenses and journal entries.
-*   **Task**: Implement `updateTrip` and `deleteTrip` functionalities with corresponding UI elements (e.g., edit and delete buttons).
+    *   **Details**: This screen will later serve as a dashboard for the trip, showing associated expenses, journal entries, and the budget overview (if applicable).
+*   **Task**: Implement `updateTrip` and `deleteTrip` functionalities with corresponding UI elements (e.g., edit and delete buttons) for the new trip structure.
 
 ### 2. Contextual Expense Tracking Module
 
@@ -45,7 +48,7 @@ This document outlines the immediate tasks and priorities for the current develo
 
 ## General Tasks for Phase 2
 
-*   **Component Library**: Identify and create reusable UI components (e.g., custom input fields, date pickers, location pickers) to be stored in `app/components/`.
+*   **Component Library**: Identify and create reusable UI components (e.g., custom input fields, date pickers, location pickers, budget input fields per scenario) to be stored in `app/components/`.
 *   **Styling**: Ensure consistent styling across new screens and components.
-*   **Testing**: Plan for unit/integration tests for new logic and components.
-*   **Documentation**: Keep `README.md`, `ROADMAP.md`, and `NEXT_STEPS.md` updated as development progresses. 
+*   **Testing**: Plan for unit/integration tests for new logic and components, particularly for the branching logic and scenario-specific calculations.
+*   **Documentation**: Keep `README.md`, `ROADMAP.md`, and `NEXT_STEPS.md` updated as development progresses. **Ensure the budget planning documentation (`docs/budget_planning_feature.md`) is fully aligned with the implemented scenarios and flows.** 

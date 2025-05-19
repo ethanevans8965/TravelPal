@@ -15,10 +15,16 @@ const NavigationBar = ({
   showFAB = false,
   fabAction,
   fabIcon = 'add',
+  onNewTripPress,
+  onLogExpensePress,
+  onNewMemoryPress,
 }: {
   showFAB?: boolean;
   fabAction?: () => void;
   fabIcon?: keyof typeof Ionicons.glyphMap;
+  onNewTripPress?: () => void;
+  onLogExpensePress?: () => void;
+  onNewMemoryPress?: () => void;
 }) => {
   const router = useRouter();
   const pathname = usePathname();
@@ -120,15 +126,37 @@ const NavigationBar = ({
             }]
           }
         ]}>
-          <TouchableOpacity style={styles.menuButton} accessibilityLabel="New Trip">
+          <TouchableOpacity 
+            style={styles.menuButton} 
+            accessibilityLabel="New Trip"
+            onPress={() => {
+              console.log('New Trip button pressed');
+              toggleMenu(); // Close menu on press
+              onNewTripPress?.(); // Call the new prop function
+            }}
+          >
             <Ionicons name="location-outline" size={24} color="#fff" />
             <Text style={styles.menuButtonText}>New Trip</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.menuButton} accessibilityLabel="Log Expense">
+          <TouchableOpacity 
+            style={styles.menuButton} 
+            accessibilityLabel="Log Expense"
+            onPress={() => {
+              toggleMenu(); // Close menu on press
+              onLogExpensePress?.(); // Call the new prop function
+            }}
+          >
              <Ionicons name="cash-outline" size={24} color="#fff" />
             <Text style={styles.menuButtonText}>Log Expense</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.menuButton} accessibilityLabel="New Memory">
+          <TouchableOpacity 
+            style={styles.menuButton} 
+            accessibilityLabel="New Memory"
+            onPress={() => {
+              toggleMenu(); // Close menu on press
+              onNewMemoryPress?.(); // Call the new prop function
+            }}
+          >
              <Ionicons name="image-outline" size={24} color="#fff" />
             <Text style={styles.menuButtonText}>New Memory</Text>
           </TouchableOpacity>

@@ -12,7 +12,7 @@ export default function BudgetScreen() {
   const placeholderTrips = [
     {
       id: '1',
-      destination: 'Paris, France',
+      destination: { name: 'Paris, France' },
       startDate: '2024-06-15',
       endDate: '2024-06-22',
       totalBudget: 2500,
@@ -22,7 +22,7 @@ export default function BudgetScreen() {
     },
     {
       id: '2',
-      destination: 'Tokyo, Japan',
+      destination: { name: 'Tokyo, Japan' },
       startDate: '2024-08-10',
       endDate: '2024-08-20',
       totalBudget: 4000,
@@ -49,19 +49,12 @@ export default function BudgetScreen() {
       <View style={styles.section}>
         <View style={styles.sectionHeader}>
           <Text style={styles.sectionTitle}>Your Trips</Text>
-          <TouchableOpacity 
-            style={styles.addButton}
-            onPress={navigateToAddTrip}
-          >
-            <FontAwesome name="plus" size={16} color="#FFFFFF" />
-            <Text style={styles.addButtonText}>Add New Trip</Text>
-          </TouchableOpacity>
         </View>
 
         {displayTrips.map((trip) => (
           <TouchableOpacity key={trip.id} style={styles.tripCard}>
             <View style={styles.tripHeader}>
-              <Text style={styles.tripDestination}>{trip.destination}</Text>
+              <Text style={styles.tripDestination}>{trip.destination?.name}</Text>
               <Text style={styles.tripStyle}>{trip.travelStyle}</Text>
             </View>
             <View style={styles.tripDates}>
@@ -152,19 +145,6 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: '600',
     color: '#333333',
-  },
-  addButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#FF6B6B',
-    paddingHorizontal: 12,
-    paddingVertical: 8,
-    borderRadius: 20,
-  },
-  addButtonText: {
-    color: '#FFFFFF',
-    fontWeight: '500',
-    marginLeft: 6,
   },
   tripCard: {
     backgroundColor: '#FFFFFF',

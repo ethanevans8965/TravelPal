@@ -2,7 +2,7 @@
 
 ## Overview
 
-This document outlines the specifications for the Budget Planning feature of the TravelPal application. The goal is to allow users to plan their trip budgets based on different known inputs and travel styles, utilizing pre-defined country cost data while allowing full customization.
+This document outlines the specifications for the Budget Planning feature of the TravelPal application. The goal is to allow users to plan their trip budgets based on different known inputs and travel styles, utilizing pre-defined country cost data while allowing full customization. **The entry point for trip creation, including budget planning, is now initiated via the Floating Action Button (FAB) on the main screen, leading to a selection of budget planning methods.**
 
 ## Core Data
 
@@ -110,70 +110,72 @@ This document outlines the specifications for the Budget Planning feature of the
 
 ---
 
+### Scenario 4: No Budget
+
+This scenario allows users to create a trip without specifying any budget details. Budget tracking for this trip will be based solely on logged expenses, without comparison to a plan.
+
+1.  **User Input:**
+    *   `Trip Name` (String): User-defined name for the trip.
+    *   `Country` (Selection): User selects the destination country.
+    *   `Trip Date Range` (Date Range - Optional): User can select a start and end date for the trip.
+
+2.  **App Process:**
+    *   Simply create the trip entity with the provided basic information.
+    *   Navigate the user directly to the trip details view or a relevant expense logging screen for this trip.
+
+3.  **Output (Saving the Trip):**
+    *   Persist the trip details associated with the user's account.
+        *   `Trip Name`
+        *   `Country`
+        *   `Trip Date Range` (Start Date, End Date - if provided)
+
+---
+
 ## Implementation Plan
 
-This section outlines a step-by-step approach for implementing the Budget Planning feature.
+This section outlines a step-by-step approach for implementing the Budget Planning feature. **Note that the initial step now involves the user selecting one of the four scenarios (including No Budget) from the `select-method.tsx` screen.**
 
-1.  **Foundation - Data Handling:**
-    *   **Goal:** Access and understand the cost data from `assets/data/all_countries.json`.
-    *   **Action:** Implement code to read and parse the JSON file. Represent this data in a structured way within the application (e.g., dictionaries or simple data classes for countries and their cost categories).
-    *   **Verification:** Ensure correct retrieval of daily costs for any given country, travel style, and category.
+1.  **Starting Point: Select Budget Method (`select-method.tsx`)**
+    *   **Goal:** Present the user with the four budget planning scenarios (including No Budget) as options.
+    *   **Action:** Ensure the `select-method.tsx` screen is correctly implemented to display the options and capture the user's choice.
+    *   **Verification:** User can see and select one of the four options.
 
-2.  **Data Models - Representing a Budget:**
-    *   **Goal:** Define how a budget plan will be structured in memory.
-    *   **Action:** Create data structures (e.g., classes, data classes) for:
-        *   `BudgetPlan`: To hold trip name, country, dates/length, total budget (if applicable), list of category allocations, and list of pre-trip expenses.
-        *   `CategoryAllocation`: To hold category name and the allocated monetary amount (noting whether it's daily or total based on the scenario/context).
-        *   `PreTripExpense`: To hold description and cost.
-    *   **Verification:** Ability to instantiate these models and populate them with sample data relevant to each scenario.
+2.  **Branching Logic & Data Collection based on Scenario:**
+    *   **Goal:** Navigate the user to the appropriate subsequent screen(s) based on their selected budget method and collect the necessary input for that scenario.
+    *   **Action:** Create new screens or adapt existing ones (e.g., a single screen with conditional fields or separate screens for different input requirements) to gather the specific data needed for Scenario 1, 2, 3, or 4.
+    *   **Verification:** The app correctly navigates based on selection, and all required inputs for the chosen scenario can be collected.
 
-3.  **Core Logic - Scenario 1 (Budget & Length Known):**
-    *   **Goal:** Implement the calculations for the most straightforward scenario.
-    *   **Action:** Develop functions that take user inputs (Country, Style, Length, Budget) and the parsed cost data to:
-        *   Calculate initial suggested *total* costs per category.
-        *   Recalculate suggestions if a category's style is overridden.
-        *   Calculate the total allocated budget based on user's *custom* inputs/overrides.
-        *   Calculate the difference between the user's `Total Budget` and their currently allocated total.
-    *   **Verification:** Test these functions with diverse inputs to ensure calculation accuracy.
+3.  **Foundation - Data Handling (Refined):**
+    *   **Goal:** Access and understand the cost data from `assets/data/all_countries.json` for scenarios 1, 2, and 3.
+    *   **Action:** Implement code to read and parse the JSON file and make it accessible to the screens that require it for suggestions and calculations.
+    *   **Verification:** Correct retrieval of daily costs for any given country and travel style.
 
-4.  **Basic Interface - Scenario 1:**
-    *   **Goal:** Provide a way for the user to interact with the Scenario 1 logic.
-    *   **Action:** Build a minimal user interface (e.g., command-line, basic web form, simple GUI) to:
-        *   Accept all inputs for Scenario 1.
-        *   Display suggested category allocations (including the daily/total toggle).
-        *   Allow users to edit allocations per category.
-        *   Show the running total of allocations and the remaining/over budget amount, updating dynamically.
-        *   Provide a method for inputting pre-trip expenses.
-    *   **Verification:** Manually input data, change allocations, and confirm that feedback updates correctly.
+4.  **Data Models - Representing a Budget (Refined):**
+    *   **Goal:** Define how a budget plan will be structured in memory, accounting for the different data collected in each scenario.
+    *   **Action:** Ensure the data structures (`BudgetPlan`, `CategoryAllocation`, `PreTripExpense`) can accommodate the data from all relevant scenarios (including the absence of budget data for Scenario 4).
+    *   **Verification:** Ability to instantiate these models and populate them with sample data for each scenario.
 
-5.  **Persistence - Saving & Loading Scenario 1:**
-    *   **Goal:** Store and retrieve created budget plans.
-    *   **Action:** Implement logic to:
-        *   Take a completed `BudgetPlan` object.
-        *   Save it to a persistent store (e.g., a JSON file named after the trip, a database row).
-        *   Load a previously saved plan back into a `BudgetPlan` object.
-    *   **Verification:** Save a plan, (conceptually) close and reopen the application, and load the plan, verifying data integrity.
+5.  **Core Logic - Scenario Calculations:**
+    *   **Goal:** Implement the calculation logic for Scenarios 1, 2, and 3.
+    *   **Action:** Develop functions to handle the suggested costs, overrides, total calculations, and estimated length/budget calculations as detailed in the scenario descriptions.
+    *   **Verification:** Test calculation accuracy for Scenarios 1, 2, and 3.
 
-6.  **Adapt Logic & UI - Scenario 2 (Budget Known, Length Unknown):**
-    *   **Goal:** Implement dynamic trip length calculation.
-    *   **Action:**
-        *   Modify/add core logic to calculate estimated trip length from `Total Budget` and *daily* allocations.
-        *   Adapt UI: Remove trip length input; add display for dynamically calculated "Estimated Trip Length." Ensure editing daily category values updates this estimate.
-        *   Adjust persistence to save/load daily allocations and estimated length.
-    *   **Verification:** Test Scenario 2 flow, ensuring estimated length updates correctly with budget changes.
+6.  **User Interface - Implementing Scenario Flows:**
+    *   **Goal:** Build the UI for the input and feedback steps within each scenario's flow.
+    *   **Action:** Design and implement the screens where users input budget specifics, view suggestions, make customizations, and see live updates.
+    *   **Verification:** Users can complete the input process for each scenario and see correct feedback.
 
-7.  **Adapt Logic & UI - Scenario 3 (Length Known, Budget Unknown):**
-    *   **Goal:** Implement dynamic total budget calculation.
-    *   **Action:**
-        *   Modify/add core logic to calculate suggested total budget from `Trip Date Range` (and derived length) and daily allocations.
-        *   Adapt UI: Use date range input; calculate and display trip length; display dynamically calculated "Suggested Total Budget." Ensure editing daily/total category values updates this suggested budget.
-        *   Adjust persistence for Scenario 3 inputs/outputs.
-    *   **Verification:** Test Scenario 3 flow, ensuring suggested budget updates correctly.
+7.  **Persistence - Saving & Loading:**
+    *   **Goal:** Store and retrieve created trips and budget plans.
+    *   **Action:** Implement logic to save the finalized `Trip` entity, including the associated `BudgetPlan` data (or lack thereof for Scenario 4), and to load previously saved trips/budgets.
+    *   **Verification:** Saving and loading data maintains integrity across all scenarios.
 
 8.  **Refinements:**
     *   **Goal:** Enhance robustness and usability.
     *   **Action:** Implement input validation, error handling (e.g., for missing country data), improve UI layout, integrate a calendar widget for date selection, etc.
     *   **Verification:** Test with invalid inputs and edge cases to ensure stability.
+    *   **Mobile responsiveness**
+    *   **Offline functionality**
 
 ## Next Steps
 

@@ -17,9 +17,9 @@ This document outlines the planned phases for the development and enhancement of
 **Objective**: Build out core features with a focus on how they connect and interact.
 
 *   **Enhanced Trip Management**:
-    *   Develop flows for creating, viewing, and editing trips.
+    *   Develop flows for creating, viewing, and editing trips. **Trip creation now begins with selecting a budget method via the FAB.**
     *   Incorporate `Location` selection (for destination) during trip creation.
-    *   Integrate budget planning (total/daily, emergency fund, pre-trip costs) directly linked to the expense system.
+    *   Integrate budget planning (total/daily, emergency fund, pre-trip costs) directly linked to the expense system. **The initial step of budget planning is the selection of a budget method from four scenarios (including No Budget).**
     *   Design trip-centric views that can later display associated expenses and journal entries.
 *   **Contextual Expense Tracking**:
     *   Update expense logging to link each expense to a specific `Trip` and optionally a `Location`.
