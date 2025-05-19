@@ -1,21 +1,19 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, TextInput, TouchableOpacity, KeyboardAvoidingView, Platform } from 'react-native';
-import { useRouter, useLocalSearchParams } from 'expo-router';
+import { useRouter } from 'expo-router';
 import { FontAwesome } from '@expo/vector-icons';
 
 export default function TripNameScreen() {
   const router = useRouter();
-  const { selectedMethod } = useLocalSearchParams();
   const [tripName, setTripName] = useState('');
 
   const handleNext = () => {
     if (!tripName.trim()) return;
 
     router.push({
-      pathname: '/trip/create/no-budget/country',
+      pathname: '/trip/create/country',
       params: {
         tripName: tripName.trim(),
-        selectedMethod,
       },
     } as any);
   };

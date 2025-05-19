@@ -14,22 +14,33 @@ export default function TripLayout() {
       }}
     >
       <Stack.Screen 
-        name="select-method" 
-        options={{ 
-          title: 'Create New Trip',
-          presentation: 'modal',
-        }} 
-      />
-      <Stack.Screen 
-        name="create/no-budget/name" 
+        name="create/trip-name" 
         options={{ 
           title: 'Name Your Trip',
         }} 
       />
       <Stack.Screen 
-        name="create/no-budget/country" 
+        name="create/country" 
         options={{ 
           title: 'Select Country',
+        }} 
+      />
+      <Stack.Screen 
+        name="create/trip-details" 
+        options={{ 
+          title: 'Trip Details',
+        }} 
+      />
+      <Stack.Screen 
+        name="create/total-budget" 
+        options={{ 
+          title: 'Set Your Budget',
+        }} 
+      />
+      <Stack.Screen 
+        name="create/dates" 
+        options={{ 
+          title: 'Trip Dates',
         }} 
       />
       <Stack.Screen 
@@ -42,30 +53,6 @@ export default function TripLayout() {
         name="create/no-budget/review" 
         options={{ 
           title: 'Review Trip',
-        }} 
-      />
-      <Stack.Screen 
-        name="total-budget" 
-        options={{ 
-          title: 'Budget Details',
-        }} 
-      />
-      <Stack.Screen 
-        name="daily-budget" 
-        options={{ 
-          title: 'Budget Details',
-        }} 
-      />
-      <Stack.Screen 
-        name="category-allocation" 
-        options={{ 
-          title: 'Allocate Your Budget',
-        }} 
-      />
-      <Stack.Screen 
-        name="review" 
-        options={{ 
-          title: 'Review Trip Details',
         }} 
       />
     </Stack>
