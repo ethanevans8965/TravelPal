@@ -21,6 +21,30 @@ export default function TripLayout() {
         }} 
       />
       <Stack.Screen 
+        name="create/no-budget/name" 
+        options={{ 
+          title: 'Name Your Trip',
+        }} 
+      />
+      <Stack.Screen 
+        name="create/no-budget/country" 
+        options={{ 
+          title: 'Select Country',
+        }} 
+      />
+      <Stack.Screen 
+        name="create/no-budget/dates" 
+        options={{ 
+          title: 'Trip Dates',
+        }} 
+      />
+      <Stack.Screen 
+        name="create/no-budget/review" 
+        options={{ 
+          title: 'Review Trip',
+        }} 
+      />
+      <Stack.Screen 
         name="total-budget" 
         options={{ 
           title: 'Budget Details',
