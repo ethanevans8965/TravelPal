@@ -1,9 +1,12 @@
 // app/(tabs)/_layout.tsx
 import { Tabs } from 'expo-router';
 import { FontAwesome } from '@expo/vector-icons';  // using FontAwesome icons (installed via @expo/vector-icons)
-import { Platform } from 'react-native';
+import { Platform, TouchableOpacity } from 'react-native';
+import { useRouter } from 'expo-router';
 
 export default function TabLayout() {
+  const router = useRouter();
+
   return (
     <Tabs
       screenOptions={{
@@ -45,6 +48,36 @@ export default function TabLayout() {
           title: 'Expenses',
           tabBarIcon: ({ color, size }) => (
             <FontAwesome name="credit-card" size={size} color={color} />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="new-trip"
+        options={{
+          title: 'New Trip',
+          tabBarButton: () => (
+            <TouchableOpacity
+              onPress={() => router.push({ pathname: '/new-trip' } as any)}
+              style={{
+                top: -20,
+                justifyContent: 'center',
+                alignItems: 'center',
+                width: 60,
+                height: 60,
+                borderRadius: 30,
+                backgroundColor: '#FF6B6B',
+                shadowColor: '#000',
+                shadowOffset: {
+                  width: 0,
+                  height: 2,
+                },
+                shadowOpacity: 0.25,
+                shadowRadius: 3.84,
+                elevation: 5,
+              }}
+            >
+              <FontAwesome name="plus" size={24} color="#FFFFFF" />
+            </TouchableOpacity>
           ),
         }}
       />
