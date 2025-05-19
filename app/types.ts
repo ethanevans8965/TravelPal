@@ -43,8 +43,8 @@ export interface Trip {
   /** @deprecated Use locationId instead */
   destination?: Location;
   locationId: string;
-  startDate: string;
-  endDate: string;
+  startDate?: string;
+  endDate?: string;
   travelStyle: 'Budget' | 'Mid-range' | 'Luxury';
   totalBudget?: number;
   dailyBudget?: number;
