@@ -170,6 +170,12 @@
   - Dependencies: Authentication
   - Priority: Low
 
+### Floating Action Button (FAB) Enhancements
+
+- **Expandable Menu:** Tapping the central FAB now expands a menu with quick action buttons for "New Trip," "Log Expense," and "New Memory."
+- **FAB Icon Animation:** The '+' icon on the main FAB rotates to an 'x' when the menu is open and back to '+' when closed, providing a clear visual indicator of the menu state.
+- **Initial Animation Setup:** Basic slide-up and fade-in animations have been implemented for the menu buttons when they appear.
+
 ## Technical Architecture
 
 ### Core Components

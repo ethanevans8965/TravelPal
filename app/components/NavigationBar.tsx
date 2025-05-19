@@ -1,5 +1,5 @@
-import React from 'react';
-import { View, TouchableOpacity, StyleSheet, Text, Platform } from 'react-native';
+import React, { useState, useRef, useEffect } from 'react';
+import { View, TouchableOpacity, StyleSheet, Text, Platform, Animated, Easing } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter, usePathname } from 'expo-router';
 
@@ -23,12 +23,118 @@ const NavigationBar = ({
   const router = useRouter();
   const pathname = usePathname();
 
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const slideAnim = useRef(new Animated.Value(0)).current; // 0 is the initial position (hidden/at FAB)
+  const fadeAnim = useRef(new Animated.Value(0)).current; // 0 is fully transparent
+  const rotateAnim = useRef(new Animated.Value(0)).current; // 0 degrees rotation
+
+  const toggleMenu = () => {
+    if (isMenuOpen) {
+      // Close animation
+      Animated.parallel([
+        Animated.timing(slideAnim, {
+          toValue: 0,
+          duration: 200,
+          easing: Easing.out(Easing.cubic),
+          useNativeDriver: true,
+        }),
+        Animated.timing(fadeAnim, {
+          toValue: 0,
+          duration: 200,
+          easing: Easing.out(Easing.cubic),
+          useNativeDriver: true,
+        }),
+        Animated.timing(rotateAnim, {
+          toValue: 0, // Rotate back to 0 degrees
+          duration: 200,
+          easing: Easing.out(Easing.cubic),
+          useNativeDriver: true,
+        }),
+      ]).start(() => setIsMenuOpen(false));
+    } else {
+      // Open animation
+      setIsMenuOpen(true);
+      // Need to delay animation slightly to allow setIsMenuOpen to render the view
+      setTimeout(() => {
+        Animated.parallel([
+          Animated.timing(slideAnim, {
+            toValue: 1, // 1 represents the final position
+            duration: 200,
+            easing: Easing.out(Easing.cubic),
+            useNativeDriver: true,
+          }),
+          Animated.timing(fadeAnim, {
+            toValue: 1, // 1 is fully opaque
+            duration: 200,
+            easing: Easing.out(Easing.cubic),
+            useNativeDriver: true,
+          }),
+           Animated.timing(rotateAnim, {
+            toValue: 1, // Rotate to 45 degrees (represented by 1)
+            duration: 200,
+            easing: Easing.out(Easing.cubic),
+            useNativeDriver: true,
+          }),
+        ]).start();
+      }, 50);
+
+    }
+  };
+
   // Split nav items for left and right of FAB
   const leftItems = NAV_ITEMS.slice(0, 2);
   const rightItems = NAV_ITEMS.slice(2);
 
+  // Calculate the vertical distance for the slide-up animation
+  // The expanded menu's final bottom position is FAB_SIZE + 10 from the container bottom.
+  // Its center is at (FAB_SIZE + 10) + (expanded menu height / 2) from container bottom.
+  // Expanded menu height = (button height + margin) * num_buttons - last margin
+  const expandedMenuHeight = (48 + 12) * 3 - 12; // 168
+  const expandedMenuCenterYAtRest = FAB_SIZE + 10 + expandedMenuHeight / 2; // FAB_SIZE + 10 + 84
+
+  // The FAB's center is at BAR_HEIGHT / 2 + FAB_SIZE / 2 from the container bottom.
+  const fabCenterY = BAR_HEIGHT / 2 + FAB_SIZE / 2;
+
+  // The required translateY at the start (slideAnim = 0) is the difference between the FAB center and the expanded menu center at rest.
+  const initialTranslateY = fabCenterY - expandedMenuCenterYAtRest;
+
+  // Interpolate rotation for the FAB icon
+  const rotateInterpolation = rotateAnim.interpolate({
+    inputRange: [0, 1],
+    outputRange: ['0deg', '45deg'], // Rotate from 0 to 45 degrees
+  });
+
   return (
     <View style={styles.fabBarContainer}>
+      {/* Expanded Menu Buttons */}
+      {isMenuOpen && (
+        <Animated.View style={[
+          styles.expandedMenu,
+          {
+            opacity: fadeAnim,
+            transform: [{
+              translateY: slideAnim.interpolate({
+                inputRange: [0, 1],
+                outputRange: [initialTranslateY, 0], // Animate from calculated position to final position (0 translation)
+              })
+            }]
+          }
+        ]}>
+          <TouchableOpacity style={styles.menuButton} accessibilityLabel="New Trip">
+            <Ionicons name="location-outline" size={24} color="#fff" />
+            <Text style={styles.menuButtonText}>New Trip</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.menuButton} accessibilityLabel="Log Expense">
+             <Ionicons name="cash-outline" size={24} color="#fff" />
+            <Text style={styles.menuButtonText}>Log Expense</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.menuButton} accessibilityLabel="New Memory">
+             <Ionicons name="image-outline" size={24} color="#fff" />
+            <Text style={styles.menuButtonText}>New Memory</Text>
+          </TouchableOpacity>
+        </Animated.View>
+      )}
+
       <View style={styles.fabBar}>
         {/* Left icons */}
         {leftItems.map((item) => (
@@ -67,10 +173,14 @@ const NavigationBar = ({
       {showFAB && (
         <TouchableOpacity
           style={styles.fab}
-          onPress={fabAction}
+          onPress={toggleMenu}
           accessibilityLabel="Add new item"
         >
-          <Ionicons name={fabIcon} size={28} color="#fff" />
+          <Animated.View style={{
+            transform: [{ rotate: rotateInterpolation }]
+          }}>
+            <Ionicons name={fabIcon} size={28} color="#fff" />
+          </Animated.View>
         </TouchableOpacity>
       )}
     </View>
@@ -129,6 +239,31 @@ const styles = StyleSheet.create({
     shadowRadius: 8,
     elevation: 12,
     zIndex: 20,
+  },
+  expandedMenu: {
+    position: 'absolute',
+    bottom: FAB_SIZE + 10, // This is the FINAL bottom position
+    alignItems: 'center',
+  },
+  menuButton: {
+    flexDirection: 'row',
+    backgroundColor: '#057B8C',
+    borderRadius: 24, // Half of height for pill shape
+    height: 48,
+    width: 280,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 12, // Space between buttons
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 4,
+  },
+  menuButtonText: {
+    color: '#fff',
+    fontSize: 18,
+    marginLeft: 8,
   },
 });
 
