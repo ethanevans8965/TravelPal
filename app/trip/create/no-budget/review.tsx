@@ -2,13 +2,12 @@ import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { useRouter, useLocalSearchParams } from 'expo-router';
 import { FontAwesome } from '@expo/vector-icons';
-import { useAppContext } from '../../../../app/context'; // Corrected context hook import
-import { Trip } from '../../../../app/types'; 
+import { useAppContext } from '../../../../app/context';
 
 export default function ReviewTripScreen() {
   const router = useRouter();
   const { tripName, country, startDate, endDate } = useLocalSearchParams();
-  const { addTrip } = useAppContext();
+  const { addTrip, addLocation } = useAppContext();
 
   // Function to format date string for display
   const formatDateDisplay = (dateString: string | string[] | undefined) => {
@@ -28,27 +27,55 @@ export default function ReviewTripScreen() {
   };
 
   const handleCreateTrip = () => {
-    // Ensure startDate and endDate are strings or undefined as per Trip type
-    const tripStartDate = startDate && !Array.isArray(startDate) ? new Date(startDate).toISOString() : undefined;
-    const tripEndDate = endDate && !Array.isArray(endDate) ? new Date(endDate).toISOString() : undefined;
+    try {
+      // Create location first
+      const locationData = {
+        name: Array.isArray(country) ? country[0] : country || 'Unknown',
+        country: Array.isArray(country) ? country[0] : country || 'Unknown',
+        timezone: 'UTC', // Default timezone
+      };
+      addLocation(locationData);
 
-    const newTrip: Trip = {
-      id: Date.now().toString(), // Simple unique ID based on timestamp
-      name: Array.isArray(tripName) ? tripName[0] : tripName || 'New Trip',
-      locationId: Array.isArray(country) ? country[0] : country || 'Unknown', // Using country as locationId for now
-      startDate: tripStartDate,
-      endDate: tripEndDate,
-      status: 'planning', // Default status
-      budget: 0, // No budget for this scenario
-      expenses: [], // Start with no expenses
-      currency: 'USD', // Default currency, could be made selectable later
-    };
+      // Ensure startDate and endDate are strings or undefined
+      const tripStartDate = startDate && !Array.isArray(startDate) ? startDate : undefined;
+      const tripEndDate = endDate && !Array.isArray(endDate) ? endDate : undefined;
 
-    addTrip(newTrip);
-    console.log('Trip created:', newTrip);
+      // Create trip data using the same structure as budget planning
+      const tripData = {
+        name: Array.isArray(tripName) ? tripName[0] : tripName || 'New Trip',
+        locationId: 'temp-location-id', // Temporary placeholder
+        destination: {
+          id: 'temp-location-id',
+          name: Array.isArray(country) ? country[0] : country || 'Unknown',
+          country: Array.isArray(country) ? country[0] : country || 'Unknown',
+          timezone: 'UTC',
+        },
+        startDate: tripStartDate,
+        endDate: tripEndDate,
+        budgetMethod: 'no-budget' as const,
+        emergencyFundPercentage: 0, // No emergency fund for no-budget trips
+        categories: {
+          accommodation: 0,
+          food: 0,
+          transportation: 0,
+          activities: 0,
+          shopping: 0,
+          other: 0,
+        },
+        status: 'planning' as const,
+      };
 
-    // Navigate to the main trips list after creation
-    router.push('/trips'); 
+      // Save trip
+      addTrip(tripData);
+
+      console.log('Trip created successfully:', tripData);
+
+      // Navigate to the main trips list after creation
+      router.push('/trips');
+    } catch (error) {
+      console.error('Error saving trip:', error);
+      // TODO: Show error message to user
+    }
   };
 
   return (
@@ -60,7 +87,9 @@ export default function ReviewTripScreen() {
         <View style={styles.detailsContainer}>
           <View style={styles.detailRow}>
             <Text style={styles.detailLabel}>Trip Name:</Text>
-            <Text style={styles.detailValue}>{Array.isArray(tripName) ? tripName[0] : tripName}</Text>
+            <Text style={styles.detailValue}>
+              {Array.isArray(tripName) ? tripName[0] : tripName}
+            </Text>
           </View>
           <View style={styles.detailRow}>
             <Text style={styles.detailLabel}>Destination:</Text>
@@ -69,18 +98,18 @@ export default function ReviewTripScreen() {
           <View style={styles.detailRow}>
             <Text style={styles.detailLabel}>Dates:</Text>
             <Text style={styles.detailValue}>
-              {startDate && endDate ? 
-                `${formatDateDisplay(startDate)} - ${formatDateDisplay(endDate)}` 
-                : startDate ? formatDateDisplay(startDate) : endDate ? formatDateDisplay(endDate) : 'Not specified'
-              }
+              {startDate && endDate
+                ? `${formatDateDisplay(startDate)} - ${formatDateDisplay(endDate)}`
+                : startDate
+                  ? formatDateDisplay(startDate)
+                  : endDate
+                    ? formatDateDisplay(endDate)
+                    : 'Not specified'}
             </Text>
           </View>
         </View>
 
-        <TouchableOpacity
-          style={styles.createButton}
-          onPress={handleCreateTrip}
-        >
+        <TouchableOpacity style={styles.createButton} onPress={handleCreateTrip}>
           <Text style={styles.createButtonText}>Create Trip</Text>
           <FontAwesome name="check" size={16} color="#FFFFFF" />
         </TouchableOpacity>
@@ -146,4 +175,4 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     marginRight: 8,
   },
-}); 
+});
