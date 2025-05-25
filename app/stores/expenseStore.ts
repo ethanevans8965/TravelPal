@@ -11,6 +11,7 @@ interface ExpenseState {
   addExpense: (expenseData: Omit<Expense, 'id'>) => Expense;
   updateExpense: (expense: Expense) => void;
   deleteExpense: (expenseId: string) => void;
+  deleteExpensesByTripId: (tripId: string) => void;
   getExpensesByTripId: (tripId: string) => Expense[];
   getExpensesByLocationId: (locationId: string) => Expense[];
 }
@@ -38,6 +39,10 @@ export const useExpenseStore = create<ExpenseState>()(
       deleteExpense: (expenseId) =>
         set((state) => ({
           expenses: state.expenses.filter((expense) => expense.id !== expenseId),
+        })),
+      deleteExpensesByTripId: (tripId) =>
+        set((state) => ({
+          expenses: state.expenses.filter((expense) => expense.tripId !== tripId),
         })),
       getExpensesByTripId: (tripId) => {
         return get().expenses.filter((expense) => expense.tripId === tripId);
