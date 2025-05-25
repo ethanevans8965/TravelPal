@@ -130,7 +130,7 @@ export default function BudgetPlanningDailyScreen() {
     );
 
     router.push({
-      pathname: '/trip/create/dates',
+      pathname: '/trip/create/budget-planning-dates',
       params: {
         tripName,
         country,
