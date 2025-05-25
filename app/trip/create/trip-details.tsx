@@ -4,7 +4,7 @@ import { useRouter, useLocalSearchParams } from 'expo-router';
 import { FontAwesome } from '@expo/vector-icons';
 
 type TripDetailOption = {
-  id: 'totalBudget' | 'tripLength' | 'noBudget';
+  id: 'totalBudget' | 'tripLength' | 'both' | 'noBudget';
   title: string;
   description: string;
   icon: string;
@@ -14,21 +14,27 @@ const tripDetailOptions: TripDetailOption[] = [
   {
     id: 'totalBudget',
     title: 'I know my total budget',
-    description: "Set your overall budget and optionally your trip length",
-    icon: 'money'
+    description: 'Set your overall budget and optionally your trip length',
+    icon: 'money',
   },
   {
     id: 'tripLength',
     title: 'I know my trip length',
     description: "Set your travel dates and we'll help plan your budget",
-    icon: 'calendar'
+    icon: 'calendar',
+  },
+  {
+    id: 'both',
+    title: 'I know my total budget AND trip dates',
+    description: 'Set both your budget and dates for precise planning',
+    icon: 'calculator',
   },
   {
     id: 'noBudget',
     title: 'No budget planning needed',
     description: 'Just create a trip and track expenses as you go',
-    icon: 'plane'
-  }
+    icon: 'plane',
+  },
 ];
 
 export default function TripDetailsScreen() {
@@ -45,7 +51,10 @@ export default function TripDetailsScreen() {
         nextRoute = '/trip/create/total-budget';
         break;
       case 'tripLength':
-        nextRoute = '/trip/create/dates';
+        nextRoute = '/trip/create/trip-dates';
+        break;
+      case 'both':
+        nextRoute = '/trip/create/both/total-budget';
         break;
       case 'noBudget':
         nextRoute = '/trip/create/no-budget/dates';
@@ -71,10 +80,7 @@ export default function TripDetailsScreen() {
           {tripDetailOptions.map((option) => (
             <TouchableOpacity
               key={option.id}
-              style={[
-                styles.option,
-                selectedOption === option.id && styles.optionSelected,
-              ]}
+              style={[styles.option, selectedOption === option.id && styles.optionSelected]}
               onPress={() => setSelectedOption(option.id)}
             >
               <View style={styles.optionIcon}>
@@ -92,10 +98,7 @@ export default function TripDetailsScreen() {
         </View>
 
         <TouchableOpacity
-          style={[
-            styles.nextButton,
-            !selectedOption && styles.nextButtonDisabled,
-          ]}
+          style={[styles.nextButton, !selectedOption && styles.nextButtonDisabled]}
           onPress={handleNext}
           disabled={!selectedOption}
         >
@@ -183,4 +186,4 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     marginRight: 8,
   },
-}); 
+});

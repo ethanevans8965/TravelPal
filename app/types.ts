@@ -13,28 +13,28 @@ export interface Location {
 
 export interface Expense {
   id: string;
-  tripId: string;  // Link to trip
+  tripId: string; // Link to trip
   amount: number;
   category: string;
   description: string;
   date: string;
   currency: string;
-  locationId?: string;  // Optional link to location
-  photos?: string[];    // Receipt photos
-  tags?: string[];      // For better categorization
+  locationId?: string; // Optional link to location
+  photos?: string[]; // Receipt photos
+  tags?: string[]; // For better categorization
 }
 
 export interface JournalEntry {
   id: string;
-  tripId: string;  // Link to trip
+  tripId: string; // Link to trip
   title: string;
   content: string;
   date: string;
-  locationId?: string;  // Link to location
+  locationId?: string; // Link to location
   mood?: string;
   photos?: string[];
-  expenses?: string[];  // Links to related expenses
-  tags?: string[];      // For better organization
+  expenses?: string[]; // Links to related expenses
+  tags?: string[]; // For better organization
 }
 
 export interface Trip {
@@ -45,14 +45,15 @@ export interface Trip {
   locationId: string;
   startDate?: string;
   endDate?: string;
-  travelStyle: 'Budget' | 'Mid-range' | 'Luxury';
+  budgetMethod: 'total-budget' | 'trip-dates' | 'both' | 'no-budget';
+  travelStyle?: 'Budget' | 'Mid-range' | 'Luxury';
   totalBudget?: number;
   dailyBudget?: number;
   emergencyFundPercentage: number;
   pretrip?: number;
   categories: CategoryPercentages;
   status: 'planning' | 'active' | 'completed' | 'cancelled';
-  participants?: string[];  // For future social features
+  participants?: string[]; // For future social features
   notes?: string;
 }
 
@@ -63,33 +64,33 @@ export interface AppContextType {
   locations: Location[];
   dailyBudget: number;
   baseCurrency: string;
-  
+
   // Trip operations
   addTrip: (trip: Omit<Trip, 'id'>) => void;
   updateTrip: (trip: Trip) => void;
   deleteTrip: (tripId: string) => void;
-  
+
   // Expense operations
   addExpense: (expense: Omit<Expense, 'id'>) => void;
   updateExpense: (expense: Expense) => void;
   deleteExpense: (expenseId: string) => void;
-  
+
   // Journal operations
   addJournalEntry: (entry: Omit<JournalEntry, 'id'>) => void;
   updateJournalEntry: (entry: JournalEntry) => void;
   deleteJournalEntry: (entryId: string) => void;
-  
+
   // Location operations
   addLocation: (location: Omit<Location, 'id'>) => void;
   updateLocation: (location: Location) => void;
-  
+
   // Settings
   setDailyBudget: (budget: number) => void;
   setBaseCurrency: (currency: string) => void;
-  
+
   // Utility functions
   getTripExpenses: (tripId: string) => Expense[];
   getTripJournalEntries: (tripId: string) => JournalEntry[];
   getLocationExpenses: (locationId: string) => Expense[];
   getLocationJournalEntries: (locationId: string) => JournalEntry[];
-} 
+}
