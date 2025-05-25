@@ -4,7 +4,7 @@ import { useRouter, useLocalSearchParams } from 'expo-router';
 import { FontAwesome } from '@expo/vector-icons';
 
 type TripDetailOption = {
-  id: 'totalBudget' | 'tripLength' | 'both' | 'noBudget';
+  id: 'budgetPlanning' | 'noBudget';
   title: string;
   description: string;
   icon: string;
@@ -12,26 +12,14 @@ type TripDetailOption = {
 
 const tripDetailOptions: TripDetailOption[] = [
   {
-    id: 'totalBudget',
-    title: 'I know my total budget',
-    description: 'Set your overall budget and optionally your trip length',
-    icon: 'money',
-  },
-  {
-    id: 'tripLength',
-    title: 'I know my trip length',
-    description: "Set your travel dates and we'll help plan your budget",
-    icon: 'calendar',
-  },
-  {
-    id: 'both',
-    title: 'I know my total budget AND trip dates',
-    description: 'Set both your budget and dates for precise planning',
+    id: 'budgetPlanning',
+    title: 'Budget Planning',
+    description: 'Plan your trip with budget allocation and travel style preferences',
     icon: 'calculator',
   },
   {
     id: 'noBudget',
-    title: 'No budget planning needed',
+    title: 'No Budget',
     description: 'Just create a trip and track expenses as you go',
     icon: 'plane',
   },
@@ -47,14 +35,10 @@ export default function TripDetailsScreen() {
 
     let nextRoute = '';
     switch (selectedOption) {
-      case 'totalBudget':
+      case 'budgetPlanning':
+        // For now, we'll route to the existing total budget screen
+        // This will be updated in subsequent steps
         nextRoute = '/trip/create/total-budget';
-        break;
-      case 'tripLength':
-        nextRoute = '/trip/create/trip-dates';
-        break;
-      case 'both':
-        nextRoute = '/trip/create/both/total-budget';
         break;
       case 'noBudget':
         nextRoute = '/trip/create/no-budget/dates';
