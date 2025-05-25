@@ -1,227 +1,335 @@
 # TravelPal Next Steps
 
-This document outlines the immediate next steps for the TravelPal application development.
+This document outlines the immediate next steps for the TravelPal application development based on the current state of implementation.
 
-## Current Status
+## Current Status Summary
 
-We have successfully completed Phase 1 of our development roadmap:
+### ✅ Successfully Completed
 
-### ✅ Phase 1: Enhanced Data Model & State Management (Complete)
+**Phase 1: Enhanced Data Model & State Management**
 
-- **Data Model**: Introduced `Location` interface and established clear relationships between `Trip`, `Expense`, `JournalEntry`, and `Location` entities
-- **State Management**: Enhanced `AppContext` with CRUD operations and utility functions
-- **TypeScript**: Updated `app/types.ts` with comprehensive type definitions
-- **Backend Infrastructure**: Selected and configured Supabase as the backend solution
-  - ✅ Supabase client setup with environment variables (`src/lib/supabaseClient.ts`)
-  - ✅ Environment configuration via `app.config.ts` and `.env`
-  - ✅ Secure credential management with `.gitignore`
-- **Development Environment**: Established code quality tools
-  - ✅ ESLint configuration for TypeScript
-  - ✅ Prettier code formatting
-  - ✅ Husky pre-commit hooks with lint-staged
-  - ✅ Automated linting and formatting on commit
-- **Dependencies**: Installed core libraries
-  - ✅ Supabase client, Async Storage, Zustand, DayJS
-  - ✅ React Navigation stack (native, bottom-tabs, native-stack)
-- **Theme Foundation**: Centralized design system
-  - ✅ Color palette in `src/theme/colors.ts`
-- **Documentation**: Updated README.md and project structure
+- ✅ **Hybrid State Management**: Zustand for core data, React Context for UI state
+- ✅ **Trip Store**: Complete CRUD operations with persistence and utility functions
+- ✅ **Expense Store**: Full implementation with trip/location linking and persistence
+- ✅ **Currency Converter**: Live rates with 24-hour caching and offline support
+- ✅ **Development Environment**: ESLint, Prettier, Husky pre-commit hooks
+- ✅ **TypeScript Setup**: Comprehensive type definitions and strict mode
+- ✅ **Project Structure**: Clean organization with stores, components, and utilities
 
-## Immediate Next Steps (Phase 2)
+**Key Technical Achievements:**
 
-### 1. Database Schema Setup
+- AsyncStorage persistence with Zustand middleware
+- Store coordination for data consistency
+- Offline-first architecture with graceful fallbacks
+- Modern UI components with loading states and error handling
+- Automated code quality checks and formatting
 
-**Priority: High**
-**Estimated Time: 1-2 days**
+## Immediate Next Steps (Current Sprint)
 
-- [ ] **Supabase Database Design**: Create tables matching TypeScript interfaces
+### 1. Journal Store Implementation
 
-  - [ ] `locations` table (id, name, country, coordinates, timezone)
-  - [ ] `trips` table (id, name, destination_id, start_date, end_date, budget_info, etc.)
-  - [ ] `expenses` table (id, trip_id, location_id, amount, category, etc.)
-  - [ ] `journal_entries` table (id, trip_id, location_id, content, photos, etc.)
-  - [ ] Set up foreign key relationships and RLS policies
+**Priority: High** | **Estimated Time: 3-5 days**
 
-- [ ] **Database Functions**: Create helper functions for common queries
-  - [ ] Get trip with related expenses and journal entries
-  - [ ] Budget calculation and tracking functions
-  - [ ] Location-based queries
+- [ ] **Create Journal Store** (`app/stores/journalStore.ts`)
 
-### 2. State Management Integration
+  - [ ] CRUD operations (addJournalEntry, updateJournalEntry, deleteJournalEntry)
+  - [ ] Trip and location linking (journalEntry.tripId, journalEntry.locationId)
+  - [ ] AsyncStorage persistence with Zustand middleware
+  - [ ] Utility functions (getJournalEntriesByTripId, getJournalEntriesByLocationId)
 
-**Priority: High**
-**Estimated Time: 2-3 days**
+- [ ] **Photo Attachment System**
 
-- [ ] **Zustand Store Setup**: Replace/enhance AppContext with Zustand
+  - [ ] Expo ImagePicker integration for camera and gallery access
+  - [ ] Local file storage for journal photos
+  - [ ] Photo metadata handling (timestamp, location)
+  - [ ] Photo viewing and management in journal entries
 
-  - [ ] Trip management store
-  - [ ] Expense tracking store
-  - [ ] Journal entries store
-  - [ ] Settings/preferences store
+- [ ] **Tag Organization System**
+  - [ ] Tag creation and management
+  - [ ] Tag filtering and search functionality
+  - [ ] Tag-based journal entry organization
 
-- [ ] **Supabase Integration**: Connect stores to Supabase backend
-  - [ ] CRUD operations for all entities
-  - [ ] Real-time subscriptions for data updates
-  - [ ] Offline-first approach with sync
+**Acceptance Criteria:**
 
-### 3. Trip Management Enhancement
+- Journal entries can be created, edited, and deleted
+- Photos can be attached and viewed
+- Entries are properly linked to trips and locations
+- Data persists across app restarts
+- Store integrates with existing trip/expense stores
 
-**Priority: High**
-**Estimated Time: 1-2 weeks**
+### 2. Location Store Implementation
 
-- [ ] **Trip Creation Flow**: Implement the complete trip creation workflow
+**Priority: High** | **Estimated Time: 2-3 days**
 
-  - [ ] Budget method selection screen (4 scenarios including "No Budget")
-  - [ ] Location selection integration
-  - [ ] Budget planning (total/daily, emergency fund, pre-trip costs)
-  - [ ] Trip details form (name, dates, style, status)
+- [ ] **Create Location Store** (`app/stores/locationStore.ts`)
 
-- [ ] **Trip Viewing & Editing**: Create comprehensive trip detail views
-  - [ ] Trip dashboard showing budget, expenses, and journal entries
-  - [ ] Edit trip functionality
-  - [ ] Trip status management
+  - [ ] CRUD operations for location management
+  - [ ] Integration with existing country data (`app/utils/countryData.ts`)
+  - [ ] Coordinate and timezone handling
+  - [ ] AsyncStorage persistence
 
-### 4. Enhanced Expense Tracking
+- [ ] **Enhanced Location Selection**
 
-**Priority: High**
-**Estimated Time: 1-2 weeks**
+  - [ ] Improve CountryPicker component integration
+  - [ ] GPS location detection (optional)
+  - [ ] Manual coordinate entry
+  - [ ] Location search and autocomplete
 
-- [ ] **Contextual Expense Logging**: Update expense creation to link with trips and locations
+- [ ] **Store Coordination**
+  - [ ] Update trip store to use location store
+  - [ ] Update expense store location references
+  - [ ] Update journal store location references
 
-  - [ ] Trip selection during expense creation
-  - [ ] Optional location tagging
-  - [ ] Category alignment with trip budget categories
-  - [ ] Currency handling based on location/settings
+**Acceptance Criteria:**
 
-- [ ] **Receipt Management**: Implement photo attachment functionality
-  - [ ] Supabase Storage integration for photos
+- Locations can be created and managed independently
+- GPS integration works (with permissions)
+- Location data is consistent across all stores
+- Country data integration is seamless
+
+### 3. Floating Plus FAB Implementation
+
+**Priority: Medium** | **Estimated Time: 2-3 days**
+
+- [ ] **FAB Component Creation**
+
+  - [ ] Floating action button with expandable menu
+  - [ ] Animation for menu expansion/collapse
+  - [ ] Options: "New Trip", "Log Expense", "New Journal Entry"
+  - [ ] Proper positioning and z-index management
+
+- [ ] **Navigation Integration**
+
+  - [ ] Route to trip creation flow
+  - [ ] Route to expense creation flow
+  - [ ] Route to journal entry creation flow
+  - [ ] Proper navigation stack management
+
+- [ ] **UI/UX Polish**
+  - [ ] Smooth animations and transitions
+  - [ ] Haptic feedback integration
+  - [ ] Accessibility support
+  - [ ] Consistent theming
+
+**Acceptance Criteria:**
+
+- FAB appears on main screens with proper positioning
+- Menu expands/collapses smoothly
+- Navigation to creation flows works correctly
+- Animations are smooth and performant
+
+## Secondary Priorities (Next Sprint)
+
+### 4. Trip Creation Flow Enhancement
+
+**Priority: Medium** | **Estimated Time: 1 week**
+
+- [ ] **Budget Method Selection Screen**
+
+  - [ ] Four budget scenarios (including "No Budget")
+  - [ ] Clear explanations for each method
+  - [ ] Integration with trip store budget fields
+
+- [ ] **Location Selection Integration**
+
+  - [ ] Use location store for destination selection
+  - [ ] Enhanced location picker with search
+  - [ ] Country-specific budget recommendations
+
+- [ ] **Trip Details Form**
+  - [ ] Name, dates, travel style, status
+  - [ ] Form validation and error handling
+  - [ ] Integration with existing DatePickerField component
+
+### 5. Expense Creation Flow Enhancement
+
+**Priority: Medium** | **Estimated Time: 3-5 days**
+
+- [ ] **Trip Context Selection**
+
+  - [ ] Trip picker during expense creation
+  - [ ] Current trip detection and auto-selection
+  - [ ] Trip-specific category suggestions
+
+- [ ] **Location Tagging**
+
+  - [ ] Optional location selection for expenses
+  - [ ] GPS-based location detection
+  - [ ] Location-based currency suggestions
+
+- [ ] **Receipt Photo Integration**
   - [ ] Camera integration for receipt capture
-  - [ ] Photo storage and retrieval
+  - [ ] Photo storage and management
   - [ ] Receipt photo viewing in expense details
 
-### 5. Location-Aware Journal System
+### 6. Journal Entry Creation Flow
 
-**Priority: Medium**
-**Estimated Time: 1-2 weeks**
+**Priority: Medium** | **Estimated Time: 3-5 days**
 
-- [ ] **Enhanced Journal Entries**: Link entries to trips and locations
+- [ ] **Trip and Location Context**
 
-  - [ ] Trip context during journal creation
-  - [ ] Location tagging
-  - [ ] Photo attachments for journal entries
-  - [ ] Tag organization system
+  - [ ] Trip selection during journal creation
+  - [ ] Location tagging for entries
+  - [ ] Context-aware suggestions
 
-- [ ] **Journal-Expense Linking**: Explore connections between journal entries and related expenses
-  - [ ] Optional expense linking during journal creation
-  - [ ] View related expenses from journal entries
+- [ ] **Rich Text Editor**
+
+  - [ ] Basic text formatting options
+  - [ ] Photo insertion and management
+  - [ ] Tag creation and assignment
+
+- [ ] **Entry Organization**
+  - [ ] Chronological sorting
+  - [ ] Tag-based filtering
+  - [ ] Search functionality
 
 ## Technical Improvements
 
-### 6. UI/UX Foundation
+### 7. Shared Component Library
 
-**Priority: Medium**
-**Estimated Time: 1 week**
+**Priority: Medium** | **Estimated Time: 1 week**
 
-- [ ] **Shared Components**: Develop reusable UI component library
+- [ ] **Core Components**
 
-  - [ ] Button components with consistent styling using theme colors
-  - [ ] Input field components
+  - [ ] Button components with consistent theming
+  - [ ] Input field components (text, number, date)
   - [ ] Card/container components
   - [ ] Loading and error state components
 
-- [ ] **Navigation Enhancement**: Improve cross-feature navigation
-  - [ ] Deep linking between related entities
-  - [ ] Breadcrumb navigation for complex flows
-  - [ ] Back button handling
+- [ ] **Form Components**
 
-### 7. Authentication & Security
+  - [ ] Form wrapper with validation
+  - [ ] Field validation and error display
+  - [ ] Submit button states
 
-**Priority: Medium**
-**Estimated Time: 3-5 days**
+- [ ] **Navigation Components**
+  - [ ] Header components
+  - [ ] Tab bar enhancements
+  - [ ] Breadcrumb navigation
 
-- [ ] **Supabase Auth Integration**: Implement user authentication
-  - [ ] Email/password authentication
-  - [ ] Social login options (Google, Apple)
-  - [ ] User profile management
-  - [ ] Row Level Security (RLS) policies
+### 8. Error Handling and Validation
+
+**Priority: Medium** | **Estimated Time: 3-5 days**
+
+- [ ] **Input Validation**
+
+  - [ ] Form validation schemas
+  - [ ] Real-time validation feedback
+  - [ ] Error message standardization
+
+- [ ] **Error Boundaries**
+
+  - [ ] React error boundaries for crash prevention
+  - [ ] Error logging and reporting
+  - [ ] Graceful error recovery
+
+- [ ] **Network Error Handling**
+  - [ ] Retry mechanisms for failed requests
+  - [ ] Offline state detection and handling
+  - [ ] User feedback for network issues
 
 ## Phase 3 Preparation
 
-### 8. Integration Planning
+### 9. Integration Planning
 
-**Priority: Low**
-**Estimated Time: Planning phase**
+**Priority: Low** | **Estimated Time: Planning phase**
 
-- [ ] **Cross-Feature Views**: Plan unified dashboards and aggregate views
-- [ ] **Search & Filtering**: Design global search functionality
-- [ ] **Performance Optimization**: Identify potential performance bottlenecks
+- [ ] **Cross-Feature Navigation**
+
+  - [ ] Deep linking between related entities
+  - [ ] Navigation flow documentation
+  - [ ] User journey mapping
+
+- [ ] **Unified Dashboard Design**
+
+  - [ ] Trip dashboard wireframes
+  - [ ] Data aggregation requirements
+  - [ ] Performance considerations
+
+- [ ] **Search and Filtering**
+  - [ ] Global search architecture
+  - [ ] Filter system design
+  - [ ] Search performance optimization
+
+## Success Metrics and Quality Gates
+
+### Sprint Completion Criteria
+
+- [ ] Journal Store fully implemented and tested
+- [ ] Location Store integrated with existing stores
+- [ ] Floating Plus FAB functional with navigation
+- [ ] All stores properly coordinated and consistent
+- [ ] No TypeScript compilation errors
+- [ ] Pre-commit hooks passing consistently
+- [ ] Offline functionality working correctly
+
+### Quality Assurance
+
+- [ ] Manual testing on iOS and Android
+- [ ] Store persistence testing (app restart scenarios)
+- [ ] Offline/online transition testing
+- [ ] Performance testing with large datasets
+- [ ] Accessibility testing with screen readers
+
+### Documentation Updates
+
+- [ ] Update README.md with new features
+- [ ] Document store APIs and usage patterns
+- [ ] Update component documentation
+- [ ] Create user flow documentation
 
 ## Development Guidelines
 
-### Code Quality
+### Code Quality Standards
 
-- Maintain TypeScript strict mode
-- Follow established component patterns
-- Use the centralized theme colors from `src/theme/colors.ts`
-- Leverage pre-commit hooks for consistent code quality
-- Write unit tests for new functionality
-- Use Zustand for state management patterns
+- **TypeScript**: Maintain strict mode and comprehensive typing
+- **State Management**: Follow established Zustand patterns
+- **Component Structure**: Use functional components with hooks
+- **Error Handling**: Implement comprehensive error boundaries
+- **Testing**: Write unit tests for stores and utility functions
 
-### Backend Best Practices
+### Performance Considerations
 
-- Use Supabase RLS for data security
-- Implement proper error handling for network requests
-- Cache data locally with AsyncStorage for offline support
-- Use TypeScript types that match database schema
+- **Store Optimization**: Minimize unnecessary re-renders
+- **Image Handling**: Optimize photo storage and loading
+- **Memory Management**: Proper cleanup of resources
+- **Bundle Size**: Monitor and optimize app bundle size
 
-### Testing Strategy
+### User Experience Priorities
 
-- Unit tests for utility functions and stores
-- Component testing for UI elements
-- Integration testing for Supabase operations
-- Manual testing on both iOS and Android
+- **Offline-First**: All core functionality works offline
+- **Loading States**: Provide feedback for all async operations
+- **Error Recovery**: Graceful handling of all error scenarios
+- **Accessibility**: Support for screen readers and assistive technologies
 
-### Documentation
+## Risk Mitigation
 
-- Update README.md with new features
-- Maintain inline code documentation
-- Update this NEXT_STEPS.md as progress is made
-- Document database schema and API patterns
+### Technical Risks
 
-## Success Metrics
+- **Store Coordination**: Ensure data consistency across stores
+- **Photo Storage**: Manage device storage limitations
+- **Performance**: Monitor app performance with large datasets
+- **Platform Differences**: Test thoroughly on both iOS and Android
 
-### Phase 2 Completion Criteria
+### Mitigation Strategies
 
-- [ ] Supabase database schema implemented and tested
-- [ ] Zustand stores integrated with Supabase backend
-- [ ] Complete trip creation flow functional
-- [ ] Expense tracking with trip/location context working
-- [ ] Journal entries with photo attachments implemented
-- [ ] User authentication working
-- [ ] Basic shared component library established
+- **Incremental Development**: Implement features in small, testable chunks
+- **Regular Testing**: Test on physical devices frequently
+- **Code Reviews**: Maintain code quality through peer review
+- **Documentation**: Keep documentation updated with implementation
 
-### Quality Gates
+## Notes for Future Sprints
 
-- [ ] All TypeScript compilation errors resolved
-- [ ] No console errors in development
-- [ ] Pre-commit hooks passing (linting/formatting)
-- [ ] Responsive design working on various screen sizes
-- [ ] Performance acceptable on target devices
-- [ ] Offline functionality working with sync
+### Potential Optimizations
 
-## Notes
+- **Store Selectors**: Implement fine-grained store selectors for performance
+- **Image Compression**: Add image compression for photo attachments
+- **Caching Strategies**: Enhance caching for better offline experience
+- **Background Sync**: Implement background data synchronization
 
-- Focus on backend integration before complex UI features
-- Maintain consistency with established theme colors
-- Test Supabase operations thoroughly before building UI
-- Consider user feedback early and often
-- Regular testing on physical devices recommended
+### Feature Considerations
 
-## Environment Setup Reminder
-
-**Important**: Create a `.env` file in your project root with:
-
-```
-SUPABASE_URL=https://cmwtvyzdnvbkznoqaufw.supabase.co
-SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNtd3R2eXpkbnZia3pub3FhdWZ3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDgxNDAzNTAsImV4cCI6MjA2MzcxNjM1MH0.3UgmBGlqZsXgxHqvYSTfsuH8LaYMkVUEc5WyfcArWCs
-```
+- **Data Export**: Consider data export functionality
+- **Backup/Restore**: Implement data backup and restore features
+- **Multi-Device Sync**: Plan for cloud synchronization
+- **Collaborative Features**: Consider shared trip functionality

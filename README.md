@@ -2,63 +2,91 @@
 
 TravelPal is a mobile application built with Expo and React Native designed to be your ultimate travel companion. It helps you seamlessly manage trip logistics, track expenses, capture memories in a journal, and keep everything organized in one place. Our goal is to create an integrated experience where all features work together harmoniously.
 
+## Current Status
+
+**Phase 1 Complete**: Enhanced Data Model & State Management
+**Phase 2 In Progress**: Zustand Migration & Core Features
+
+### ✅ Completed Features
+
+- **Hybrid State Management**: Successfully implemented Zustand for core data stores with React Context for UI state
+- **Currency Converter**: Live currency conversion with caching and offline support
+- **Trip Store**: Complete CRUD operations with persistence and utility functions
+- **Expense Store**: Full expense management with trip/location linking
+- **Data Persistence**: AsyncStorage integration with automatic sync
+- **Modern UI Components**: Currency converter with swap functionality and loading states
+
+### 🚧 In Development
+
+- **Floating Plus FAB**: Trip creation workflow via floating action button
+- **Journal Store**: Location-aware journal entries with photo attachments
+- **Location Store**: Geographical location management
+- **Feature Integration**: Cross-feature navigation and unified dashboards
+
 ## Features
 
 Our development focuses on creating a cohesive experience:
 
 - 🗺️ **Integrated Trip Management**:
 
-  - Create, edit, and delete trips with detailed information (name, dates, style, status).
-  - Associate trips with specific **Locations** (including name, country, coordinates, timezone).
-  - Plan budgets (total/daily, emergency fund, pre-trip costs) linked to expenses.
-  - View trips on a timeline incorporating expenses and journal entries.
+  - Create, edit, and delete trips with detailed information (name, dates, style, status)
+  - Associate trips with specific **Locations** (including name, country, coordinates, timezone)
+  - Plan budgets (total/daily, emergency fund, pre-trip costs) linked to expenses
+  - View trips on a timeline incorporating expenses and journal entries
+  - **Status**: Trip Store implemented with Zustand ✅
 
 - 💰 **Contextual Expense Tracking**:
 
-  - Log expenses linked directly to a **Trip** and optionally a **Location**.
-  - Categorize spending and track against the trip's budget.
-  - Handle multiple currencies with conversion based on location or base settings.
-  - Attach receipt photos and tags for better organization.
-  - Analyze spending patterns per trip or location.
+  - Log expenses linked directly to a **Trip** and optionally a **Location**
+  - Categorize spending and track against the trip's budget
+  - Handle multiple currencies with conversion based on location or base settings
+  - Attach receipt photos and tags for better organization
+  - Analyze spending patterns per trip or location
+  - **Status**: Expense Store implemented with Zustand ✅
+
+- 💱 **Currency Conversion**:
+
+  - Live exchange rate updates with 24-hour caching
+  - Offline fallback with graceful error handling
+  - Modern UI with currency swap functionality
+  - **Status**: Fully implemented ✅
 
 - 📝 **Location-Aware Travel Journal**:
 
-  - Create journal entries linked to a **Trip** and tagged with a **Location**.
-  - Capture thoughts, experiences, and attach photos.
-  - Optionally link journal entries to related **Expenses**.
-  - Organize entries with tags and view them chronologically or by location.
+  - Create journal entries linked to a **Trip** and tagged with a **Location**
+  - Capture thoughts, experiences, and attach photos
+  - Optionally link journal entries to related **Expenses**
+  - Organize entries with tags and view them chronologically or by location
+  - **Status**: Planned for next phase 🚧
 
 - ⚙️ **Centralized Settings**:
-  - Manage base currency and other global preferences.
+  - Manage base currency and other global preferences
+  - **Status**: Planned for React Context implementation 🚧
 
-## Phased Rework Plan
+## State Management Architecture
 
-We are currently reworking the application to enhance integration and features, following these phases:
+TravelPal uses a **hybrid state management approach**:
 
-1.  **Phase 1: Enhanced Data Model & State Management (Complete)**
+### Zustand Stores (Core Data)
 
-    - Introduced a `Location` interface.
-    - Established clear relationships between `Trip`, `Expense`, `JournalEntry`, and `Location` entities.
-    - Updated the `AppContext` (`app/context.tsx`) to manage the enhanced state and provide CRUD operations and utility functions.
-    - Implemented basic data persistence strategy (in-memory for now, potential for storage later).
+- **Trip Store** (`app/stores/tripStore.ts`): Trip CRUD, utility functions, persistence
+- **Expense Store** (`app/stores/expenseStore.ts`): Expense management with trip/location linking
+- **Journal Store** (planned): Journal entries with photo attachments
+- **Location Store** (planned): Geographical location management
 
-2.  **Phase 2: Feature Development with Integration Points**
+### React Context (UI/App State)
 
-    - **Trip Management**: Develop flows for creating/editing trips that incorporate location selection and budget setup linked to expense categories.
-    - **Expense Tracking**: Update expense logging to link with trips/locations and integrate with budget categories.
-    - **Journal System**: Enhance journal entries with trip/location context and photo management.
+- Theme preferences
+- Navigation state
+- User interface settings
+- Global app preferences
 
-3.  **Phase 3: Feature Integration**
+### Key Benefits
 
-    - Implement cross-feature navigation and views (e.g., trip dashboards showing related expenses/entries).
-    - Develop shared components and utilities for consistency.
-    - Implement global search and filtering capabilities.
-
-4.  **Phase 4: Enhanced User Experience**
-    - Introduce data visualization (charts, maps).
-    - Implement offline support.
-    - Add data import/export functionality.
-    - Explore potential social/sharing features.
+- **Performance**: Zustand for complex data operations
+- **Simplicity**: React Context for simple UI state
+- **Persistence**: Automatic AsyncStorage integration
+- **Offline Support**: Local-first with sync capabilities
 
 ## Tech Stack
 
@@ -67,20 +95,24 @@ We are currently reworking the application to enhance integration and features, 
 - React Native (v0.79.2)
 - Expo (v53)
 - TypeScript
-- React Navigation
 - Expo Router
 - React Native Reanimated
 - React Native Gesture Handler
 - Expo Vector Icons
 - Expo Blur
 - Expo Haptics
-- React Native WebView
 
-**Backend & State Management:**
+**State Management:**
 
-- Supabase (Database, Authentication, Storage)
-- Zustand (Client-side state management)
-- React Native Async Storage (Local persistence)
+- **Zustand** (v5.0.5) - Core data stores with persistence
+- **React Context** - UI/app state management
+- **AsyncStorage** - Local data persistence
+
+**Backend & APIs:**
+
+- **Supabase** (v2.49.8) - Database, Authentication, Storage (configured but not yet integrated)
+- **Currency API** - Live exchange rates with caching
+- **Expo Crypto** - UUID generation for entities
 
 **Development Tools:**
 
@@ -88,6 +120,7 @@ We are currently reworking the application to enhance integration and features, 
 - Prettier (Code formatting)
 - Husky (Git hooks)
 - lint-staged (Pre-commit linting/formatting)
+- TypeScript (v5.3.3)
 
 ## Getting Started
 
@@ -96,7 +129,6 @@ We are currently reworking the application to enhance integration and features, 
 - Node.js (v20 or higher)
 - Yarn or npm
 - Expo CLI
-- Supabase CLI (for backend management)
 - iOS Simulator or Android Emulator (optional)
 
 ### Installation
@@ -114,15 +146,7 @@ We are currently reworking the application to enhance integration and features, 
    yarn install
    ```
 
-3. Set up environment variables
-
-   ```bash
-   # Create .env file in project root with:
-   SUPABASE_URL=your_supabase_project_url
-   SUPABASE_ANON_KEY=your_supabase_anon_key
-   ```
-
-4. Start the development server
+3. Start the development server
    ```bash
    yarn start
    ```
@@ -147,14 +171,7 @@ Development:
 Code Quality:
 
 - `yarn lint` - Run ESLint
-- `yarn lint:fix` - Fix ESLint issues automatically
-- `yarn format` - Format code with Prettier
 - `yarn test` - Run tests
-
-Package Management:
-
-- `yarn install` - Install dependencies
-- `yarn reset-project` - Reset the project
 
 ## Project Structure
 
@@ -162,59 +179,89 @@ Package Management:
 TravelPal/
 ├── app/                  # Main application code using Expo Router
 │   ├── _layout.tsx       # Root layout with app-wide navigation setup
-│   ├── (tabs)/           # Tab-based screens
-│   │   ├── _layout.tsx   # Tab navigation configuration
-│   │   ├── index.tsx     # Main dashboard (Trip list/overview)
-│   │   ├── expenses.tsx  # Expense tracking screen
-│   │   ├── journal.tsx   # Journal entry screen (Added/Updated)
-│   │   └── settings.tsx  # App settings and preferences
-│   ├── trip/             # Trip creation/management screens
-│   │   ├── ...           # (Screens for trip details, editing, etc.)
+│   ├── index.tsx         # Home screen with currency converter
+│   ├── (tabs)/           # Tab-based screens (legacy, being phased out)
 │   ├── components/       # Reusable UI components
-│   ├── utils/            # Utility functions (e.g., country data, date utils)
-│   ├── context.tsx       # App-wide state management (Enhanced)
-│   └── types.ts          # TypeScript definitions (Enhanced with Location, updated relations)
-├── src/                  # Source code
-│   ├── lib/              # Library code
-│   │   └── supabaseClient.ts  # Supabase client configuration
-│   └── theme/            # Theme configuration
-│       └── colors.ts     # Centralized color palette
-├── assets/               # Static assets (images, fonts, data)
-│   ├── data/
-│   │   └── all_countries.json
-│   ├── ...
-├── scripts/              # Helper scripts
+│   │   ├── CurrencyConverter.tsx    # Live currency conversion ✅
+│   │   ├── NavigationBar.tsx        # Custom navigation bar ✅
+│   │   ├── ExpenseStoreTest.tsx     # Expense store testing ✅
+│   │   ├── CountryPicker.tsx        # Country selection ✅
+│   │   └── DatePickerField.tsx      # Date input component ✅
+│   ├── stores/           # Zustand state management ✅
+│   │   ├── tripStore.ts             # Trip management store ✅
+│   │   └── expenseStore.ts          # Expense tracking store ✅
+│   ├── utils/            # Utility functions ✅
+│   │   ├── currency.ts              # Currency conversion with caching ✅
+│   │   ├── countryData.ts           # Country and budget data ✅
+│   │   └── dateUtils.ts             # Date manipulation utilities ✅
+│   ├── types.ts          # TypeScript definitions ✅
+│   └── context.tsx       # Legacy React Context (being phased out)
+├── assets/               # Static assets
+│   └── all_countries.json           # Country data ✅
+├── docs/                 # Documentation
+│   ├── features.md                  # Feature specifications
+│   ├── budget_planning_feature.md   # Budget planning details
+│   ├── expense_tracking_feature.md  # Expense tracking specs
+│   └── ui_ux_design_principles.md   # Design guidelines
 ├── .env                  # Environment variables (not committed)
 ├── .gitignore
 ├── .eslintrc.js          # ESLint configuration
 ├── .prettierrc           # Prettier configuration
 ├── .husky/               # Git hooks
-├── app.config.ts         # Expo configuration with environment variables
-├── app.json
-├── babel.config.js
+├── app.config.ts         # Expo configuration
 ├── package.json
 ├── tsconfig.json
-└── README.md
+├── README.md
+├── ROADMAP.md
+└── NEXT_STEPS.md
 ```
 
 ## Data Model Overview
 
 The core data entities are defined in `app/types.ts`:
 
-- `Location`: Represents a geographical place (name, country, coordinates, timezone).
-- `Trip`: Contains overall trip details, linked to a `Location` destination.
-- `Expense`: Represents a single expense, linked to a `Trip` and optionally a `Location`.
-- `JournalEntry`: Represents a journal entry, linked to a `Trip` and optionally a `Location`.
+- **Location**: Represents a geographical place (name, country, coordinates, timezone)
+- **Trip**: Contains overall trip details, linked to a Location destination
+- **Expense**: Represents a single expense, linked to a Trip and optionally a Location
+- **JournalEntry**: Represents a journal entry, linked to a Trip and optionally a Location
 
-Relationships are managed via IDs (e.g., `tripId`, `locationId`) within the `Expense` and `JournalEntry` interfaces.
+### Current Implementation Status
 
-## State Management
+✅ **Trip Store**: Complete with CRUD operations, utility functions, and persistence
+✅ **Expense Store**: Full implementation with trip/location linking
+🚧 **Journal Store**: Planned for next development phase
+🚧 **Location Store**: Planned for next development phase
 
-TravelPal uses React Context (`app/context.tsx`) for state management, providing centralized state and functions for:
+## Development Phases
 
-- Managing `Trip`, `Expense`, `JournalEntry`, and `Location` data (CRUD operations).
-- Handling global settings like `baseCurrency` and `dailyBudget`.
-- Utility functions to retrieve related data (e.g., `getTripExpenses(tripId)`).
+### ✅ Phase 1: Enhanced Data Model & State Management (Complete)
+
+- Introduced Location interface and entity relationships
+- Implemented hybrid state management (Zustand + React Context)
+- Set up development environment with code quality tools
+- Created comprehensive TypeScript definitions
+
+### 🚧 Phase 2: Core Feature Implementation (In Progress)
+
+- **Trip Management**: Zustand store with persistence ✅
+- **Expense Tracking**: Full CRUD with trip/location linking ✅
+- **Currency Conversion**: Live rates with caching and offline support ✅
+- **Journal System**: Planned next
+- **Location Management**: Planned next
+
+### 📋 Phase 3: Feature Integration (Planned)
+
+- Cross-feature navigation and views
+- Unified dashboards showing related data
+- Global search and filtering capabilities
+- Floating Plus FAB implementation
+
+### 📋 Phase 4: Enhanced User Experience (Planned)
+
+- Data visualization (charts, maps)
+- Offline support enhancement
+- Data import/export functionality
+- Social/sharing features
 
 ## Contributing
 
@@ -227,10 +274,11 @@ TravelPal uses React Context (`app/context.tsx`) for state management, providing
 ## Development Guidelines
 
 - Use TypeScript for all new code
-- Follow the existing project structure
-- Maintain consistent code style
+- Follow the hybrid state management pattern (Zustand for data, Context for UI)
+- Maintain consistent code style with ESLint and Prettier
 - Write tests for new features
 - Update documentation as needed
+- Use the established project structure
 
 ## License
 

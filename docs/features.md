@@ -1,293 +1,490 @@
 # TravelPal Feature Documentation
 
 ## Table of Contents
-1. [Core Features](#core-features)
-2. [Technical Architecture](#technical-architecture)
-3. [Development Phases](#development-phases)
-4. [API Integrations](#api-integrations)
-5. [Security & Privacy](#security--privacy)
+
+1. [Current Implementation Status](#current-implementation-status)
+2. [Core Features](#core-features)
+3. [Technical Architecture](#technical-architecture)
+4. [Development Phases](#development-phases)
+5. [State Management](#state-management)
+6. [API Integrations](#api-integrations)
+
+## Current Implementation Status
+
+### ✅ Completed Features
+
+**State Management Foundation:**
+
+- **Hybrid State Management**: Zustand for core data stores, React Context for UI state
+- **Trip Store**: Complete CRUD operations with persistence and utility functions
+- **Expense Store**: Full implementation with trip/location linking and persistence
+- **Data Persistence**: AsyncStorage integration with automatic sync across app restarts
+
+**Currency Management:**
+
+- **Live Currency Conversion**: Integration with exchangerate-api.com
+- **Caching System**: 24-hour TTL with AsyncStorage for offline support
+- **Offline Fallback**: Graceful handling when no internet connection
+- **Modern UI**: Currency converter with swap functionality and loading states
+
+**Development Infrastructure:**
+
+- **TypeScript**: Comprehensive type definitions with strict mode
+- **Code Quality**: ESLint, Prettier, and Husky pre-commit hooks
+- **Project Structure**: Clean organization with stores, components, and utilities
+
+### 🚧 In Development
+
+**Journal System:**
+
+- **Journal Store**: Zustand store for journal entries with photo attachments
+- **Location-Aware Entries**: Link entries to trips and tag with locations
+- **Photo Management**: Camera integration and local storage
+
+**Location Management:**
+
+- **Location Store**: Zustand store for geographical location management
+- **GPS Integration**: Location detection and coordinate management
+- **Country Data**: Enhanced integration with existing country data
+
+**User Interface:**
+
+- **Floating Plus FAB**: Trip creation workflow via floating action button
+- **Enhanced Navigation**: Cross-feature navigation and deep linking
 
 ## Core Features
 
-### Phase 1: Foundation (MVP)
-#### 1. Expense Management
-- **Quick, Offline Expense Entry**
-  - Offline-first expense logging
-  - Local storage with sync on reconnect
-  - Default to last-used category/currency
-  - Technical: SQLite for offline storage
-  - Dependencies: None
-  - Priority: High
+### Phase 1: Foundation (Completed ✅)
 
-- **Automatic Foreign-Currency Conversion**
-  - Live exchange rate updates
-  - Offline rate caching
-  - Dual currency display
-  - Technical: RatesService module with background updates
-  - Dependencies: Internet connectivity
-  - Priority: High
+#### 1. State Management Architecture
 
-- **Customizable Expense Categories**
-  - Default categories with icons
-  - User customization
-  - Cross-device sync
-  - Technical: Firestore user preferences
-  - Dependencies: Authentication
-  - Priority: High
+- **Zustand Stores for Core Data**
 
-#### 2. Basic Itinerary Management
-- **Simple Itinerary Builder**
-  - Basic trip planning
-  - Location management
-  - Date/time scheduling
-  - Technical: React Native components
-  - Dependencies: None
-  - Priority: High
+  - Trip management with persistence
+  - Expense tracking with trip/location linking
+  - Automatic AsyncStorage persistence
+  - Store coordination for data consistency
+  - **Status**: Implemented ✅
 
-- **Offline Access**
-  - Full offline functionality
-  - Sync management
-  - Technical: Offline-first architecture
-  - Dependencies: None
-  - Priority: High
+- **React Context for UI State**
+  - Theme preferences
+  - Navigation state
+  - User interface settings
+  - **Status**: Planned for implementation 🚧
 
-### Phase 2: Enhanced Features
-#### 1. Advanced Expense Management
-- **Spread Expenses Across Multiple Days**
-  - Multi-day expense allocation
-  - Equal or custom weight distribution
-  - Daily budget recalculation
-  - Technical: Parent-child transaction model
-  - Dependencies: Basic expense management
-  - Priority: Medium
+#### 2. Currency Management
 
-- **Interactive Spending Charts**
-  - Category breakdown (pie charts)
-  - Time-based trends (bar charts)
-  - Drill-down capability
-  - Technical: Victory Native chart library
-  - Dependencies: Basic expense management
-  - Priority: Medium
+- **Live Exchange Rate Integration**
 
-#### 2. Advanced Itinerary Features
-- **Drag-and-Drop Map-Based Itinerary Builder**
-  - Visual trip planning
-  - Marker-based location management
-  - Real-time list-map sync
-  - Technical: react-native-maps + Gesture Handler
-  - Dependencies: Basic itinerary management
-  - Priority: Medium
+  - Real-time currency conversion
+  - 24-hour caching with TTL
+  - Offline fallback with expired cache
+  - Network connectivity detection
+  - **Status**: Fully implemented ✅
 
-- **Real-Time Daily Plan Adjustments**
-  - Drag-and-drop scheduling
-  - Notification updates
-  - Collaborative sync
-  - Technical: Firestore real-time updates
-  - Dependencies: Basic itinerary management
-  - Priority: Medium
+- **Modern Currency Converter UI**
+  - Swap functionality between currencies
+  - Loading states and error handling
+  - Clean, intuitive interface
+  - **Status**: Implemented ✅
 
-### Phase 3: Social & AI Features
-#### 1. Social Features
-- **Group Expense Splitting**
-  - Multi-user expense sharing
-  - Balance calculation
-  - Settlement suggestions
-  - Technical: Transaction modeling
-  - Dependencies: Authentication, Basic expense management
-  - Priority: Medium
+#### 3. Trip Management
 
-- **Collaborative Trip Editing**
-  - Role-based access
-  - Change request system
-  - Real-time sync
-  - Technical: Firestore security rules
-  - Dependencies: Authentication, Basic itinerary management
-  - Priority: Medium
+- **Trip Store Implementation**
 
-#### 2. AI Features
-- **AI-Assisted Route & Activity Suggestions**
-  - Preference-based recommendations
-  - Itinerary optimization
-  - Side-by-side comparisons
-  - Technical: OpenAI API integration
-  - Dependencies: Basic itinerary management
-  - Priority: Low
+  - Complete CRUD operations (create, read, update, delete)
+  - Utility functions (getTripById, getTripsByStatus, etc.)
+  - Trip categorization (upcoming, current, past)
+  - Budget management integration
+  - **Status**: Implemented ✅
 
-### Phase 4: Media & Integration
-#### 1. Media Features
-- **Expense-Linked Notes & Photos**
-  - Media attachment
-  - Context preservation
-  - Technical: Cloud Storage integration
-  - Dependencies: Basic expense management
-  - Priority: Medium
+- **Trip-Expense Coordination**
+  - Automatic expense deletion when trip is deleted
+  - Trip-specific expense filtering
+  - Budget tracking and management
+  - **Status**: Implemented ✅
 
-- **Geotagged Photo/Video Uploads**
-  - Location-based media
-  - Map visualization
-  - Technical: Location services + Cloud Storage
-  - Dependencies: Basic itinerary management
-  - Priority: Medium
+#### 4. Expense Management
 
-#### 2. External Integrations
-- **Automatic Reservation Import**
-  - Gmail integration
-  - Booking confirmation parsing
-  - User confirmation flow
-  - Technical: Gmail API integration
-  - Dependencies: Authentication
-  - Priority: Low
+- **Expense Store Implementation**
 
-- **External Service Integration**
-  - Calendar sync
-  - Cloud storage
-  - Technical: OAuth integration
-  - Dependencies: Authentication
-  - Priority: Low
+  - Full CRUD operations with persistence
+  - Trip and location linking
+  - Category-based organization
+  - Currency handling
+  - **Status**: Implemented ✅
 
-### Phase 5: Community & Gamification
-#### 1. Community Features
-- **Traveler Forums & Tips**
-  - Community interaction
-  - Content moderation
-  - Technical: Forum backend integration
-  - Dependencies: Authentication
-  - Priority: Low
+- **Expense Utility Functions**
+  - Filter expenses by trip ID
+  - Filter expenses by location ID
+  - Bulk operations for trip deletion
+  - **Status**: Implemented ✅
 
-- **Travel Buddy Matching**
-  - User matching algorithm
-  - Messaging system
-  - Safety features
-  - Technical: Matching microservice
-  - Dependencies: Authentication
-  - Priority: Low
+### Phase 2: Core Features (In Progress 🚧)
 
-#### 2. Gamification
-- **Points, Badges & Challenges**
-  - Achievement system
-  - Progress tracking
-  - Technical: AchievementsService
-  - Dependencies: Authentication
-  - Priority: Low
+#### 1. Journal System
 
-### Floating Action Button (FAB) Enhancements
+- **Journal Store Development**
 
-- **Expandable Menu:** Tapping the central FAB now expands a menu with quick action buttons for "New Trip," "Log Expense," and "New Memory."
-- **FAB Icon Animation:** The '+' icon on the main FAB rotates to an 'x' when the menu is open and back to '+' when closed, providing a clear visual indicator of the menu state.
-- **Initial Animation Setup:** Basic slide-up and fade-in animations have been implemented for the menu buttons when they appear.
+  - CRUD operations for journal entries
+  - Trip and location linking
+  - Photo attachment system
+  - Tag organization
+  - **Status**: In development 🚧
+
+- **Photo Management**
+  - Expo ImagePicker integration
+  - Local file storage
+  - Photo metadata handling
+  - Gallery and camera access
+  - **Status**: Planned 📋
+
+#### 2. Location Management
+
+- **Location Store Implementation**
+
+  - CRUD operations for locations
+  - GPS integration
+  - Country data integration
+  - Coordinate and timezone handling
+  - **Status**: In development 🚧
+
+- **Enhanced Location Selection**
+  - Improved country picker
+  - Location search and autocomplete
+  - Manual coordinate entry
+  - **Status**: Planned 📋
+
+#### 3. User Interface Enhancements
+
+- **Floating Plus FAB**
+
+  - Expandable menu with quick actions
+  - Navigation to creation flows
+  - Smooth animations and transitions
+  - **Status**: In development 🚧
+
+- **Trip Creation Flow**
+  - Budget method selection
+  - Location selection integration
+  - Trip details form
+  - **Status**: Planned 📋
+
+### Phase 3: Feature Integration (Planned 📋)
+
+#### 1. Cross-Feature Navigation
+
+- **Deep Linking**
+  - Navigation between related entities
+  - Breadcrumb navigation
+  - Context-aware routing
+  - **Status**: Planned 📋
+
+#### 2. Unified Dashboards
+
+- **Trip Dashboard**
+  - Budget overview
+  - Associated expenses
+  - Related journal entries
+  - **Status**: Planned 📋
+
+#### 3. Search and Filtering
+
+- **Global Search**
+  - Search across all data types
+  - Filter by categories, dates, locations
+  - Advanced search capabilities
+  - **Status**: Planned 📋
+
+### Phase 4: Advanced Features (Planned 📋)
+
+#### 1. Data Visualization
+
+- **Charts and Analytics**
+  - Spending patterns
+  - Budget tracking
+  - Trip comparisons
+  - **Status**: Planned 📋
+
+#### 2. Enhanced Offline Support
+
+- **Background Sync**
+  - Intelligent data synchronization
+  - Conflict resolution
+  - **Status**: Planned 📋
+
+#### 3. Social Features
+
+- **Trip Sharing**
+  - Collaborative planning
+  - Shared expenses
+  - **Status**: Future consideration 🔮
 
 ## Technical Architecture
 
+### Current State Management Pattern
+
+```typescript
+// Zustand Stores (Core Data)
+app/stores/
+├── tripStore.ts      ✅ Implemented
+├── expenseStore.ts   ✅ Implemented
+├── journalStore.ts   🚧 In development
+└── locationStore.ts  🚧 In development
+
+// React Context (UI State)
+app/context/
+├── themeContext.tsx  📋 Planned
+├── navContext.tsx    📋 Planned
+└── settingsContext.tsx 📋 Planned
+```
+
+### Data Flow Architecture
+
+```
+User Action → Store Action → AsyncStorage → UI Update
+     ↓              ↓            ↓           ↓
+  Component → Zustand Store → Persistence → Re-render
+```
+
 ### Core Components
-1. **Frontend**
-   - React Native
-   - TypeScript
-   - Navigation: React Navigation
-   - State Management: Redux Toolkit
-   - UI Components: React Native Paper
 
-2. **Backend**
-   - Firebase/Firestore
-   - Cloud Functions
-   - Cloud Storage
-   - Authentication
+1. **Frontend Stack**
 
-3. **Local Storage**
-   - SQLite
-   - AsyncStorage
-   - File System
+   - React Native (v0.79.2)
+   - Expo (v53)
+   - TypeScript (v5.3.3)
+   - Expo Router for navigation
+
+2. **State Management**
+
+   - **Zustand (v5.0.5)**: Core data stores with persistence
+   - **AsyncStorage**: Local data persistence
+   - **React Context**: UI state management (planned)
+
+3. **Development Tools**
+   - ESLint for code linting
+   - Prettier for code formatting
+   - Husky for git hooks
+   - lint-staged for pre-commit checks
 
 ### Data Models
-1. **User**
-   - Profile
-   - Preferences
-   - Authentication
 
-2. **Trip**
-   - Basic Info
-   - Itinerary
-   - Participants
-   - Expenses
-   - Media
+```typescript
+// Core Entities (app/types.ts)
+interface Trip {
+  id: string;
+  name: string;
+  locationId: string;
+  startDate?: string;
+  endDate?: string;
+  travelStyle: TravelStyle;
+  emergencyFundPercentage: number;
+  categories: CategoryPercentages;
+  status: 'planning' | 'active' | 'completed';
+}
 
-3. **Expense**
-   - Transaction
-   - Category
-   - Currency
-   - Allocation
+interface Expense {
+  id: string;
+  tripId: string;
+  locationId?: string;
+  amount: number;
+  currency: string;
+  category: ExpenseCategory;
+  description: string;
+  date: string;
+  receiptPhoto?: string;
+  tags?: string[];
+}
+
+interface JournalEntry {
+  id: string;
+  tripId: string;
+  locationId?: string;
+  title: string;
+  content: string;
+  date: string;
+  photos?: string[];
+  tags?: string[];
+}
+
+interface Location {
+  id: string;
+  name: string;
+  country: string;
+  coordinates?: {
+    latitude: number;
+    longitude: number;
+  };
+  timezone?: string;
+}
+```
+
+## Development Phases
+
+### ✅ Phase 1: Foundation (Complete)
+
+- Enhanced data model with clear entity relationships
+- Hybrid state management implementation
+- Development environment setup
+- TypeScript configuration and type definitions
+
+### 🚧 Phase 2: Core Features (In Progress)
+
+- **Completed**: Trip and Expense stores with persistence
+- **Completed**: Currency conversion with caching
+- **In Progress**: Journal and Location stores
+- **Planned**: Floating Plus FAB and creation flows
+
+### 📋 Phase 3: Integration (Planned)
+
+- Cross-feature navigation
+- Unified dashboards
+- Global search and filtering
+- UI/UX polish
+
+### 📋 Phase 4: Advanced Features (Planned)
+
+- Data visualization
+- Enhanced offline support
+- Social features
+- External integrations
+
+## State Management
+
+### Zustand Store Pattern
+
+```typescript
+// Example Store Structure
+export const useStoreExample = create<StoreState>()(
+  persist(
+    (set, get) => ({
+      // State
+      items: [],
+      isLoading: false,
+      error: null,
+
+      // Actions
+      addItem: (item) => {
+        set((state) => ({ items: [...state.items, item] }));
+      },
+
+      // Utility Functions
+      getItemById: (id) => {
+        return get().items.find((item) => item.id === id);
+      },
+    }),
+    {
+      name: 'store-name',
+      storage: createJSONStorage(() => AsyncStorage),
+    }
+  )
+);
+```
+
+### Store Coordination
+
+```typescript
+// Cross-store operations
+deleteTrip: (tripId) => {
+  // Coordinate with other stores
+  get().deleteExpensesByTripId(tripId);
+  get().deleteJournalEntriesByTripId(tripId);
+
+  // Delete the trip
+  set((state) => ({
+    trips: state.trips.filter((trip) => trip.id !== tripId),
+  }));
+},
+```
 
 ## API Integrations
 
-### Required APIs
-1. **Currency Exchange**
-   - Provider: Open Exchange Rates
-   - Rate: Free tier
-   - Update Frequency: Daily
+### Current Integrations
 
-2. **Maps & Location**
-   - Provider: Google Maps
-   - Features: Geocoding, Directions
-   - Rate: Pay as you go
+#### Currency Exchange API
 
-3. **Authentication**
-   - Provider: Firebase Auth
-   - Methods: Email, Google, Apple
+- **Provider**: exchangerate-api.com
+- **Features**: Live exchange rates, free tier
+- **Caching**: 24-hour TTL with AsyncStorage
+- **Offline Support**: Graceful fallback with expired cache
+- **Status**: Implemented ✅
 
-### Optional APIs
-1. **Email Integration**
-   - Provider: Gmail API
-   - Scope: Read-only
-   - Rate: Quota-based
+### Planned Integrations
 
-2. **Calendar**
-   - Provider: Google Calendar
-   - Scope: Read/Write
-   - Rate: Quota-based
+#### Location Services
+
+- **Provider**: Expo Location
+- **Features**: GPS coordinates, location permissions
+- **Status**: Planned 📋
+
+#### Camera Integration
+
+- **Provider**: Expo ImagePicker
+- **Features**: Camera access, gallery selection
+- **Status**: Planned 📋
+
+#### Maps Integration
+
+- **Provider**: React Native Maps (future)
+- **Features**: Location visualization, route planning
+- **Status**: Future consideration 🔮
+
+## Performance Considerations
+
+### Current Optimizations
+
+- **Store Selectors**: Minimize unnecessary re-renders
+- **AsyncStorage**: Efficient data persistence
+- **Offline-First**: Reduce network dependencies
+
+### Planned Optimizations
+
+- **Image Compression**: Optimize photo storage
+- **Lazy Loading**: Load data on demand
+- **Background Sync**: Intelligent data synchronization
 
 ## Security & Privacy
 
-### Data Protection
-1. **User Data**
-   - End-to-end encryption
-   - Secure storage
-   - Regular backups
+### Current Implementation
 
-2. **API Keys**
-   - Environment variables
-   - Secure storage
-   - Rate limiting
+- **Local Storage**: All data stored locally on device
+- **No Cloud Sync**: No external data transmission (except currency rates)
+- **Type Safety**: Comprehensive TypeScript coverage
 
-### Compliance
-1. **GDPR**
-   - Data portability
-   - Right to be forgotten
-   - Privacy policy
+### Future Considerations
 
-2. **App Store**
-   - Privacy labels
-   - Terms of service
-   - Data usage disclosure
+- **Data Encryption**: Encrypt sensitive data
+- **Backup/Restore**: Secure data backup options
+- **Privacy Controls**: User data management
+
+## Testing Strategy
+
+### Current Testing
+
+- **Manual Testing**: iOS and Android devices
+- **Type Checking**: TypeScript compilation
+- **Code Quality**: ESLint and Prettier checks
+
+### Planned Testing
+
+- **Unit Tests**: Store and utility function testing
+- **Integration Tests**: Cross-store operation testing
+- **E2E Tests**: User flow testing
+- **Performance Tests**: Large dataset handling
 
 ## Development Guidelines
 
 ### Code Standards
-1. **TypeScript**
-   - Strict mode
-   - ESLint
-   - Prettier
 
-2. **Testing**
-   - Jest
-   - React Native Testing Library
-   - E2E with Detox
+- **TypeScript**: Strict mode with comprehensive typing
+- **State Management**: Follow Zustand patterns
+- **Component Structure**: Functional components with hooks
+- **Error Handling**: Comprehensive error boundaries
 
-### Performance
-1. **Optimization**
-   - Lazy loading
-   - Image optimization
-   - Cache management
+### Performance Guidelines
 
-2. **Monitoring**
-   - Error tracking
-   - Analytics
-   - Performance metrics 
+- **Store Optimization**: Minimize re-renders
+- **Memory Management**: Proper resource cleanup
+- **Bundle Size**: Monitor and optimize app size
+- **Offline Support**: Ensure core functionality works offline
