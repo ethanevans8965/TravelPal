@@ -2,6 +2,8 @@ import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
 import { useRouter, useLocalSearchParams } from 'expo-router';
 import { FontAwesome } from '@expo/vector-icons';
+import { useAppContext } from '../../context';
+import * as Crypto from 'expo-crypto';
 
 const getTravelStyleColor = (travelStyle: string) => {
   switch (travelStyle?.toLowerCase()) {
@@ -29,6 +31,7 @@ const formatDate = (dateString: string) => {
 export default function BudgetPlanningReviewScreen() {
   const router = useRouter();
   const params = useLocalSearchParams();
+  const { addTrip, addLocation } = useAppContext();
 
   // Parse the categories JSON to get individual category values
   const categories = params.categories ? JSON.parse(params.categories as string) : {};
@@ -39,11 +42,48 @@ export default function BudgetPlanningReviewScreen() {
   const totalTripCost = parseFloat(params.totalTripCost as string) || 0;
 
   const handleSaveTrip = () => {
-    // TODO: Save trip to store
-    console.log('Saving trip with params:', params);
+    try {
+      // Create location first
+      const locationData = {
+        name: params.country as string,
+        country: params.country as string,
+        timezone: 'UTC', // Default timezone
+      };
+      addLocation(locationData);
 
-    // Navigate back to trips list
-    router.push('/trips');
+      // For now, we'll use a placeholder locationId and store country in trip
+      // This is a temporary solution until we improve the location system
+      const tripData = {
+        name: params.tripName as string,
+        locationId: 'temp-location-id', // Temporary placeholder
+        destination: {
+          id: 'temp-location-id',
+          name: params.country as string,
+          country: params.country as string,
+          timezone: 'UTC',
+        },
+        startDate: params.startDate as string,
+        endDate: params.endDate as string,
+        budgetMethod: 'total-budget' as const, // Use existing type
+        travelStyle: params.travelStyle as 'Budget' | 'Mid-range' | 'Luxury',
+        totalBudget: totalBudgetAmount || undefined,
+        dailyBudget: dailyBudgetAmount,
+        emergencyFundPercentage: 10, // Default 10%
+        categories: categories,
+        status: 'planning' as const,
+      };
+
+      // Save trip
+      addTrip(tripData);
+
+      console.log('Trip saved successfully:', tripData);
+
+      // Navigate back to trips list
+      router.push('/trips');
+    } catch (error) {
+      console.error('Error saving trip:', error);
+      // TODO: Show error message to user
+    }
   };
 
   return (
