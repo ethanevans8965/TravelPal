@@ -62,22 +62,9 @@ export default function TravelStyleScreen() {
   const handleNext = () => {
     if (!selectedStyle) return;
 
-    // Determine next route based on the budget method
-    let nextRoute = '';
-
-    if (params.totalBudget) {
-      // Total budget flow
-      nextRoute = '/trip/create/total-budget/categories';
-    } else if (params.startDate && params.endDate) {
-      // Trip dates flow
-      nextRoute = '/trip/create/trip-dates/budget-estimate';
-    } else if (params.totalBudget && params.startDate && params.endDate) {
-      // Both budget and dates flow
-      nextRoute = '/trip/create/both/categories';
-    } else {
-      // Default fallback
-      nextRoute = '/trip/create/total-budget/categories';
-    }
+    // For the new Budget Planning flow, we'll route to a new daily budget screen
+    // This will be created in the next step
+    const nextRoute = '/trip/create/budget-planning-daily';
 
     router.push({
       pathname: nextRoute,

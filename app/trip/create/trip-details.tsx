@@ -36,9 +36,7 @@ export default function TripDetailsScreen() {
     let nextRoute = '';
     switch (selectedOption) {
       case 'budgetPlanning':
-        // For now, we'll route to the existing total budget screen
-        // This will be updated in subsequent steps
-        nextRoute = '/trip/create/total-budget';
+        nextRoute = '/trip/create/budget-planning-total';
         break;
       case 'noBudget':
         nextRoute = '/trip/create/no-budget/dates';
