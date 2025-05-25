@@ -1,54 +1,227 @@
-# Next Steps for TravelPal Development
+# TravelPal Next Steps
 
-This document outlines the immediate tasks and priorities for the current development phase (Phase 2: Feature Development with Integration Points).
+This document outlines the immediate next steps for the TravelPal application development.
 
-## Current Focus: Phase 2 - Building Integrated Core Features
+## Current Status
 
-### 1. Enhanced Trip Management Module
+We have successfully completed Phase 1 of our development roadmap:
 
-*   **Task**: Implement the initial step of the trip creation flow: selecting a budget method.
-    *   **Details**: Ensure the `app/trip/select-method.tsx` screen correctly presents the four budget scenarios (Total & Length Known, Budget Only, Length Only, No Budget) as options.
-    *   **Integration**: This screen is now the direct navigation target from the 'New Trip' button in the FAB menu.
-*   **Task**: Develop branching logic and subsequent screens/components for each budget scenario.
-    *   **Details**: Based on the selected method in `select-method.tsx`, navigate the user to the appropriate screens to collect the necessary trip details (e.g., trip name, dates, destination, budget specifics per scenario, pre-trip expenses).
-    *   **Integration**: Design these screens to collect data required by the updated data models and budget calculation logic.
-*   **Task**: Implement the logic for creating a new trip entity based on collected data, connecting to `AppContext`.
-*   **Task**: Design and implement the UI for viewing a list of trips (e.g., on the main `index.tsx` screen).
-    *   **Details**: Each list item should display key trip information (name, destination, dates, and potentially a summary of the budget status if a budget exists).
-*   **Task**: Design and implement the UI for viewing a single trip's details.
-    *   **Details**: This screen will later serve as a dashboard for the trip, showing associated expenses, journal entries, and the budget overview (if applicable).
-*   **Task**: Implement `updateTrip` and `deleteTrip` functionalities with corresponding UI elements (e.g., edit and delete buttons) for the new trip structure.
+### ✅ Phase 1: Enhanced Data Model & State Management (Complete)
 
-### 2. Contextual Expense Tracking Module
+- **Data Model**: Introduced `Location` interface and established clear relationships between `Trip`, `Expense`, `JournalEntry`, and `Location` entities
+- **State Management**: Enhanced `AppContext` with CRUD operations and utility functions
+- **TypeScript**: Updated `app/types.ts` with comprehensive type definitions
+- **Backend Infrastructure**: Selected and configured Supabase as the backend solution
+  - ✅ Supabase client setup with environment variables (`src/lib/supabaseClient.ts`)
+  - ✅ Environment configuration via `app.config.ts` and `.env`
+  - ✅ Secure credential management with `.gitignore`
+- **Development Environment**: Established code quality tools
+  - ✅ ESLint configuration for TypeScript
+  - ✅ Prettier code formatting
+  - ✅ Husky pre-commit hooks with lint-staged
+  - ✅ Automated linting and formatting on commit
+- **Dependencies**: Installed core libraries
+  - ✅ Supabase client, Async Storage, Zustand, DayJS
+  - ✅ React Navigation stack (native, bottom-tabs, native-stack)
+- **Theme Foundation**: Centralized design system
+  - ✅ Color palette in `src/theme/colors.ts`
+- **Documentation**: Updated README.md and project structure
 
-*   **Task**: Design and implement the UI for adding a new expense.
-    *   **Details**: Fields for amount, category, description, date, currency.
-    *   **Integration**: Ensure the expense is linked to a `tripId`. Add UI for selecting the parent trip.
-    *   **Integration**: Optionally link to a `locationId` if the expense is location-specific within the trip.
-*   **Task**: Implement `addExpense` logic in the UI, connecting to `AppContext`.
-*   **Task**: Update the expense display list (e.g., on `expenses.tsx`) to show expenses linked to a selected or active trip.
-*   **Task**: Implement `updateExpense` and `deleteExpense` functionalities.
+## Immediate Next Steps (Phase 2)
 
-### 3. Location-Aware Travel Journal Module
+### 1. Database Schema Setup
 
-*   **Task**: Design and implement the UI for creating a new journal entry.
-    *   **Details**: Fields for title, content, date, mood.
-    *   **Integration**: Ensure the entry is linked to a `tripId`.
-    *   **Integration**: Allow tagging the entry with a `locationId`.
-*   **Task**: Implement `addJournalEntry` logic in the UI, connecting to `AppContext`.
-*   **Task**: Design UI for displaying journal entries, filterable by trip and/or location.
-*   **Task**: Implement `updateJournalEntry` and `deleteJournalEntry` functionalities.
+**Priority: High**
+**Estimated Time: 1-2 days**
 
-### 4. Location Management (Supporting Feature)
+- [ ] **Supabase Database Design**: Create tables matching TypeScript interfaces
 
-*   **Task**: Design a simple UI for selecting an existing `Location` or creating a new one.
-    *   **Details**: This will be used by Trip Management (for destination) and potentially by Expense/Journal modules.
-    *   Fields: name, country, timezone. (Coordinates can be auto-fetched or manually entered later).
-*   **Task**: Implement `addLocation` and `updateLocation` logic as needed by the feature modules.
+  - [ ] `locations` table (id, name, country, coordinates, timezone)
+  - [ ] `trips` table (id, name, destination_id, start_date, end_date, budget_info, etc.)
+  - [ ] `expenses` table (id, trip_id, location_id, amount, category, etc.)
+  - [ ] `journal_entries` table (id, trip_id, location_id, content, photos, etc.)
+  - [ ] Set up foreign key relationships and RLS policies
 
-## General Tasks for Phase 2
+- [ ] **Database Functions**: Create helper functions for common queries
+  - [ ] Get trip with related expenses and journal entries
+  - [ ] Budget calculation and tracking functions
+  - [ ] Location-based queries
 
-*   **Component Library**: Identify and create reusable UI components (e.g., custom input fields, date pickers, location pickers, budget input fields per scenario) to be stored in `app/components/`.
-*   **Styling**: Ensure consistent styling across new screens and components.
-*   **Testing**: Plan for unit/integration tests for new logic and components, particularly for the branching logic and scenario-specific calculations.
-*   **Documentation**: Keep `README.md`, `ROADMAP.md`, and `NEXT_STEPS.md` updated as development progresses. **Ensure the budget planning documentation (`docs/budget_planning_feature.md`) is fully aligned with the implemented scenarios and flows.** 
+### 2. State Management Integration
+
+**Priority: High**
+**Estimated Time: 2-3 days**
+
+- [ ] **Zustand Store Setup**: Replace/enhance AppContext with Zustand
+
+  - [ ] Trip management store
+  - [ ] Expense tracking store
+  - [ ] Journal entries store
+  - [ ] Settings/preferences store
+
+- [ ] **Supabase Integration**: Connect stores to Supabase backend
+  - [ ] CRUD operations for all entities
+  - [ ] Real-time subscriptions for data updates
+  - [ ] Offline-first approach with sync
+
+### 3. Trip Management Enhancement
+
+**Priority: High**
+**Estimated Time: 1-2 weeks**
+
+- [ ] **Trip Creation Flow**: Implement the complete trip creation workflow
+
+  - [ ] Budget method selection screen (4 scenarios including "No Budget")
+  - [ ] Location selection integration
+  - [ ] Budget planning (total/daily, emergency fund, pre-trip costs)
+  - [ ] Trip details form (name, dates, style, status)
+
+- [ ] **Trip Viewing & Editing**: Create comprehensive trip detail views
+  - [ ] Trip dashboard showing budget, expenses, and journal entries
+  - [ ] Edit trip functionality
+  - [ ] Trip status management
+
+### 4. Enhanced Expense Tracking
+
+**Priority: High**
+**Estimated Time: 1-2 weeks**
+
+- [ ] **Contextual Expense Logging**: Update expense creation to link with trips and locations
+
+  - [ ] Trip selection during expense creation
+  - [ ] Optional location tagging
+  - [ ] Category alignment with trip budget categories
+  - [ ] Currency handling based on location/settings
+
+- [ ] **Receipt Management**: Implement photo attachment functionality
+  - [ ] Supabase Storage integration for photos
+  - [ ] Camera integration for receipt capture
+  - [ ] Photo storage and retrieval
+  - [ ] Receipt photo viewing in expense details
+
+### 5. Location-Aware Journal System
+
+**Priority: Medium**
+**Estimated Time: 1-2 weeks**
+
+- [ ] **Enhanced Journal Entries**: Link entries to trips and locations
+
+  - [ ] Trip context during journal creation
+  - [ ] Location tagging
+  - [ ] Photo attachments for journal entries
+  - [ ] Tag organization system
+
+- [ ] **Journal-Expense Linking**: Explore connections between journal entries and related expenses
+  - [ ] Optional expense linking during journal creation
+  - [ ] View related expenses from journal entries
+
+## Technical Improvements
+
+### 6. UI/UX Foundation
+
+**Priority: Medium**
+**Estimated Time: 1 week**
+
+- [ ] **Shared Components**: Develop reusable UI component library
+
+  - [ ] Button components with consistent styling using theme colors
+  - [ ] Input field components
+  - [ ] Card/container components
+  - [ ] Loading and error state components
+
+- [ ] **Navigation Enhancement**: Improve cross-feature navigation
+  - [ ] Deep linking between related entities
+  - [ ] Breadcrumb navigation for complex flows
+  - [ ] Back button handling
+
+### 7. Authentication & Security
+
+**Priority: Medium**
+**Estimated Time: 3-5 days**
+
+- [ ] **Supabase Auth Integration**: Implement user authentication
+  - [ ] Email/password authentication
+  - [ ] Social login options (Google, Apple)
+  - [ ] User profile management
+  - [ ] Row Level Security (RLS) policies
+
+## Phase 3 Preparation
+
+### 8. Integration Planning
+
+**Priority: Low**
+**Estimated Time: Planning phase**
+
+- [ ] **Cross-Feature Views**: Plan unified dashboards and aggregate views
+- [ ] **Search & Filtering**: Design global search functionality
+- [ ] **Performance Optimization**: Identify potential performance bottlenecks
+
+## Development Guidelines
+
+### Code Quality
+
+- Maintain TypeScript strict mode
+- Follow established component patterns
+- Use the centralized theme colors from `src/theme/colors.ts`
+- Leverage pre-commit hooks for consistent code quality
+- Write unit tests for new functionality
+- Use Zustand for state management patterns
+
+### Backend Best Practices
+
+- Use Supabase RLS for data security
+- Implement proper error handling for network requests
+- Cache data locally with AsyncStorage for offline support
+- Use TypeScript types that match database schema
+
+### Testing Strategy
+
+- Unit tests for utility functions and stores
+- Component testing for UI elements
+- Integration testing for Supabase operations
+- Manual testing on both iOS and Android
+
+### Documentation
+
+- Update README.md with new features
+- Maintain inline code documentation
+- Update this NEXT_STEPS.md as progress is made
+- Document database schema and API patterns
+
+## Success Metrics
+
+### Phase 2 Completion Criteria
+
+- [ ] Supabase database schema implemented and tested
+- [ ] Zustand stores integrated with Supabase backend
+- [ ] Complete trip creation flow functional
+- [ ] Expense tracking with trip/location context working
+- [ ] Journal entries with photo attachments implemented
+- [ ] User authentication working
+- [ ] Basic shared component library established
+
+### Quality Gates
+
+- [ ] All TypeScript compilation errors resolved
+- [ ] No console errors in development
+- [ ] Pre-commit hooks passing (linting/formatting)
+- [ ] Responsive design working on various screen sizes
+- [ ] Performance acceptable on target devices
+- [ ] Offline functionality working with sync
+
+## Notes
+
+- Focus on backend integration before complex UI features
+- Maintain consistency with established theme colors
+- Test Supabase operations thoroughly before building UI
+- Consider user feedback early and often
+- Regular testing on physical devices recommended
+
+## Environment Setup Reminder
+
+**Important**: Create a `.env` file in your project root with:
+
+```
+SUPABASE_URL=https://cmwtvyzdnvbkznoqaufw.supabase.co
+SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNtd3R2eXpkbnZia3pub3FhdWZ3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDgxNDAzNTAsImV4cCI6MjA2MzcxNjM1MH0.3UgmBGlqZsXgxHqvYSTfsuH8LaYMkVUEc5WyfcArWCs
+```
