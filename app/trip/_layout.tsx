@@ -13,48 +13,72 @@ export default function TripLayout() {
         },
       }}
     >
-      <Stack.Screen 
-        name="create/trip-name" 
-        options={{ 
+      <Stack.Screen
+        name="create/trip-name"
+        options={{
           title: 'Name Your Trip',
-        }} 
+        }}
       />
-      <Stack.Screen 
-        name="create/country" 
-        options={{ 
+      <Stack.Screen
+        name="create/country"
+        options={{
           title: 'Select Country',
-        }} 
+        }}
       />
-      <Stack.Screen 
-        name="create/trip-details" 
-        options={{ 
+      <Stack.Screen
+        name="create/trip-details"
+        options={{
           title: 'Trip Details',
-        }} 
+        }}
       />
-      <Stack.Screen 
-        name="create/total-budget" 
-        options={{ 
+      <Stack.Screen
+        name="create/total-budget"
+        options={{
           title: 'Set Your Budget',
-        }} 
+        }}
       />
-      <Stack.Screen 
-        name="create/dates" 
-        options={{ 
+      <Stack.Screen
+        name="create/dates"
+        options={{
           title: 'Trip Dates',
-        }} 
+        }}
       />
-      <Stack.Screen 
-        name="create/no-budget/dates" 
-        options={{ 
+      <Stack.Screen
+        name="create/no-budget/dates"
+        options={{
           title: 'Trip Dates',
-        }} 
+        }}
       />
-      <Stack.Screen 
-        name="create/no-budget/review" 
-        options={{ 
+      <Stack.Screen
+        name="create/no-budget/review"
+        options={{
           title: 'Review Trip',
-        }} 
+        }}
+      />
+      <Stack.Screen
+        name="create/travel-style"
+        options={{
+          title: 'Travel Style',
+        }}
+      />
+      <Stack.Screen
+        name="create/total-budget/categories"
+        options={{
+          title: 'Budget Categories',
+        }}
+      />
+      <Stack.Screen
+        name="create/total-budget/review"
+        options={{
+          title: 'Review Trip',
+        }}
+      />
+      <Stack.Screen
+        name="create/save"
+        options={{
+          title: 'Save Trip',
+        }}
       />
     </Stack>
   );
-} 
+}
