@@ -1,4 +1,5 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { Alert } from 'react-native';
 
 export type ExchangeRates = Record<string, number>;
 
@@ -9,6 +10,34 @@ interface CachedRates {
   rates: ExchangeRates;
   base: string;
   timestamp: number;
+}
+
+// Check if device is online
+async function isOnline(): Promise<boolean> {
+  try {
+    // Try to fetch a simple endpoint to check connectivity
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 5000);
+
+    const response = await fetch('https://httpbin.org/status/200', {
+      method: 'HEAD',
+      signal: controller.signal,
+    });
+
+    clearTimeout(timeoutId);
+    return response.ok;
+  } catch {
+    return false;
+  }
+}
+
+// Show offline fallback message
+function showOfflineFallback() {
+  Alert.alert(
+    'No Internet Connection',
+    'No exchange rates available offline. Please connect to the internet to fetch current rates.',
+    [{ text: 'OK' }]
+  );
 }
 
 // Fetches rates from exchangerate-api.com for a base currency
@@ -88,7 +117,22 @@ export async function getCachedExchangeRates(base: string = 'USD'): Promise<Exch
     return cache.rates;
   }
 
-  console.log('Cache miss, expired, or corrupted. Fetching new rates...');
+  console.log('Cache miss, expired, or corrupted. Checking connectivity...');
+  const online = await isOnline();
+  console.log('Device online:', online);
+
+  if (!online) {
+    console.log('Device is offline');
+    // If offline and we have any cached rates (even expired), use them
+    if (cache && cache.rates) {
+      console.log('Using expired cache due to offline status');
+      return cache.rates;
+    }
+    // If offline and no cache, show fallback message and throw error
+    showOfflineFallback();
+    throw new Error('No exchange rates available offline');
+  }
+
   try {
     const rates = await fetchExchangeRates(base);
     console.log('Fetched new rates:', rates);
