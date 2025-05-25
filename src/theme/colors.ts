@@ -1,6 +1,6 @@
 export const colors = {
-  primary: '#007AFF',
-  secondary: '#5856D6',
+  primary: '#057B8C',
+  secondary: '#F27A5E',
   success: '#34C759',
   warning: '#FF9500',
   error: '#FF3B30',
@@ -9,9 +9,9 @@ export const colors = {
   surface: '#F2F2F7',
   card: '#FFFFFF',
 
-  text: '#000000',
-  textSecondary: '#8E8E93',
-  textTertiary: '#C7C7CC',
+  text: '#111827',
+  textSecondary: '#6B7280',
+  textTertiary: '#9CA3AF',
 
   border: '#C6C6C8',
   separator: '#E5E5EA',

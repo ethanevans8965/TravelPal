@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Platform } from 'react-native';
 import DateTimePicker, { DateTimePickerEvent } from '@react-native-community/datetimepicker';
-import { FontAwesome } from '@expo/vector-icons';
+import { Ionicons } from '@expo/vector-icons'; // Changed from FontAwesome
 import { formatDate, formatDateISO } from '../utils/dateUtils';
+import { useAppTheme } from '../../src/theme/ThemeContext';
 
 type DatePickerFieldProps = {
   label: string;
@@ -17,6 +18,7 @@ export default function DatePickerField({
   onChange,
   minimumDate 
 }: DatePickerFieldProps) {
+  const theme = useAppTheme();
   const [show, setShow] = useState(false);
   
   // Convert string date to Date object for the picker
@@ -40,7 +42,7 @@ export default function DatePickerField({
         <Text style={value ? styles.dateText : styles.placeholder}>
           {value ? formatDate(value) : 'Select a date'}
         </Text>
-        <FontAwesome name="calendar" size={16} color="#666666" />
+        <Ionicons name="calendar-outline" size={theme.typography.fontSizes.large} color={theme.colors.textSecondary} />
       </TouchableOpacity>
       
       {show && (
@@ -58,31 +60,34 @@ export default function DatePickerField({
 
 const styles = StyleSheet.create({
   container: {
-    marginBottom: 24,
+    marginBottom: theme.spacing.lg, // 24
   },
   label: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: '#333333',
-    marginBottom: 8,
+    fontSize: theme.typography.fontSizes.medium, // 16
+    fontWeight: theme.typography.fontWeights.semibold, // 600
+    color: theme.colors.text,
+    fontFamily: theme.typography.primaryFont,
+    marginBottom: theme.spacing.sm, // 8
   },
   input: {
-    backgroundColor: '#FFFFFF',
-    borderRadius: 12,
-    padding: 16,
-    fontSize: 16,
-    borderWidth: 1,
-    borderColor: '#E5E5E5',
+    backgroundColor: theme.colors.background,
+    borderRadius: theme.spacing.sm + theme.spacing.xs, // 12
+    padding: theme.spacing.md, // 16
+    // fontSize for the container does not make sense, it's on dateText/placeholder
+    borderWidth: theme.borders.borderWidthSmall,
+    borderColor: theme.colors.border,
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
   },
   dateText: {
-    fontSize: 16,
-    color: '#333333',
+    fontSize: theme.typography.fontSizes.medium, // 16
+    fontFamily: theme.typography.primaryFont,
+    color: theme.colors.text,
   },
   placeholder: {
-    fontSize: 16,
-    color: '#999999',
+    fontSize: theme.typography.fontSizes.medium, // 16
+    fontFamily: theme.typography.primaryFont,
+    color: theme.colors.textTertiary,
   },
 });

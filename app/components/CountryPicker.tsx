@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Modal, FlatList, TextInput } from 'react-native';
-import { FontAwesome } from '@expo/vector-icons';
+import { Ionicons } from '@expo/vector-icons'; // Changed from FontAwesome
 import { getCountryNames } from '../utils/countryData';
+import { useAppTheme } from '../../src/theme/ThemeContext';
 
 interface CountryPickerProps {
   selectedCountry: string;
@@ -9,6 +10,7 @@ interface CountryPickerProps {
 }
 
 const CountryPicker: React.FC<CountryPickerProps> = ({ selectedCountry, onSelectCountry }) => {
+  const theme = useAppTheme();
   const [modalVisible, setModalVisible] = useState(false);
   const [searchText, setSearchText] = useState('');
   const countries = getCountryNames();
@@ -26,7 +28,8 @@ const CountryPicker: React.FC<CountryPickerProps> = ({ selectedCountry, onSelect
         <Text style={styles.pickerText}>
           {selectedCountry || 'Select a country'}
         </Text>
-        <FontAwesome name="chevron-down" size={14} color="#666666" />
+        <Ionicons name="chevron-down-outline" size={theme.typography.fontSizes.medium} color={theme.colors.textSecondary} /> 
+        {/* Size small (12) might be too small for chevron, medium (16) is better. Original FA was 14. */}
       </TouchableOpacity>
 
       <Modal
@@ -40,22 +43,24 @@ const CountryPicker: React.FC<CountryPickerProps> = ({ selectedCountry, onSelect
             <View style={styles.modalHeader}>
               <Text style={styles.modalTitle}>Select a Country</Text>
               <TouchableOpacity onPress={() => setModalVisible(false)}>
-                <FontAwesome name="times" size={20} color="#333333" />
+                <Ionicons name="close-outline" size={theme.typography.fontSizes.xl} color={theme.colors.text} /> 
+                {/* xl is 24, large is 20. Ionicons 'close' is thinner. */}
               </TouchableOpacity>
             </View>
 
             <View style={styles.searchContainer}>
-              <FontAwesome name="search" size={16} color="#666666" style={styles.searchIcon} />
+              <Ionicons name="search-outline" size={theme.typography.fontSizes.medium} color={theme.colors.textSecondary} style={styles.searchIcon} />
               <TextInput
                 style={styles.searchInput}
                 placeholder="Search countries..."
+                placeholderTextColor={theme.colors.textTertiary}
                 value={searchText}
                 onChangeText={setSearchText}
                 autoCapitalize="none"
               />
               {searchText.length > 0 && (
                 <TouchableOpacity onPress={() => setSearchText('')}>
-                  <FontAwesome name="times-circle" size={16} color="#666666" />
+                  <Ionicons name="close-circle-outline" size={theme.typography.fontSizes.medium} color={theme.colors.textSecondary} />
                 </TouchableOpacity>
               )}
             </View>
@@ -83,7 +88,8 @@ const CountryPicker: React.FC<CountryPickerProps> = ({ selectedCountry, onSelect
                     {item}
                   </Text>
                   {selectedCountry === item && (
-                    <FontAwesome name="check" size={16} color="#FF6B6B" />
+                    <Ionicons name="checkmark-outline" size={theme.typography.fontSizes.large} color={theme.colors.secondary} /> 
+                    {/* medium (16) might be small, large (20) for checkmark */}
                   )}
                 </TouchableOpacity>
               )}
@@ -103,74 +109,80 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    backgroundColor: '#FFFFFF',
-    borderRadius: 12,
-    padding: 16,
-    borderWidth: 1,
-    borderColor: '#E5E5E5',
+    backgroundColor: theme.colors.background,
+    borderRadius: theme.spacing.sm + theme.spacing.xs, // 12
+    padding: theme.spacing.md, // 16
+    borderWidth: theme.borders.borderWidthSmall,
+    borderColor: theme.colors.border,
   },
   pickerText: {
-    fontSize: 16,
-    color: '#333333',
+    fontSize: theme.typography.fontSizes.medium, // 16
+    fontFamily: theme.typography.primaryFont,
+    color: theme.colors.text,
   },
   modalOverlay: {
     flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    backgroundColor: theme.colors.black + '80', // 'rgba(0, 0, 0, 0.5)'
     justifyContent: 'flex-end',
   },
   modalContainer: {
-    backgroundColor: '#FFFFFF',
-    borderTopLeftRadius: 20,
-    borderTopRightRadius: 20,
-    paddingHorizontal: 20,
-    paddingBottom: 30,
+    backgroundColor: theme.colors.background,
+    borderTopLeftRadius: theme.spacing.large + theme.spacing.xs, // 20
+    borderTopRightRadius: theme.spacing.large + theme.spacing.xs, // 20
+    paddingHorizontal: theme.spacing.large, // 20
+    paddingBottom: theme.spacing.xl, // 30 -> 32 (close enough)
     maxHeight: '80%',
   },
   modalHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingVertical: 20,
+    paddingVertical: theme.spacing.large, // 20
   },
   modalTitle: {
-    fontSize: 20,
-    fontWeight: '600',
-    color: '#333333',
+    fontSize: theme.typography.fontSizes.large, // 20
+    fontWeight: theme.typography.fontWeights.semibold, // 600
+    fontFamily: theme.typography.primaryFont,
+    color: theme.colors.text,
   },
   searchContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#F5F5F5',
-    borderRadius: 10,
-    paddingHorizontal: 12,
-    marginBottom: 16,
+    backgroundColor: theme.colors.surface, // Or gray[100]
+    borderRadius: theme.borders.radiusMedium, // 10 -> 8 (close enough)
+    paddingHorizontal: theme.spacing.sm + theme.spacing.xs, // 12
+    marginBottom: theme.spacing.md, // 16
   },
   searchIcon: {
-    marginRight: 8,
+    marginRight: theme.spacing.sm, // 8
   },
   searchInput: {
     flex: 1,
-    paddingVertical: 12,
-    fontSize: 16,
+    paddingVertical: theme.spacing.sm + theme.spacing.xs, // 12
+    fontSize: theme.typography.fontSizes.medium, // 16
+    fontFamily: theme.typography.primaryFont,
+    color: theme.colors.text,
   },
   countryItem: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingVertical: 16,
-    borderBottomWidth: 1,
-    borderBottomColor: '#F0F0F0',
+    paddingVertical: theme.spacing.md, // 16
+    borderBottomWidth: theme.borders.borderWidthSmall,
+    borderBottomColor: theme.colors.border, // F0F0F0 -> border color
   },
   selectedCountryItem: {
-    backgroundColor: '#FFF0F0',
+    backgroundColor: theme.colors.secondary + '33', // F27A5E33 approx 20% opacity
   },
   countryName: {
-    fontSize: 16,
-    color: '#333333',
+    fontSize: theme.typography.fontSizes.medium, // 16
+    fontFamily: theme.typography.primaryFont,
+    color: theme.colors.text,
   },
   selectedCountryName: {
-    color: '#FF6B6B',
-    fontWeight: '500',
+    color: theme.colors.secondary,
+    fontWeight: theme.typography.fontWeights.medium, // 500
+    fontFamily: theme.typography.primaryFont,
   },
 });
 
