@@ -7,7 +7,7 @@ const NAV_ITEMS = [
   { name: 'Trips', icon: 'briefcase-outline', route: '/trips' },
   { name: 'Budget', icon: 'wallet-outline', route: '/budget' },
   // FAB will be in the center
-  { name: 'Expenses', icon: 'receipt-outline', route: '/expenses' },
+  { name: 'Expenses', icon: 'receipt-outline', route: '/(tabs)/expenses' },
   { name: 'Reports', icon: 'bar-chart-outline', route: '/reports' },
 ];
 
@@ -75,7 +75,7 @@ const NavigationBar = ({
             easing: Easing.out(Easing.cubic),
             useNativeDriver: true,
           }),
-           Animated.timing(rotateAnim, {
+          Animated.timing(rotateAnim, {
             toValue: 1, // Rotate to 45 degrees (represented by 1)
             duration: 200,
             easing: Easing.out(Easing.cubic),
@@ -83,7 +83,6 @@ const NavigationBar = ({
           }),
         ]).start();
       }, 50);
-
     }
   };
 
@@ -114,20 +113,24 @@ const NavigationBar = ({
     <View style={styles.fabBarContainer}>
       {/* Expanded Menu Buttons */}
       {isMenuOpen && (
-        <Animated.View style={[
-          styles.expandedMenu,
-          {
-            opacity: fadeAnim,
-            transform: [{
-              translateY: slideAnim.interpolate({
-                inputRange: [0, 1],
-                outputRange: [initialTranslateY, 0], // Animate from calculated position to final position (0 translation)
-              })
-            }]
-          }
-        ]}>
-          <TouchableOpacity 
-            style={styles.menuButton} 
+        <Animated.View
+          style={[
+            styles.expandedMenu,
+            {
+              opacity: fadeAnim,
+              transform: [
+                {
+                  translateY: slideAnim.interpolate({
+                    inputRange: [0, 1],
+                    outputRange: [initialTranslateY, 0], // Animate from calculated position to final position (0 translation)
+                  }),
+                },
+              ],
+            },
+          ]}
+        >
+          <TouchableOpacity
+            style={styles.menuButton}
             accessibilityLabel="New Trip"
             onPress={() => {
               console.log('New Trip button pressed');
@@ -138,26 +141,26 @@ const NavigationBar = ({
             <Ionicons name="location-outline" size={24} color="#fff" />
             <Text style={styles.menuButtonText}>New Trip</Text>
           </TouchableOpacity>
-          <TouchableOpacity 
-            style={styles.menuButton} 
+          <TouchableOpacity
+            style={styles.menuButton}
             accessibilityLabel="Log Expense"
             onPress={() => {
               toggleMenu(); // Close menu on press
               onLogExpensePress?.(); // Call the new prop function
             }}
           >
-             <Ionicons name="cash-outline" size={24} color="#fff" />
+            <Ionicons name="cash-outline" size={24} color="#fff" />
             <Text style={styles.menuButtonText}>Log Expense</Text>
           </TouchableOpacity>
-          <TouchableOpacity 
-            style={styles.menuButton} 
+          <TouchableOpacity
+            style={styles.menuButton}
             accessibilityLabel="New Memory"
             onPress={() => {
               toggleMenu(); // Close menu on press
               onNewMemoryPress?.(); // Call the new prop function
             }}
           >
-             <Ionicons name="image-outline" size={24} color="#fff" />
+            <Ionicons name="image-outline" size={24} color="#fff" />
             <Text style={styles.menuButtonText}>New Memory</Text>
           </TouchableOpacity>
         </Animated.View>
@@ -199,14 +202,12 @@ const NavigationBar = ({
       </View>
       {/* Centered FAB */}
       {showFAB && (
-        <TouchableOpacity
-          style={styles.fab}
-          onPress={toggleMenu}
-          accessibilityLabel="Add new item"
-        >
-          <Animated.View style={{
-            transform: [{ rotate: rotateInterpolation }]
-          }}>
+        <TouchableOpacity style={styles.fab} onPress={toggleMenu} accessibilityLabel="Add new item">
+          <Animated.View
+            style={{
+              transform: [{ rotate: rotateInterpolation }],
+            }}
+          >
             <Ionicons name={fabIcon} size={28} color="#fff" />
           </Animated.View>
         </TouchableOpacity>
@@ -295,4 +296,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default NavigationBar; 
+export default NavigationBar;
