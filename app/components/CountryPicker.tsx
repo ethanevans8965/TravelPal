@@ -88,8 +88,7 @@ const CountryPicker: React.FC<CountryPickerProps> = ({ selectedCountry, onSelect
                     {item}
                   </Text>
                   {selectedCountry === item && (
-                    <Ionicons name="checkmark-outline" size={theme.typography.fontSizes.large} color={theme.colors.secondary} /> 
-                    {/* medium (16) might be small, large (20) for checkmark */}
+                    <Ionicons name="checkmark-outline" size={theme.typography.fontSizes.large} color={theme.colors.secondary} />
                   )}
                 </TouchableOpacity>
               )}
