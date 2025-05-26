@@ -2,12 +2,12 @@
 
 ## Design Philosophy
 
-TravelPal aims to be a *travel companion*, not just a budget tool. The design should reflect this by being:
+TravelPal aims to be a _travel companion_, not just a budget tool. The design should reflect this by being:
 
-* **Approachable**: Friendly, non-intimidating, even for users unfamiliar with budgeting
-* **Efficient**: Allow quick entry and retrieval of information, especially during travel
-* **Supportive**: Provide guidance without being judgmental about spending
-* **Trustworthy**: Present financial information clearly and accurately
+- **Approachable**: Friendly, non-intimidating, even for users unfamiliar with budgeting
+- **Efficient**: Allow quick entry and retrieval of information, especially during travel
+- **Supportive**: Provide guidance without being judgmental about spending
+- **Trustworthy**: Present financial information clearly and accurately
 
 ## User Experience Principles
 
@@ -21,78 +21,109 @@ TravelPal aims to be a *travel companion*, not just a budget tool. The design sh
 
 ### Color Palette
 
-* **Primary Color**: A vibrant, travel-inspired color (e.g., teal blue #057B8C) for the main brand identity
-* **Secondary Color**: A complementary color (e.g., coral #F27A5E) for accents and calls-to-action
-* **Neutral Colors**: Light grays for backgrounds, darker grays for text
-* **Functional Colors**: Green for positive indicators (under budget), amber for warnings, red for alerts (over budget)
+- **Primary Color**: A vibrant, travel-inspired color (e.g., teal blue #057B8C) for the main brand identity
+- **Secondary Color**: A complementary color (e.g., coral #F27A5E) for accents and calls-to-action
+- **Neutral Colors**: Light grays for backgrounds, darker grays for text
+- **Functional Colors**: Green for positive indicators (under budget), amber for warnings, red for alerts (over budget)
 
 ### Typography
 
-* **Primary Font**: A clean, modern, highly readable sans-serif (e.g., Inter, Roboto)
-* **Text Hierarchy**: Clear distinction between headings, subheadings, body text, and captions
-* **Number Display**: Monospaced for financial figures to aid readability and comparison
+- **Primary Font**: A clean, modern, highly readable sans-serif (e.g., Inter, Roboto)
+- **Text Hierarchy**: Clear distinction between headings, subheadings, body text, and captions
+- **Number Display**: Monospaced for financial figures to aid readability and comparison
 
 ### UI Components
 
-* **Cards**: To contain related information about trips, budgets, or expense groupings
-* **Progress Indicators**: Visual representations of budget usage and spending trends
-* **Form Elements**: Simplified, streamlined inputs with clear validation
-* **Lists**: For displaying transactions and historical data in a scannable format
+- **Cards**: To contain related information about trips, budgets, or expense groupings
+- **Progress Indicators**: Visual representations of budget usage and spending trends
+- **Form Elements**: Simplified, streamlined inputs with clear validation
+- **Lists**: For displaying transactions and historical data in a scannable format
 
 ## Navigation Structure
 
-### Primary Navigation
+### Primary Navigation (3-Tab Structure) ✅
 
-* **Home/Dashboard**: Overview of current trips, recent expenses, and quick access to main functions
-* **Trips**: List of all trips (past, current, upcoming) with planning status
-* **Budget Planning**: Access to create and modify budget plans
-* **Expense Tracking**: Record and review expenses
-* **Reports**: Detailed analysis and visualization of budget vs. actual spending
-* **Settings**: User preferences, currency settings, etc.
+- **Home**: Dashboard with currency converter, trip snapshot, budget overview, recent expenses, and quick actions
+- **Trips**: Comprehensive trip management with list view, detailed trip cards, and trip creation
+- **Finances**: Consolidated financial hub with sub-navigation for budgets, expenses, and reports
 
-### Trip Context Navigation
+### Sub-Navigation
 
-Once a user selects a specific trip:
+#### Finances Tab Sub-Navigation ✅
 
-* **Trip Overview**: Summary information about the selected trip
-* **Budget Plan**: Detailed budget allocation for the trip
-* **Expenses**: List of recorded expenses for this trip
-* **Analysis**: Comparisons of planned vs. actual spending
-* **Trip Settings**: Trip-specific preferences and details
+- **Budgets**: Overall budget planning and trip-specific budget management
+- **All Expenses**: Global expense list with filtering and categorization capabilities
+- **Reports**: Financial analytics, spending patterns, and budget performance insights
+
+#### Trip Detail Navigation ✅
+
+When a user selects a specific trip:
+
+- **Trip Overview**: Comprehensive trip information with dates, status, and budget summary
+- **Trip Budget**: Detailed budget categories and allocation for the trip
+- **Trip Expenses**: List of recorded expenses specific to this trip
+- **Trip Settings**: Trip-specific preferences and management options
+
+### Global Actions ✅
+
+#### Floating Action Button (FAB)
+
+Universal access to core actions from any screen:
+
+- **Add Expense**: Quick expense entry with trip selection
+- **Add Trip**: Launch trip creation workflow
+- **Add Budget Item**: Create new budget plans or categories
 
 ## Interaction Patterns
 
-### Primary Workflows
+### Primary Workflows ✅
 
 1. **Creating a New Trip**:
-   * Trigger → Enter basic info → Select budgeting scenario → Create budget → Review/Confirm
+
+   - Home Dashboard → Quick Action "Plan New Trip" OR Trips Tab → "+" Button OR Global FAB → "Add Trip"
+   - Enter basic info → Select budgeting scenario → Create budget → Review/Confirm
 
 2. **Recording an Expense**:
-   * Trigger → Select trip → Enter expense details → Categorize → Save → View updated totals
+
+   - Home Dashboard → Quick Action "Add Expense" OR Global FAB → "Add Expense" OR Finances Tab → All Expenses
+   - Select trip → Enter expense details → Categorize → Save → View updated totals
 
 3. **Checking Budget Status**:
-   * Select trip → View overview → Explore category details if needed
 
-### Mobile Considerations
+   - Home Dashboard → Budget Overview Widget OR Trips Tab → Select Trip → Trip Details
+   - View overview → Explore category details if needed
 
-* **Bottom Navigation**: Place primary navigation at the bottom for easy thumb access
-* **Floating Action Button (FAB)**: Quick access to common actions like adding expenses
-* **Collapsible Sections**: Show/hide detailed information to maximize screen space
-* **Optimized Inputs**: Use appropriate mobile input types (numeric keypads for amounts, etc.)
+4. **Viewing Trip Details**:
+
+   - Home Dashboard → Current Trip Snapshot OR Trips Tab → Tap Trip Card
+   - View comprehensive trip information → Navigate to specific sections as needed
+
+5. **Managing Finances**:
+   - Finances Tab → Select sub-tab (Budgets/All Expenses/Reports)
+   - Filter and analyze financial data → Take actions as needed
+
+### Mobile Considerations ✅
+
+- **3-Tab Bottom Navigation**: Streamlined navigation with Home, Trips, and Finances for easy thumb access
+- **Global Floating Action Button (FAB)**: Positioned for easy access, provides universal entry to core actions
+- **Card-Based Layout**: Information organized in digestible cards with clear visual hierarchy
+- **Dashboard Widgets**: Quick overview and access to key information without deep navigation
+- **Responsive Touch Targets**: All interactive elements optimized for mobile interaction
+- **Contextual Actions**: Actions available where they make most sense in the user's workflow
 
 ## Accessibility Considerations
 
-* **Color Contrast**: Ensure text is readable against backgrounds
-* **Touch Targets**: Adequately sized buttons and interactive elements (minimum 44x44px)
-* **Alternative Text**: For all images and icons
-* **Keyboard Navigation**: Support for non-touch interaction
+- **Color Contrast**: Ensure text is readable against backgrounds
+- **Touch Targets**: Adequately sized buttons and interactive elements (minimum 44x44px)
+- **Alternative Text**: For all images and icons
+- **Keyboard Navigation**: Support for non-touch interaction
 
 ## Responsive Layout Strategy
 
-* **Mobile-First**: Design for mobile experience first, then enhance for larger screens
-* **Breakpoints**: Define key screen size breakpoints for adaptation
-* **Content Priority**: Determine which content/features to prioritize at each screen size
-* **Consistent Components**: Maintain consistent UI components across device sizes
+- **Mobile-First**: Design for mobile experience first, then enhance for larger screens
+- **Breakpoints**: Define key screen size breakpoints for adaptation
+- **Content Priority**: Determine which content/features to prioritize at each screen size
+- **Consistent Components**: Maintain consistent UI components across device sizes
 
 ## Next Steps
 
@@ -100,4 +131,4 @@ Once a user selects a specific trip:
 2. Develop the visual design language (detailed UI components)
 3. Design specific user flows for each of the primary workflows
 
---- 
+---
