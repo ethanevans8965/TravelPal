@@ -268,8 +268,8 @@ The core data entities are defined in `app/types.ts`:
 
 - **✅ Budget Overview**: Comprehensive budget management with real-time calculations, progress indicators, and trip-specific budget cards
 - **✅ Dynamic Dashboard**: Connected dashboard widgets to live trip and expense data with sample data integration
-- **🚧 All Expenses Tab**: Global expense list with filtering, search, and management capabilities (Next)
-- **📋 Financial Reports**: Analytics and visualizations for spending patterns and budget performance (Planned)
+- **✅ All Expenses Tab**: Complete global expense management with advanced search, filtering, sorting, and statistics
+- **🚧 Financial Reports**: Analytics and visualizations for spending patterns and budget performance (Next)
 - **📋 Enhanced Expense Management**: Advanced expense editing, bulk operations, and export features (Planned)
 
 ### 📋 Phase 4: Advanced Features (Planned)
