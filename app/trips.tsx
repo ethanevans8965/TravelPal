@@ -1,9 +1,9 @@
 import React from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
 import { useAppContext } from './context';
-import { Stack } from 'expo-router';
 import { FontAwesome } from '@expo/vector-icons';
 import { Trip } from './types';
+import { useRouter } from 'expo-router';
 
 const getTravelStyleColor = (travelStyle?: string) => {
   switch (travelStyle?.toLowerCase()) {
@@ -54,6 +54,7 @@ const calculateTripLength = (startDate?: string, endDate?: string) => {
 
 const TripCard = ({ trip }: { trip: Trip }) => {
   const { locations } = useAppContext();
+  const router = useRouter();
   const location = locations.find((l) => l.id === trip.locationId);
   const tripLength = calculateTripLength(trip.startDate, trip.endDate);
 
@@ -65,8 +66,12 @@ const TripCard = ({ trip }: { trip: Trip }) => {
     trip.destination?.name ||
     'Unknown destination';
 
+  const handleTripPress = () => {
+    router.push(`/trip/${trip.id}` as any);
+  };
+
   return (
-    <TouchableOpacity style={styles.tripCard}>
+    <TouchableOpacity style={styles.tripCard} onPress={handleTripPress}>
       <View style={styles.tripHeader}>
         <View style={styles.tripTitleContainer}>
           <Text style={styles.tripName}>{trip.name}</Text>
@@ -127,27 +132,29 @@ const TripCard = ({ trip }: { trip: Trip }) => {
 
 export default function TripsScreen() {
   const { trips } = useAppContext();
+  const router = useRouter();
+
+  const handleAddNewTrip = () => {
+    router.push('/trip/create/trip-name' as any);
+  };
 
   return (
     <View style={styles.container}>
-      <Stack.Screen
-        options={{
-          title: 'My Trips',
-          headerStyle: {
-            backgroundColor: '#057B8C',
-          },
-          headerTintColor: '#FFFFFF',
-        }}
-      />
-
       <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
         <View style={styles.header}>
-          <Text style={styles.title}>My Trips</Text>
-          <Text style={styles.subtitle}>
-            {trips.length === 0
-              ? 'Start planning your next adventure!'
-              : `${trips.length} trip${trips.length === 1 ? '' : 's'}`}
-          </Text>
+          <View style={styles.headerContent}>
+            <View>
+              <Text style={styles.title}>My Trips</Text>
+              <Text style={styles.subtitle}>
+                {trips.length === 0
+                  ? 'Start planning your next adventure!'
+                  : `${trips.length} trip${trips.length === 1 ? '' : 's'}`}
+              </Text>
+            </View>
+            <TouchableOpacity style={styles.addButton} onPress={handleAddNewTrip}>
+              <FontAwesome name="plus" size={16} color="#FFFFFF" />
+            </TouchableOpacity>
+          </View>
         </View>
 
         {trips.length === 0 ? (
@@ -181,6 +188,24 @@ const styles = StyleSheet.create({
   header: {
     padding: 24,
     paddingBottom: 16,
+  },
+  headerContent: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'flex-start',
+  },
+  addButton: {
+    backgroundColor: '#057B8C',
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    justifyContent: 'center',
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
   },
   title: {
     fontSize: 32,
