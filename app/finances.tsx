@@ -2,10 +2,15 @@ import React, { useState, useMemo } from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, TextInput } from 'react-native';
 import { useAppContext } from './context';
 import { FontAwesome } from '@expo/vector-icons';
+import SpendingTrendChart from './components/charts/SpendingTrendChart';
+import CategoryPieChart from './components/charts/CategoryPieChart';
+import BudgetPerformanceChart from './components/charts/BudgetPerformanceChart';
+import ReportSummary from './components/reports/ReportSummary';
 
 type FinanceTab = 'budgets' | 'expenses' | 'reports';
 type SortOption = 'date' | 'amount' | 'category';
 type SortOrder = 'asc' | 'desc';
+type TimePeriod = 'week' | 'month' | 'year' | 'all';
 
 export default function Finances() {
   const [activeTab, setActiveTab] = useState<FinanceTab>('budgets');
@@ -14,6 +19,7 @@ export default function Finances() {
   const [selectedTrip, setSelectedTrip] = useState<string>('all');
   const [sortBy, setSortBy] = useState<SortOption>('date');
   const [sortOrder, setSortOrder] = useState<SortOrder>('desc');
+  const [reportTimePeriod, setReportTimePeriod] = useState<TimePeriod>('month');
 
   const { trips, expenses } = useAppContext();
 
@@ -564,6 +570,119 @@ export default function Finances() {
     );
   };
 
+  const renderReportsTab = () => {
+    // Filter expenses based on selected time period
+    const getFilteredExpensesForReports = () => {
+      if (reportTimePeriod === 'all') return expenses;
+
+      const now = new Date();
+      return expenses.filter((expense) => {
+        const expenseDate = new Date(expense.date);
+        const daysDiff = Math.floor(
+          (now.getTime() - expenseDate.getTime()) / (1000 * 60 * 60 * 24)
+        );
+
+        switch (reportTimePeriod) {
+          case 'week':
+            return daysDiff <= 7;
+          case 'month':
+            return daysDiff <= 30;
+          case 'year':
+            return daysDiff <= 365;
+          default:
+            return true;
+        }
+      });
+    };
+
+    const filteredReportExpenses = getFilteredExpensesForReports();
+
+    return (
+      <View style={styles.tabContent}>
+        <Text style={styles.contentTitle}>Financial Reports</Text>
+        <Text style={styles.contentSubtitle}>
+          Analyze your spending patterns and budget performance
+        </Text>
+
+        {/* Time Period Selector */}
+        <View style={styles.timePeriodContainer}>
+          <Text style={styles.filterLabel}>Time Period</Text>
+          <View style={styles.timePeriodButtons}>
+            {(['week', 'month', 'year', 'all'] as TimePeriod[]).map((period) => (
+              <TouchableOpacity
+                key={period}
+                style={[
+                  styles.timePeriodButton,
+                  reportTimePeriod === period && styles.activeTimePeriodButton,
+                ]}
+                onPress={() => setReportTimePeriod(period)}
+              >
+                <Text
+                  style={[
+                    styles.timePeriodButtonText,
+                    reportTimePeriod === period && styles.activeTimePeriodButtonText,
+                  ]}
+                >
+                  {period === 'all' ? 'All Time' : period.charAt(0).toUpperCase() + period.slice(1)}
+                </Text>
+              </TouchableOpacity>
+            ))}
+          </View>
+        </View>
+
+        {/* Report Summary */}
+        <ReportSummary
+          trips={trips}
+          expenses={filteredReportExpenses}
+          timePeriod={reportTimePeriod}
+        />
+
+        {/* Charts Section */}
+        {filteredReportExpenses.length > 0 ? (
+          <>
+            {/* Spending Trend Chart */}
+            <SpendingTrendChart
+              expenses={filteredReportExpenses}
+              timePeriod={reportTimePeriod === 'all' ? 'month' : reportTimePeriod}
+              title={`Spending Trend - ${reportTimePeriod === 'all' ? 'Monthly View' : reportTimePeriod.charAt(0).toUpperCase() + reportTimePeriod.slice(1)}`}
+            />
+
+            {/* Category Distribution */}
+            <CategoryPieChart
+              expenses={filteredReportExpenses}
+              title="Spending by Category"
+              showLegend={true}
+            />
+
+            {/* Budget Performance */}
+            <BudgetPerformanceChart
+              trips={trips}
+              expenses={filteredReportExpenses}
+              title="Budget vs Actual Spending"
+              showByCategory={false}
+            />
+
+            {/* Category Budget Performance */}
+            <BudgetPerformanceChart
+              trips={trips}
+              expenses={filteredReportExpenses}
+              title="Budget Performance by Category"
+              showByCategory={true}
+            />
+          </>
+        ) : (
+          <View style={styles.emptyState}>
+            <FontAwesome name="bar-chart" size={48} color="#C7C7CC" />
+            <Text style={styles.emptyStateTitle}>No data for selected period</Text>
+            <Text style={styles.emptyStateText}>
+              Try selecting a different time period or add some expenses
+            </Text>
+          </View>
+        )}
+      </View>
+    );
+  };
+
   const renderTabContent = () => {
     switch (activeTab) {
       case 'budgets':
@@ -573,17 +692,7 @@ export default function Finances() {
         return renderExpensesTab();
 
       case 'reports':
-        return (
-          <View style={styles.tabContent}>
-            <Text style={styles.contentTitle}>Financial Reports</Text>
-            <Text style={styles.contentSubtitle}>
-              Analyze your spending patterns and budget performance
-            </Text>
-            <View style={styles.placeholder}>
-              <Text style={styles.placeholderText}>Reports and analytics coming soon</Text>
-            </View>
-          </View>
-        );
+        return renderReportsTab();
 
       default:
         return null;
@@ -1040,5 +1149,33 @@ const styles = StyleSheet.create({
   },
   lastExpenseCard: {
     marginBottom: 0,
+  },
+  timePeriodContainer: {
+    marginBottom: 24,
+  },
+  timePeriodButtons: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+  timePeriodButton: {
+    flex: 1,
+    paddingVertical: 8,
+    paddingHorizontal: 12,
+    marginHorizontal: 4,
+    borderRadius: 8,
+    backgroundColor: '#F9FAFB',
+    alignItems: 'center',
+  },
+  activeTimePeriodButton: {
+    backgroundColor: '#057B8C',
+  },
+  timePeriodButtonText: {
+    fontSize: 14,
+    fontWeight: '500',
+    color: '#8E8E93',
+  },
+  activeTimePeriodButtonText: {
+    color: '#FFFFFF',
+    fontWeight: '600',
   },
 });
