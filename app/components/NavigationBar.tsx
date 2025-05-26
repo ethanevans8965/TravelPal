@@ -4,11 +4,9 @@ import { Ionicons } from '@expo/vector-icons';
 import { useRouter, usePathname } from 'expo-router';
 
 const NAV_ITEMS = [
-  { name: 'Trips', icon: 'briefcase-outline', route: '/trips' },
-  { name: 'Budget', icon: 'wallet-outline', route: '/budget' },
-  // FAB will be in the center
-  { name: 'Expenses', icon: 'receipt-outline', route: '/(tabs)/expenses' },
-  { name: 'Reports', icon: 'bar-chart-outline', route: '/reports' },
+  { name: 'Home', icon: 'home-outline', route: '/' },
+  { name: 'Trips', icon: 'briefcase-outline', route: '/trips-placeholder' },
+  { name: 'Finances', icon: 'bar-chart-outline', route: '/finances' },
 ];
 
 const NavigationBar = ({
@@ -86,9 +84,8 @@ const NavigationBar = ({
     }
   };
 
-  // Split nav items for left and right of FAB
-  const leftItems = NAV_ITEMS.slice(0, 2);
-  const rightItems = NAV_ITEMS.slice(2);
+  // All nav items in a row since we have 3 items
+  const allItems = NAV_ITEMS;
 
   // Calculate the vertical distance for the slide-up animation
   // The expanded menu's final bottom position is FAB_SIZE + 10 from the container bottom.
@@ -131,61 +128,44 @@ const NavigationBar = ({
         >
           <TouchableOpacity
             style={styles.menuButton}
-            accessibilityLabel="New Trip"
-            onPress={() => {
-              console.log('New Trip button pressed');
-              toggleMenu(); // Close menu on press
-              onNewTripPress?.(); // Call the new prop function
-            }}
-          >
-            <Ionicons name="location-outline" size={24} color="#fff" />
-            <Text style={styles.menuButtonText}>New Trip</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={styles.menuButton}
-            accessibilityLabel="Log Expense"
+            accessibilityLabel="Add Expense"
             onPress={() => {
               toggleMenu(); // Close menu on press
-              onLogExpensePress?.(); // Call the new prop function
+              onLogExpensePress?.(); // Call the existing expense function
             }}
           >
             <Ionicons name="cash-outline" size={24} color="#fff" />
-            <Text style={styles.menuButtonText}>Log Expense</Text>
+            <Text style={styles.menuButtonText}>Add Expense</Text>
           </TouchableOpacity>
           <TouchableOpacity
             style={styles.menuButton}
-            accessibilityLabel="New Memory"
+            accessibilityLabel="Add Trip"
             onPress={() => {
+              console.log('Add Trip button pressed');
               toggleMenu(); // Close menu on press
-              onNewMemoryPress?.(); // Call the new prop function
+              onNewTripPress?.(); // Call the existing trip function - same as before
             }}
           >
-            <Ionicons name="image-outline" size={24} color="#fff" />
-            <Text style={styles.menuButtonText}>New Memory</Text>
+            <Ionicons name="location-outline" size={24} color="#fff" />
+            <Text style={styles.menuButtonText}>Add Trip</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.menuButton}
+            accessibilityLabel="Add Budget Item"
+            onPress={() => {
+              toggleMenu(); // Close menu on press
+              // TODO: Add budget item functionality will be implemented later
+            }}
+          >
+            <Ionicons name="wallet-outline" size={24} color="#fff" />
+            <Text style={styles.menuButtonText}>Add Budget Item</Text>
           </TouchableOpacity>
         </Animated.View>
       )}
 
       <View style={styles.fabBar}>
-        {/* Left icons */}
-        {leftItems.map((item) => (
-          <TouchableOpacity
-            key={item.name}
-            style={styles.navItem}
-            onPress={() => router.push(item.route as any)}
-            accessibilityLabel={item.name}
-          >
-            <Ionicons
-              name={item.icon as any}
-              size={26}
-              color={pathname === item.route ? '#057B8C' : '#222'}
-            />
-          </TouchableOpacity>
-        ))}
-        {/* Spacer for FAB */}
-        <View style={styles.fabSpacer} />
-        {/* Right icons */}
-        {rightItems.map((item) => (
+        {/* All navigation items */}
+        {allItems.map((item) => (
           <TouchableOpacity
             key={item.name}
             style={styles.navItem}
@@ -254,8 +234,7 @@ const styles = StyleSheet.create({
   fab: {
     position: 'absolute',
     top: -FAB_SIZE / 2 + BAR_HEIGHT / 2,
-    left: '50%',
-    marginLeft: -FAB_SIZE / 2,
+    right: 16, // Position FAB to the right side instead of center
     width: FAB_SIZE,
     height: FAB_SIZE,
     borderRadius: FAB_SIZE / 2,
