@@ -1,13 +1,124 @@
-import React, { useState } from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
+import React, { useState, useMemo } from 'react';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, TextInput } from 'react-native';
 import { useAppContext } from './context';
 import { FontAwesome } from '@expo/vector-icons';
 
 type FinanceTab = 'budgets' | 'expenses' | 'reports';
+type SortOption = 'date' | 'amount' | 'category';
+type SortOrder = 'asc' | 'desc';
 
 export default function Finances() {
   const [activeTab, setActiveTab] = useState<FinanceTab>('budgets');
+  const [searchQuery, setSearchQuery] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState<string>('all');
+  const [selectedTrip, setSelectedTrip] = useState<string>('all');
+  const [sortBy, setSortBy] = useState<SortOption>('date');
+  const [sortOrder, setSortOrder] = useState<SortOrder>('desc');
+
   const { trips, expenses } = useAppContext();
+
+  // Get unique categories from expenses
+  const categories = useMemo(() => {
+    const uniqueCategories = [...new Set(expenses.map((e) => e.category))];
+    return uniqueCategories.sort();
+  }, [expenses]);
+
+  // Filter and sort expenses
+  const filteredExpenses = useMemo(() => {
+    let filtered = expenses;
+
+    // Filter by search query
+    if (searchQuery.trim()) {
+      filtered = filtered.filter(
+        (expense) =>
+          expense.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          expense.category.toLowerCase().includes(searchQuery.toLowerCase())
+      );
+    }
+
+    // Filter by category
+    if (selectedCategory !== 'all') {
+      filtered = filtered.filter((expense) => expense.category === selectedCategory);
+    }
+
+    // Filter by trip
+    if (selectedTrip !== 'all') {
+      filtered = filtered.filter((expense) => expense.tripId === selectedTrip);
+    }
+
+    // Sort expenses
+    filtered.sort((a, b) => {
+      let comparison = 0;
+
+      switch (sortBy) {
+        case 'date':
+          comparison = new Date(a.date).getTime() - new Date(b.date).getTime();
+          break;
+        case 'amount':
+          comparison = a.amount - b.amount;
+          break;
+        case 'category':
+          comparison = a.category.localeCompare(b.category);
+          break;
+      }
+
+      return sortOrder === 'asc' ? comparison : -comparison;
+    });
+
+    return filtered;
+  }, [expenses, searchQuery, selectedCategory, selectedTrip, sortBy, sortOrder]);
+
+  // Calculate expense statistics
+  const expenseStats = useMemo(() => {
+    const totalAmount = filteredExpenses.reduce((sum, expense) => sum + expense.amount, 0);
+    const averageAmount = filteredExpenses.length > 0 ? totalAmount / filteredExpenses.length : 0;
+    const categoryTotals: Record<string, number> = {};
+
+    filteredExpenses.forEach((expense) => {
+      categoryTotals[expense.category] = (categoryTotals[expense.category] || 0) + expense.amount;
+    });
+
+    const topCategory = Object.entries(categoryTotals).sort(([, a], [, b]) => b - a)[0];
+
+    return {
+      totalAmount,
+      averageAmount,
+      count: filteredExpenses.length,
+      topCategory: topCategory ? { category: topCategory[0], amount: topCategory[1] } : null,
+    };
+  }, [filteredExpenses]);
+
+  // Format date for display
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString);
+    const now = new Date();
+    const diffTime = now.getTime() - date.getTime();
+    const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+
+    if (diffDays === 0) return 'Today';
+    if (diffDays === 1) return 'Yesterday';
+    if (diffDays < 7) return `${diffDays} days ago`;
+    return date.toLocaleDateString();
+  };
+
+  // Get emoji for expense category
+  const getCategoryEmoji = (category: string) => {
+    const emojiMap: Record<string, string> = {
+      food: '🍽️',
+      transportation: '🚇',
+      accommodation: '🏨',
+      activities: '🎯',
+      shopping: '🛍️',
+      other: '💰',
+    };
+    return emojiMap[category] || '💰';
+  };
+
+  // Get trip name by ID
+  const getTripName = (tripId: string) => {
+    const trip = trips.find((t) => t.id === tripId);
+    return trip ? trip.name : 'Unknown Trip';
+  };
 
   // Calculate budget statistics
   const calculateBudgetStats = () => {
@@ -48,6 +159,235 @@ export default function Finances() {
       percentageUsed: budget > 0 ? (totalSpent / budget) * 100 : 0,
       categorySpending,
     };
+  };
+
+  const renderExpensesTab = () => {
+    return (
+      <View style={styles.tabContent}>
+        <Text style={styles.contentTitle}>All Expenses</Text>
+        <Text style={styles.contentSubtitle}>
+          View and manage all your expenses across all trips
+        </Text>
+
+        {/* Expense Statistics */}
+        <View style={styles.statsCard}>
+          <View style={styles.statsRow}>
+            <View style={styles.statItem}>
+              <Text style={styles.statValue}>${expenseStats.totalAmount.toLocaleString()}</Text>
+              <Text style={styles.statLabel}>Total Spent</Text>
+            </View>
+            <View style={styles.statItem}>
+              <Text style={styles.statValue}>{expenseStats.count}</Text>
+              <Text style={styles.statLabel}>Expenses</Text>
+            </View>
+            <View style={styles.statItem}>
+              <Text style={styles.statValue}>${expenseStats.averageAmount.toFixed(0)}</Text>
+              <Text style={styles.statLabel}>Average</Text>
+            </View>
+          </View>
+          {expenseStats.topCategory && (
+            <View style={styles.topCategoryRow}>
+              <Text style={styles.topCategoryText}>
+                Top category: {expenseStats.topCategory.category} ($
+                {expenseStats.topCategory.amount.toLocaleString()})
+              </Text>
+            </View>
+          )}
+        </View>
+
+        {/* Search and Filters */}
+        <View style={styles.filtersContainer}>
+          {/* Search Bar */}
+          <View style={styles.searchContainer}>
+            <FontAwesome name="search" size={16} color="#8E8E93" style={styles.searchIcon} />
+            <TextInput
+              style={styles.searchInput}
+              placeholder="Search expenses..."
+              value={searchQuery}
+              onChangeText={setSearchQuery}
+              placeholderTextColor="#8E8E93"
+            />
+            {searchQuery.length > 0 && (
+              <TouchableOpacity onPress={() => setSearchQuery('')} style={styles.clearButton}>
+                <FontAwesome name="times-circle" size={16} color="#8E8E93" />
+              </TouchableOpacity>
+            )}
+          </View>
+
+          {/* Filter Row */}
+          <View style={styles.filterRow}>
+            {/* Category Filter */}
+            <View style={styles.filterGroup}>
+              <Text style={styles.filterLabel}>Category</Text>
+              <ScrollView
+                horizontal
+                showsHorizontalScrollIndicator={false}
+                style={styles.filterScroll}
+              >
+                <TouchableOpacity
+                  style={[styles.filterChip, selectedCategory === 'all' && styles.activeFilterChip]}
+                  onPress={() => setSelectedCategory('all')}
+                >
+                  <Text
+                    style={[
+                      styles.filterChipText,
+                      selectedCategory === 'all' && styles.activeFilterChipText,
+                    ]}
+                  >
+                    All
+                  </Text>
+                </TouchableOpacity>
+                {categories.map((category) => (
+                  <TouchableOpacity
+                    key={category}
+                    style={[
+                      styles.filterChip,
+                      selectedCategory === category && styles.activeFilterChip,
+                    ]}
+                    onPress={() => setSelectedCategory(category)}
+                  >
+                    <Text
+                      style={[
+                        styles.filterChipText,
+                        selectedCategory === category && styles.activeFilterChipText,
+                      ]}
+                    >
+                      {getCategoryEmoji(category)} {category}
+                    </Text>
+                  </TouchableOpacity>
+                ))}
+              </ScrollView>
+            </View>
+
+            {/* Trip Filter */}
+            <View style={styles.filterGroup}>
+              <Text style={styles.filterLabel}>Trip</Text>
+              <ScrollView
+                horizontal
+                showsHorizontalScrollIndicator={false}
+                style={styles.filterScroll}
+              >
+                <TouchableOpacity
+                  style={[styles.filterChip, selectedTrip === 'all' && styles.activeFilterChip]}
+                  onPress={() => setSelectedTrip('all')}
+                >
+                  <Text
+                    style={[
+                      styles.filterChipText,
+                      selectedTrip === 'all' && styles.activeFilterChipText,
+                    ]}
+                  >
+                    All Trips
+                  </Text>
+                </TouchableOpacity>
+                {trips.map((trip) => (
+                  <TouchableOpacity
+                    key={trip.id}
+                    style={[styles.filterChip, selectedTrip === trip.id && styles.activeFilterChip]}
+                    onPress={() => setSelectedTrip(trip.id)}
+                  >
+                    <Text
+                      style={[
+                        styles.filterChipText,
+                        selectedTrip === trip.id && styles.activeFilterChipText,
+                      ]}
+                    >
+                      {trip.name}
+                    </Text>
+                  </TouchableOpacity>
+                ))}
+              </ScrollView>
+            </View>
+          </View>
+
+          {/* Sort Options */}
+          <View style={styles.sortContainer}>
+            <Text style={styles.filterLabel}>Sort by</Text>
+            <View style={styles.sortButtons}>
+              {(['date', 'amount', 'category'] as SortOption[]).map((option) => (
+                <TouchableOpacity
+                  key={option}
+                  style={[styles.sortButton, sortBy === option && styles.activeSortButton]}
+                  onPress={() => {
+                    if (sortBy === option) {
+                      setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc');
+                    } else {
+                      setSortBy(option);
+                      setSortOrder('desc');
+                    }
+                  }}
+                >
+                  <Text
+                    style={[
+                      styles.sortButtonText,
+                      sortBy === option && styles.activeSortButtonText,
+                    ]}
+                  >
+                    {option.charAt(0).toUpperCase() + option.slice(1)}
+                  </Text>
+                  {sortBy === option && (
+                    <FontAwesome
+                      name={sortOrder === 'asc' ? 'arrow-up' : 'arrow-down'}
+                      size={12}
+                      color="#057B8C"
+                      style={styles.sortIcon}
+                    />
+                  )}
+                </TouchableOpacity>
+              ))}
+            </View>
+          </View>
+        </View>
+
+        {/* Expenses List */}
+        {filteredExpenses.length === 0 ? (
+          <View style={styles.emptyState}>
+            <FontAwesome name="file-text" size={48} color="#C7C7CC" />
+            <Text style={styles.emptyStateTitle}>
+              {searchQuery || selectedCategory !== 'all' || selectedTrip !== 'all'
+                ? 'No matching expenses'
+                : 'No expenses yet'}
+            </Text>
+            <Text style={styles.emptyStateText}>
+              {searchQuery || selectedCategory !== 'all' || selectedTrip !== 'all'
+                ? 'Try adjusting your filters or search terms'
+                : 'Start tracking your travel expenses'}
+            </Text>
+          </View>
+        ) : (
+          <View style={styles.expensesList}>
+            {filteredExpenses.map((expense, index) => (
+              <View
+                key={expense.id}
+                style={[
+                  styles.expenseCard,
+                  index === filteredExpenses.length - 1 && styles.lastExpenseCard,
+                ]}
+              >
+                <View style={styles.expenseHeader}>
+                  <View style={styles.expenseIcon}>
+                    <Text style={styles.expenseIconText}>{getCategoryEmoji(expense.category)}</Text>
+                  </View>
+                  <View style={styles.expenseInfo}>
+                    <Text style={styles.expenseName}>{expense.description}</Text>
+                    <Text style={styles.expenseCategory}>{expense.category}</Text>
+                  </View>
+                  <View style={styles.expenseAmount}>
+                    <Text style={styles.expenseAmountText}>-${expense.amount.toFixed(2)}</Text>
+                    <Text style={styles.expenseCurrency}>{expense.currency}</Text>
+                  </View>
+                </View>
+
+                <View style={styles.expenseFooter}>
+                  <Text style={styles.expenseTrip}>{getTripName(expense.tripId)}</Text>
+                  <Text style={styles.expenseDate}>{formatDate(expense.date)}</Text>
+                </View>
+              </View>
+            ))}
+          </View>
+        )}
+      </View>
+    );
   };
 
   const renderBudgetsTab = () => {
@@ -230,17 +570,7 @@ export default function Finances() {
         return renderBudgetsTab();
 
       case 'expenses':
-        return (
-          <View style={styles.tabContent}>
-            <Text style={styles.contentTitle}>All Expenses</Text>
-            <Text style={styles.contentSubtitle}>
-              View and manage all your expenses across all trips
-            </Text>
-            <View style={styles.placeholder}>
-              <Text style={styles.placeholderText}>Global expense list coming soon</Text>
-            </View>
-          </View>
-        );
+        return renderExpensesTab();
 
       case 'reports':
         return (
@@ -539,5 +869,176 @@ const styles = StyleSheet.create({
   categoryAmount: {
     fontSize: 14,
     color: '#8E8E93',
+  },
+  statsCard: {
+    backgroundColor: '#FFFFFF',
+    borderRadius: 12,
+    padding: 24,
+    marginBottom: 24,
+  },
+  statsRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: 16,
+  },
+  topCategoryRow: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    marginBottom: 16,
+  },
+  topCategoryText: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#1C1C1E',
+  },
+  filtersContainer: {
+    marginBottom: 24,
+  },
+  filterLabel: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#1C1C1E',
+    marginBottom: 8,
+  },
+  filterScroll: {
+    flexDirection: 'row',
+  },
+  searchContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#FFFFFF',
+    borderRadius: 12,
+    padding: 12,
+    marginBottom: 16,
+  },
+  searchIcon: {
+    marginRight: 8,
+  },
+  searchInput: {
+    flex: 1,
+    fontSize: 16,
+    color: '#8E8E93',
+  },
+  clearButton: {
+    padding: 4,
+  },
+  filterRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: 16,
+  },
+  filterGroup: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  filterChip: {
+    padding: 8,
+    borderRadius: 16,
+    marginRight: 8,
+  },
+  activeFilterChip: {
+    backgroundColor: '#057B8C',
+  },
+  filterChipText: {
+    fontSize: 16,
+    fontWeight: '500',
+    color: '#8E8E93',
+  },
+  activeFilterChipText: {
+    color: '#FFFFFF',
+    fontWeight: '600',
+  },
+  sortContainer: {
+    marginBottom: 16,
+  },
+  sortButtons: {
+    flexDirection: 'row',
+  },
+  sortButton: {
+    padding: 8,
+    borderRadius: 16,
+    marginRight: 8,
+  },
+  activeSortButton: {
+    backgroundColor: '#057B8C',
+  },
+  sortButtonText: {
+    fontSize: 16,
+    fontWeight: '500',
+    color: '#8E8E93',
+  },
+  activeSortButtonText: {
+    color: '#FFFFFF',
+    fontWeight: '600',
+  },
+  sortIcon: {
+    marginLeft: 4,
+  },
+  expensesList: {
+    marginBottom: 24,
+  },
+  expenseCard: {
+    backgroundColor: '#FFFFFF',
+    borderRadius: 12,
+    padding: 16,
+    marginBottom: 12,
+  },
+  expenseHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 12,
+  },
+  expenseIcon: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: '#E5E5E5',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  expenseIconText: {
+    fontSize: 20,
+    fontWeight: '600',
+    color: '#1C1C1E',
+  },
+  expenseInfo: {
+    flex: 1,
+  },
+  expenseName: {
+    fontSize: 18,
+    fontWeight: '600',
+    color: '#1C1C1E',
+  },
+  expenseCategory: {
+    fontSize: 14,
+    color: '#8E8E93',
+  },
+  expenseAmount: {
+    alignItems: 'flex-end',
+  },
+  expenseAmountText: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#1C1C1E',
+  },
+  expenseCurrency: {
+    fontSize: 14,
+    color: '#8E8E93',
+  },
+  expenseFooter: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  expenseTrip: {
+    fontSize: 14,
+    color: '#8E8E93',
+  },
+  expenseDate: {
+    fontSize: 14,
+    color: '#8E8E93',
+  },
+  lastExpenseCard: {
+    marginBottom: 0,
   },
 });
