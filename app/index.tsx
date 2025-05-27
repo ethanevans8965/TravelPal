@@ -2,6 +2,7 @@ import React from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
 import { FontAwesome } from '@expo/vector-icons';
 import { useAppContext } from './context';
+import CurrencyConverter from './components/CurrencyConverter';
 
 export default function Index() {
   const { trips, expenses } = useAppContext();
@@ -200,9 +201,7 @@ export default function Index() {
       {/* Currency Converter */}
       <View style={styles.section}>
         <Text style={styles.sectionTitle}>Currency Converter</Text>
-        <View style={styles.converterCard}>
-          <Text style={styles.converterText}>Currency conversion feature coming soon</Text>
-        </View>
+        <CurrencyConverter />
       </View>
     </ScrollView>
   );

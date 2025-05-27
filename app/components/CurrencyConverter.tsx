@@ -7,10 +7,139 @@ import {
   StyleSheet,
   ActivityIndicator,
   Alert,
+  Modal,
+  FlatList,
+  ScrollView,
 } from 'react-native';
 import { getCachedExchangeRates } from '../utils/currency';
 
-const CURRENCIES = ['USD', 'EUR', 'GBP', 'JPY', 'CAD', 'AUD'];
+// Common currencies to show at the top
+const POPULAR_CURRENCIES = ['USD', 'EUR', 'GBP', 'JPY', 'CAD', 'AUD', 'CHF', 'CNY', 'INR', 'KRW'];
+
+// Currency names for better search experience
+const CURRENCY_NAMES: Record<string, string> = {
+  USD: 'US Dollar',
+  EUR: 'Euro',
+  GBP: 'British Pound',
+  JPY: 'Japanese Yen',
+  CAD: 'Canadian Dollar',
+  AUD: 'Australian Dollar',
+  CHF: 'Swiss Franc',
+  CNY: 'Chinese Yuan',
+  INR: 'Indian Rupee',
+  KRW: 'South Korean Won',
+  BRL: 'Brazilian Real',
+  MXN: 'Mexican Peso',
+  RUB: 'Russian Ruble',
+  SGD: 'Singapore Dollar',
+  HKD: 'Hong Kong Dollar',
+  NOK: 'Norwegian Krone',
+  SEK: 'Swedish Krona',
+  DKK: 'Danish Krone',
+  PLN: 'Polish Zloty',
+  CZK: 'Czech Koruna',
+  HUF: 'Hungarian Forint',
+  RON: 'Romanian Leu',
+  BGN: 'Bulgarian Lev',
+  HRK: 'Croatian Kuna',
+  TRY: 'Turkish Lira',
+  ILS: 'Israeli Shekel',
+  AED: 'UAE Dirham',
+  SAR: 'Saudi Riyal',
+  QAR: 'Qatari Riyal',
+  KWD: 'Kuwaiti Dinar',
+  BHD: 'Bahraini Dinar',
+  OMR: 'Omani Rial',
+  JOD: 'Jordanian Dinar',
+  LBP: 'Lebanese Pound',
+  EGP: 'Egyptian Pound',
+  MAD: 'Moroccan Dirham',
+  TND: 'Tunisian Dinar',
+  DZD: 'Algerian Dinar',
+  ZAR: 'South African Rand',
+  NGN: 'Nigerian Naira',
+  KES: 'Kenyan Shilling',
+  GHS: 'Ghanaian Cedi',
+  ETB: 'Ethiopian Birr',
+  UGX: 'Ugandan Shilling',
+  TZS: 'Tanzanian Shilling',
+  RWF: 'Rwandan Franc',
+  MWK: 'Malawian Kwacha',
+  ZMW: 'Zambian Kwacha',
+  BWP: 'Botswana Pula',
+  MUR: 'Mauritian Rupee',
+  SCR: 'Seychellois Rupee',
+  THB: 'Thai Baht',
+  VND: 'Vietnamese Dong',
+  IDR: 'Indonesian Rupiah',
+  MYR: 'Malaysian Ringgit',
+  PHP: 'Philippine Peso',
+  TWD: 'Taiwan Dollar',
+  KHR: 'Cambodian Riel',
+  LAK: 'Lao Kip',
+  MMK: 'Myanmar Kyat',
+  BDT: 'Bangladeshi Taka',
+  PKR: 'Pakistani Rupee',
+  LKR: 'Sri Lankan Rupee',
+  NPR: 'Nepalese Rupee',
+  BTN: 'Bhutanese Ngultrum',
+  AFN: 'Afghan Afghani',
+  IRR: 'Iranian Rial',
+  IQD: 'Iraqi Dinar',
+  SYP: 'Syrian Pound',
+  YER: 'Yemeni Rial',
+  UZS: 'Uzbekistani Som',
+  KZT: 'Kazakhstani Tenge',
+  KGS: 'Kyrgyzstani Som',
+  TJS: 'Tajikistani Somoni',
+  TMT: 'Turkmenistani Manat',
+  AZN: 'Azerbaijani Manat',
+  GEL: 'Georgian Lari',
+  AMD: 'Armenian Dram',
+  BYN: 'Belarusian Ruble',
+  UAH: 'Ukrainian Hryvnia',
+  MDL: 'Moldovan Leu',
+  ALL: 'Albanian Lek',
+  MKD: 'Macedonian Denar',
+  RSD: 'Serbian Dinar',
+  BAM: 'Bosnia-Herzegovina Convertible Mark',
+  COP: 'Colombian Peso',
+  PEN: 'Peruvian Sol',
+  CLP: 'Chilean Peso',
+  ARS: 'Argentine Peso',
+  UYU: 'Uruguayan Peso',
+  PYG: 'Paraguayan Guarani',
+  BOB: 'Bolivian Boliviano',
+  VES: 'Venezuelan Bolívar',
+  GYD: 'Guyanese Dollar',
+  SRD: 'Surinamese Dollar',
+  TTD: 'Trinidad and Tobago Dollar',
+  JMD: 'Jamaican Dollar',
+  BBD: 'Barbadian Dollar',
+  BSD: 'Bahamian Dollar',
+  BZD: 'Belize Dollar',
+  GTQ: 'Guatemalan Quetzal',
+  HNL: 'Honduran Lempira',
+  NIO: 'Nicaraguan Córdoba',
+  CRC: 'Costa Rican Colón',
+  PAB: 'Panamanian Balboa',
+  DOP: 'Dominican Peso',
+  HTG: 'Haitian Gourde',
+  CUP: 'Cuban Peso',
+  XCD: 'East Caribbean Dollar',
+  AWG: 'Aruban Florin',
+  ANG: 'Netherlands Antillean Guilder',
+  SVC: 'Salvadoran Colón',
+  NZD: 'New Zealand Dollar',
+  FJD: 'Fijian Dollar',
+  PGK: 'Papua New Guinean Kina',
+  SBD: 'Solomon Islands Dollar',
+  VUV: 'Vanuatu Vatu',
+  WST: 'Samoan Tala',
+  TOP: 'Tongan Paʻanga',
+  XPF: 'CFP Franc',
+  NCL: 'New Caledonian Franc',
+};
 
 export default function CurrencyConverter() {
   const [fromCurrency, setFromCurrency] = useState('USD');
@@ -20,6 +149,10 @@ export default function CurrencyConverter() {
   const [rates, setRates] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [showFromPicker, setShowFromPicker] = useState(false);
+  const [showToPicker, setShowToPicker] = useState(false);
+  const [availableCurrencies, setAvailableCurrencies] = useState<string[]>([]);
+  const [searchQuery, setSearchQuery] = useState('');
 
   useEffect(() => {
     setLoading(true);
@@ -28,6 +161,21 @@ export default function CurrencyConverter() {
       .then((fetchedRates) => {
         console.log('Fetched rates:', fetchedRates);
         setRates(fetchedRates);
+
+        // Extract available currencies from the rates object
+        const currencies = Object.keys(fetchedRates);
+        // Add USD since it's the base currency and might not be in the rates object
+        if (!currencies.includes('USD')) {
+          currencies.unshift('USD');
+        }
+
+        // Sort currencies: popular ones first, then alphabetically
+        const sortedCurrencies = [
+          ...POPULAR_CURRENCIES.filter((curr) => currencies.includes(curr)),
+          ...currencies.filter((curr) => !POPULAR_CURRENCIES.includes(curr)).sort(),
+        ];
+
+        setAvailableCurrencies(sortedCurrencies);
         setLoading(false);
       })
       .catch((err) => {
@@ -95,6 +243,126 @@ export default function CurrencyConverter() {
     setConverted('');
   };
 
+  const handleCurrencySelect = (currency: string, isFromCurrency: boolean) => {
+    if (isFromCurrency) {
+      setFromCurrency(currency);
+      setShowFromPicker(false);
+    } else {
+      setToCurrency(currency);
+      setShowToPicker(false);
+    }
+    setConverted(''); // Clear converted amount when currency changes
+    setSearchQuery(''); // Clear search when currency is selected
+  };
+
+  const getFilteredCurrencies = () => {
+    if (!searchQuery.trim()) {
+      return availableCurrencies;
+    }
+
+    const query = searchQuery.toLowerCase();
+    return availableCurrencies.filter((currency) => {
+      const currencyCode = currency.toLowerCase();
+      const currencyName = CURRENCY_NAMES[currency]?.toLowerCase() || '';
+
+      return currencyCode.includes(query) || currencyName.includes(query);
+    });
+  };
+
+  const renderCurrencyPicker = (isFromCurrency: boolean) => {
+    const isVisible = isFromCurrency ? showFromPicker : showToPicker;
+    const currentCurrency = isFromCurrency ? fromCurrency : toCurrency;
+    const filteredCurrencies = getFilteredCurrencies();
+
+    const handleModalClose = () => {
+      if (isFromCurrency) {
+        setShowFromPicker(false);
+      } else {
+        setShowToPicker(false);
+      }
+      setSearchQuery(''); // Clear search when modal closes
+    };
+
+    return (
+      <Modal
+        visible={isVisible}
+        transparent={true}
+        animationType="slide"
+        onRequestClose={handleModalClose}
+      >
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalContent}>
+            <View style={styles.modalHeader}>
+              <Text style={styles.modalTitle}>
+                Select {isFromCurrency ? 'From' : 'To'} Currency
+              </Text>
+              <TouchableOpacity style={styles.closeButton} onPress={handleModalClose}>
+                <Text style={styles.closeButtonText}>✕</Text>
+              </TouchableOpacity>
+            </View>
+
+            {/* Search Input */}
+            <View style={styles.searchContainer}>
+              <TextInput
+                style={styles.searchInput}
+                placeholder="Search currencies..."
+                value={searchQuery}
+                onChangeText={setSearchQuery}
+                autoCapitalize="characters"
+                autoCorrect={false}
+              />
+            </View>
+
+            <ScrollView style={styles.currencyList}>
+              {filteredCurrencies.length > 0 ? (
+                filteredCurrencies.map((currency) => (
+                  <TouchableOpacity
+                    key={currency}
+                    style={[
+                      styles.currencyItem,
+                      currency === currentCurrency && styles.selectedCurrencyItem,
+                    ]}
+                    onPress={() => handleCurrencySelect(currency, isFromCurrency)}
+                  >
+                    <View style={styles.currencyInfo}>
+                      <Text
+                        style={[
+                          styles.currencyItemText,
+                          currency === currentCurrency && styles.selectedCurrencyText,
+                        ]}
+                      >
+                        {currency}
+                      </Text>
+                      {CURRENCY_NAMES[currency] && (
+                        <Text
+                          style={[
+                            styles.currencyNameText,
+                            currency === currentCurrency && styles.selectedCurrencyNameText,
+                          ]}
+                        >
+                          {CURRENCY_NAMES[currency]}
+                        </Text>
+                      )}
+                    </View>
+                    {POPULAR_CURRENCIES.includes(currency) && (
+                      <View style={styles.popularBadge}>
+                        <Text style={styles.popularBadgeText}>Popular</Text>
+                      </View>
+                    )}
+                  </TouchableOpacity>
+                ))
+              ) : (
+                <View style={styles.noResultsContainer}>
+                  <Text style={styles.noResultsText}>No currencies found for "{searchQuery}"</Text>
+                </View>
+              )}
+            </ScrollView>
+          </View>
+        </View>
+      </Modal>
+    );
+  };
+
   if (loading) {
     return (
       <View style={styles.card}>
@@ -118,7 +386,7 @@ export default function CurrencyConverter() {
       <View style={styles.row}>
         <View style={styles.pickerContainer}>
           <Text style={styles.label}>From</Text>
-          <TouchableOpacity style={styles.picker}>
+          <TouchableOpacity style={styles.picker} onPress={() => setShowFromPicker(true)}>
             <Text style={styles.pickerText}>{fromCurrency}</Text>
           </TouchableOpacity>
         </View>
@@ -127,7 +395,7 @@ export default function CurrencyConverter() {
         </TouchableOpacity>
         <View style={styles.pickerContainer}>
           <Text style={styles.label}>To</Text>
-          <TouchableOpacity style={styles.picker}>
+          <TouchableOpacity style={styles.picker} onPress={() => setShowToPicker(true)}>
             <Text style={styles.pickerText}>{toCurrency}</Text>
           </TouchableOpacity>
         </View>
@@ -153,6 +421,10 @@ export default function CurrencyConverter() {
           </Text>
         </View>
       )}
+
+      {/* Currency Picker Modals */}
+      {renderCurrencyPicker(true)}
+      {renderCurrencyPicker(false)}
     </View>
   );
 }
@@ -253,6 +525,115 @@ const styles = StyleSheet.create({
   resultText: {
     fontSize: 16,
     fontWeight: '600',
+    color: '#057B8C',
+  },
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    justifyContent: 'flex-end',
+  },
+  modalContent: {
+    backgroundColor: '#fff',
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+    maxHeight: '80%',
+    paddingBottom: 20,
+  },
+  modalHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    padding: 20,
+    borderBottomWidth: 1,
+    borderBottomColor: '#E5E5E5',
+  },
+  modalTitle: {
+    fontSize: 18,
+    fontWeight: '700',
+    color: '#057B8C',
+  },
+  closeButton: {
+    width: 30,
+    height: 30,
+    borderRadius: 15,
+    backgroundColor: '#F2F6F8',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  closeButtonText: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#666',
+  },
+  currencyList: {
+    maxHeight: 400,
+  },
+  currencyItem: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingVertical: 16,
+    paddingHorizontal: 20,
+    borderBottomWidth: 1,
+    borderBottomColor: '#F5F5F5',
+  },
+  selectedCurrencyItem: {
+    backgroundColor: '#F2F6F8',
+  },
+  currencyItemText: {
+    fontSize: 16,
+    fontWeight: '500',
+    color: '#333',
+  },
+  selectedCurrencyText: {
+    color: '#057B8C',
+    fontWeight: '600',
+  },
+  popularBadge: {
+    backgroundColor: '#057B8C',
+    borderRadius: 12,
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+  },
+  popularBadgeText: {
+    fontSize: 10,
+    fontWeight: '600',
+    color: '#fff',
+  },
+  searchContainer: {
+    paddingHorizontal: 20,
+    paddingVertical: 16,
+    borderBottomWidth: 1,
+    borderBottomColor: '#E5E5E5',
+  },
+  searchInput: {
+    backgroundColor: '#F9FAFB',
+    borderWidth: 1,
+    borderColor: '#E5E5E5',
+    borderRadius: 8,
+    paddingHorizontal: 12,
+    paddingVertical: 10,
+    fontSize: 16,
+    color: '#333',
+  },
+  noResultsContainer: {
+    padding: 40,
+    alignItems: 'center',
+  },
+  noResultsText: {
+    fontSize: 16,
+    color: '#888',
+    textAlign: 'center',
+  },
+  currencyInfo: {
+    flex: 1,
+  },
+  currencyNameText: {
+    fontSize: 12,
+    color: '#888',
+    marginTop: 2,
+  },
+  selectedCurrencyNameText: {
     color: '#057B8C',
   },
 });
