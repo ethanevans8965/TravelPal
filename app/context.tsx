@@ -5,124 +5,18 @@ import { AppContextType, Expense, JournalEntry, Trip, Location } from './types';
 const AppContext = createContext<AppContextType | null>(null);
 
 // Sample data for demonstration
-const sampleTrips: Trip[] = [
-  {
-    id: 'trip-1',
-    name: 'Paris Adventure',
-    locationId: 'location-1',
-    destination: {
-      id: 'location-1',
-      name: 'Paris, France',
-      country: 'France',
-      timezone: 'Europe/Paris',
-    },
-    startDate: '2024-10-26',
-    endDate: '2024-11-03',
-    budgetMethod: 'total-budget',
-    travelStyle: 'Mid-range',
-    totalBudget: 2000,
-    dailyBudget: 250,
-    emergencyFundPercentage: 10,
-    categories: {
-      accommodation: 80,
-      food: 60,
-      transportation: 40,
-      activities: 50,
-      shopping: 20,
-      other: 10,
-    },
-    status: 'active',
-  },
-  {
-    id: 'trip-2',
-    name: 'Tokyo Explorer',
-    locationId: 'location-2',
-    destination: {
-      id: 'location-2',
-      name: 'Tokyo, Japan',
-      country: 'Japan',
-      timezone: 'Asia/Tokyo',
-    },
-    startDate: '2024-12-15',
-    endDate: '2024-12-22',
-    budgetMethod: 'total-budget',
-    travelStyle: 'Luxury',
-    totalBudget: 3500,
-    dailyBudget: 500,
-    emergencyFundPercentage: 15,
-    categories: {
-      accommodation: 150,
-      food: 120,
-      transportation: 80,
-      activities: 100,
-      shopping: 50,
-      other: 25,
-    },
-    status: 'planning',
-  },
-];
+// const sampleTrips: Trip[] = [
+//   ... (removed)
+// ];
 
-const sampleExpenses: Expense[] = [
-  {
-    id: 'expense-1',
-    tripId: 'trip-1',
-    amount: 45.0,
-    category: 'food',
-    description: 'Dinner at Le Bistro',
-    date: new Date().toISOString(),
-    currency: 'USD',
-  },
-  {
-    id: 'expense-2',
-    tripId: 'trip-1',
-    amount: 12.5,
-    category: 'transportation',
-    description: 'Metro Pass',
-    date: new Date().toISOString(),
-    currency: 'USD',
-  },
-  {
-    id: 'expense-3',
-    tripId: 'trip-1',
-    amount: 8.75,
-    category: 'food',
-    description: 'Coffee & Croissant',
-    date: new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString(), // Yesterday
-    currency: 'USD',
-  },
-  {
-    id: 'expense-4',
-    tripId: 'trip-1',
-    amount: 120.0,
-    category: 'accommodation',
-    description: 'Hotel Le Marais - 2 nights',
-    date: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(), // 2 days ago
-    currency: 'USD',
-  },
-  {
-    id: 'expense-5',
-    tripId: 'trip-1',
-    amount: 35.0,
-    category: 'activities',
-    description: 'Louvre Museum Ticket',
-    date: new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString(), // Yesterday
-    currency: 'USD',
-  },
-  {
-    id: 'expense-6',
-    tripId: 'trip-1',
-    amount: 25.0,
-    category: 'shopping',
-    description: 'Souvenir Postcards',
-    date: new Date().toISOString(),
-    currency: 'USD',
-  },
-];
+// const sampleExpenses: Expense[] = [
+//   ... (removed)
+// ];
 
 export function AppProvider({ children }: { children: React.ReactNode }) {
-  const [expenses, setExpenses] = useState<Expense[]>(sampleExpenses);
+  const [expenses, setExpenses] = useState<Expense[]>([]); // Start empty
   const [journalEntries, setJournalEntries] = useState<JournalEntry[]>([]);
-  const [trips, setTrips] = useState<Trip[]>(sampleTrips);
+  const [trips, setTrips] = useState<Trip[]>([]); // Start empty
   const [locations, setLocations] = useState<Location[]>([]);
   const [dailyBudget, setDailyBudget] = useState(100); // Default daily budget
   const [baseCurrency, setBaseCurrency] = useState('USD'); // Default currency
