@@ -1,9 +1,30 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
 import { useAppContext } from './context';
 import { FontAwesome } from '@expo/vector-icons';
 import { Trip } from './types';
 import { useRouter } from 'expo-router';
+
+// Date-dependent status calculation
+const getDateBasedStatus = (trip: Trip): 'planning' | 'upcoming' | 'active' | 'completed' => {
+  const now = new Date();
+  const start = trip.startDate ? new Date(trip.startDate) : null;
+  const end = trip.endDate ? new Date(trip.endDate) : null;
+
+  // If no dates are set, it's still in planning
+  if (!start || !end) return 'planning';
+
+  // Set time to start of day for accurate comparison
+  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  const startDate = new Date(start.getFullYear(), start.getMonth(), start.getDate());
+  const endDate = new Date(end.getFullYear(), end.getMonth(), end.getDate());
+
+  if (today < startDate) return 'upcoming';
+  if (today >= startDate && today <= endDate) return 'active';
+  if (today > endDate) return 'completed';
+
+  return 'planning';
+};
 
 const getTravelStyleColor = (travelStyle?: string) => {
   switch (travelStyle?.toLowerCase()) {
@@ -22,6 +43,8 @@ const getStatusColor = (status: string) => {
   switch (status) {
     case 'planning':
       return '#007AFF';
+    case 'upcoming':
+      return '#FF9500';
     case 'active':
       return '#34C759';
     case 'completed':
@@ -30,6 +53,23 @@ const getStatusColor = (status: string) => {
       return '#FF3B30';
     default:
       return '#8E8E93';
+  }
+};
+
+const getStatusDisplayText = (status: string) => {
+  switch (status) {
+    case 'planning':
+      return 'Planning';
+    case 'upcoming':
+      return 'Upcoming';
+    case 'active':
+      return 'Active';
+    case 'completed':
+      return 'Completed';
+    case 'cancelled':
+      return 'Cancelled';
+    default:
+      return 'Unknown';
   }
 };
 
@@ -57,6 +97,7 @@ const TripCard = ({ trip }: { trip: Trip }) => {
   const router = useRouter();
   const location = locations.find((l) => l.id === trip.locationId);
   const tripLength = calculateTripLength(trip.startDate, trip.endDate);
+  const dateBasedStatus = getDateBasedStatus(trip);
 
   // Get destination name from location, trip.destination, or fallback
   const destinationName =
@@ -77,8 +118,8 @@ const TripCard = ({ trip }: { trip: Trip }) => {
           <Text style={styles.tripName}>{trip.name}</Text>
           <Text style={styles.tripDestination}>{destinationName}</Text>
         </View>
-        <View style={[styles.statusBadge, { backgroundColor: getStatusColor(trip.status) }]}>
-          <Text style={styles.statusText}>{trip.status}</Text>
+        <View style={[styles.statusBadge, { backgroundColor: getStatusColor(dateBasedStatus) }]}>
+          <Text style={styles.statusText}>{getStatusDisplayText(dateBasedStatus)}</Text>
         </View>
       </View>
 
@@ -130,9 +171,81 @@ const TripCard = ({ trip }: { trip: Trip }) => {
   );
 };
 
+type FilterTab = 'upcoming' | 'planning' | 'completed';
+
+const TabSelector = ({
+  activeTab,
+  onTabChange,
+  tripCounts,
+}: {
+  activeTab: FilterTab;
+  onTabChange: (tab: FilterTab) => void;
+  tripCounts: Record<FilterTab, number>;
+}) => {
+  const tabs: { id: FilterTab; label: string; icon: string }[] = [
+    { id: 'upcoming', label: 'Upcoming', icon: 'clock-o' },
+    { id: 'planning', label: 'Planning', icon: 'edit' },
+    { id: 'completed', label: 'Completed', icon: 'check' },
+  ];
+
+  return (
+    <View style={styles.tabRow}>
+      {tabs.map((tab) => (
+        <TouchableOpacity
+          key={tab.id}
+          style={[styles.tab, activeTab === tab.id && styles.activeTab, { flex: 1 }]}
+          onPress={() => onTabChange(tab.id)}
+        >
+          <FontAwesome
+            name={tab.icon as any}
+            size={14}
+            color={activeTab === tab.id ? '#FFFFFF' : '#8E8E93'}
+          />
+          <Text style={[styles.tabText, activeTab === tab.id && styles.activeTabText]}>
+            {tab.label}
+          </Text>
+          {tripCounts[tab.id] > 0 && (
+            <View style={[styles.tabBadge, activeTab === tab.id && styles.activeTabBadge]}>
+              <Text
+                style={[styles.tabBadgeText, activeTab === tab.id && styles.activeTabBadgeText]}
+              >
+                {tripCounts[tab.id]}
+              </Text>
+            </View>
+          )}
+        </TouchableOpacity>
+      ))}
+    </View>
+  );
+};
+
 export default function TripsScreen() {
   const { trips } = useAppContext();
   const router = useRouter();
+  const [activeTab, setActiveTab] = useState<FilterTab>('upcoming');
+
+  // Separate active trips from others
+  const activeTrips = trips.filter((trip) => getDateBasedStatus(trip) === 'active');
+  const otherTrips = trips.filter((trip) => getDateBasedStatus(trip) !== 'active');
+
+  // Calculate trip counts by status (excluding active trips)
+  const tripCounts = otherTrips.reduce(
+    (counts, trip) => {
+      const status = getDateBasedStatus(trip);
+      if (status !== 'active') {
+        counts[status as FilterTab] += 1;
+      }
+      return counts;
+    },
+    {
+      upcoming: 0,
+      planning: 0,
+      completed: 0,
+    } as Record<FilterTab, number>
+  );
+
+  // Filter trips based on active tab (excluding active trips)
+  const filteredTrips = otherTrips.filter((trip) => getDateBasedStatus(trip) === activeTab);
 
   const handleAddNewTrip = () => {
     router.push('/trip/create/trip-name' as any);
@@ -140,23 +253,23 @@ export default function TripsScreen() {
 
   return (
     <View style={styles.container}>
-      <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
-        <View style={styles.header}>
-          <View style={styles.headerContent}>
-            <View>
-              <Text style={styles.title}>My Trips</Text>
-              <Text style={styles.subtitle}>
-                {trips.length === 0
-                  ? 'Start planning your next adventure!'
-                  : `${trips.length} trip${trips.length === 1 ? '' : 's'}`}
-              </Text>
-            </View>
-            <TouchableOpacity style={styles.addButton} onPress={handleAddNewTrip}>
-              <FontAwesome name="plus" size={16} color="#FFFFFF" />
-            </TouchableOpacity>
+      <View style={styles.header}>
+        <View style={styles.headerContent}>
+          <View>
+            <Text style={styles.title}>My Trips</Text>
+            <Text style={styles.subtitle}>
+              {trips.length === 0
+                ? 'Start planning your next adventure!'
+                : `${trips.length} trip${trips.length === 1 ? '' : 's'}`}
+            </Text>
           </View>
+          <TouchableOpacity style={styles.addButton} onPress={handleAddNewTrip}>
+            <FontAwesome name="plus" size={16} color="#FFFFFF" />
+          </TouchableOpacity>
         </View>
+      </View>
 
+      <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
         {trips.length === 0 ? (
           <View style={styles.emptyState}>
             <FontAwesome name="plane" size={64} color="#E5E5E5" />
@@ -166,11 +279,51 @@ export default function TripsScreen() {
             </Text>
           </View>
         ) : (
-          <View style={styles.tripsContainer}>
-            {trips.map((trip) => (
-              <TripCard key={trip.id} trip={trip} />
-            ))}
-          </View>
+          <>
+            {/* Active Trips Section */}
+            {activeTrips.length > 0 && (
+              <View style={styles.activeTripsSection}>
+                <View style={styles.sectionHeader}>
+                  <FontAwesome name="plane" size={20} color="#34C759" />
+                  <Text style={styles.sectionTitle}>
+                    Active Trip{activeTrips.length > 1 ? 's' : ''}
+                  </Text>
+                </View>
+                <View style={styles.tripsContainer}>
+                  {activeTrips.map((trip) => (
+                    <TripCard key={trip.id} trip={trip} />
+                  ))}
+                </View>
+              </View>
+            )}
+
+            {/* Tabs and Other Trips */}
+            {otherTrips.length > 0 && (
+              <>
+                <TabSelector
+                  activeTab={activeTab}
+                  onTabChange={setActiveTab}
+                  tripCounts={tripCounts}
+                />
+
+                {filteredTrips.length === 0 ? (
+                  <View style={styles.emptyState}>
+                    <FontAwesome name="search" size={64} color="#E5E5E5" />
+                    <Text style={styles.emptyTitle}>No {activeTab} trips</Text>
+                    <Text style={styles.emptySubtitle}>
+                      You don't have any trips in this category yet.
+                    </Text>
+                  </View>
+                ) : (
+                  <View style={styles.tripsContainer}>
+                    {filteredTrips.map((trip) => (
+                      <TripCard key={trip.id} trip={trip} />
+                    ))}
+                  </View>
+                )}
+              </>
+            )}
+          </>
         )}
       </ScrollView>
     </View>
@@ -216,6 +369,72 @@ const styles = StyleSheet.create({
   subtitle: {
     fontSize: 17,
     color: '#8E8E93',
+  },
+  activeTripsSection: {
+    marginBottom: 24,
+  },
+  sectionHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 24,
+    marginBottom: 16,
+    gap: 8,
+  },
+  sectionTitle: {
+    fontSize: 20,
+    fontWeight: '600',
+    color: '#1C1C1E',
+  },
+  tabRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 16,
+    paddingHorizontal: 12,
+    gap: 8,
+  },
+  tab: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 10,
+    borderRadius: 20,
+    backgroundColor: '#F2F2F7',
+    marginHorizontal: 0,
+    marginRight: 0,
+    marginLeft: 0,
+    gap: 6,
+  },
+  activeTab: {
+    backgroundColor: '#057B8C',
+  },
+  tabText: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#8E8E93',
+  },
+  activeTabText: {
+    color: '#FFFFFF',
+  },
+  tabBadge: {
+    backgroundColor: '#FFFFFF',
+    borderRadius: 10,
+    minWidth: 20,
+    height: 20,
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingHorizontal: 6,
+  },
+  activeTabBadge: {
+    backgroundColor: 'rgba(255, 255, 255, 0.2)',
+  },
+  tabBadgeText: {
+    fontSize: 12,
+    fontWeight: '600',
+    color: '#057B8C',
+  },
+  activeTabBadgeText: {
+    color: '#FFFFFF',
   },
   emptyState: {
     alignItems: 'center',
