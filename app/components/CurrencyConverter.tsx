@@ -10,6 +10,9 @@ import {
   Modal,
   FlatList,
   ScrollView,
+  KeyboardAvoidingView,
+  Platform,
+  Dimensions,
 } from 'react-native';
 import { getCachedExchangeRates } from '../utils/currency';
 
@@ -140,6 +143,8 @@ const CURRENCY_NAMES: Record<string, string> = {
   XPF: 'CFP Franc',
   NCL: 'New Caledonian Franc',
 };
+
+const MODAL_HEIGHT = Math.round(Dimensions.get('window').height * 0.48);
 
 export default function CurrencyConverter() {
   const [fromCurrency, setFromCurrency] = useState('USD');
@@ -290,8 +295,12 @@ export default function CurrencyConverter() {
         animationType="slide"
         onRequestClose={handleModalClose}
       >
-        <View style={styles.modalOverlay}>
-          <View style={styles.modalContent}>
+        <KeyboardAvoidingView
+          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+          style={styles.modalOverlay}
+          keyboardVerticalOffset={0}
+        >
+          <View style={[styles.modalContent, { minHeight: MODAL_HEIGHT, maxHeight: MODAL_HEIGHT }]}>
             <View style={styles.modalHeader}>
               <Text style={styles.modalTitle}>
                 Select {isFromCurrency ? 'From' : 'To'} Currency
@@ -300,7 +309,6 @@ export default function CurrencyConverter() {
                 <Text style={styles.closeButtonText}>✕</Text>
               </TouchableOpacity>
             </View>
-
             {/* Search Input */}
             <View style={styles.searchContainer}>
               <TextInput
@@ -312,53 +320,56 @@ export default function CurrencyConverter() {
                 autoCorrect={false}
               />
             </View>
-
-            <ScrollView style={styles.currencyList}>
-              {filteredCurrencies.length > 0 ? (
-                filteredCurrencies.map((currency) => (
-                  <TouchableOpacity
-                    key={currency}
-                    style={[
-                      styles.currencyItem,
-                      currency === currentCurrency && styles.selectedCurrencyItem,
-                    ]}
-                    onPress={() => handleCurrencySelect(currency, isFromCurrency)}
-                  >
-                    <View style={styles.currencyInfo}>
-                      <Text
-                        style={[
-                          styles.currencyItemText,
-                          currency === currentCurrency && styles.selectedCurrencyText,
-                        ]}
-                      >
-                        {currency}
-                      </Text>
-                      {CURRENCY_NAMES[currency] && (
+            <View style={{ flex: 1 }}>
+              <ScrollView style={styles.currencyList} contentContainerStyle={{ flexGrow: 1 }}>
+                {filteredCurrencies.length > 0 ? (
+                  filteredCurrencies.map((currency) => (
+                    <TouchableOpacity
+                      key={currency}
+                      style={[
+                        styles.currencyItem,
+                        currency === currentCurrency && styles.selectedCurrencyItem,
+                      ]}
+                      onPress={() => handleCurrencySelect(currency, isFromCurrency)}
+                    >
+                      <View style={styles.currencyInfo}>
                         <Text
                           style={[
-                            styles.currencyNameText,
-                            currency === currentCurrency && styles.selectedCurrencyNameText,
+                            styles.currencyItemText,
+                            currency === currentCurrency && styles.selectedCurrencyText,
                           ]}
                         >
-                          {CURRENCY_NAMES[currency]}
+                          {currency}
                         </Text>
-                      )}
-                    </View>
-                    {POPULAR_CURRENCIES.includes(currency) && (
-                      <View style={styles.popularBadge}>
-                        <Text style={styles.popularBadgeText}>Popular</Text>
+                        {CURRENCY_NAMES[currency] && (
+                          <Text
+                            style={[
+                              styles.currencyNameText,
+                              currency === currentCurrency && styles.selectedCurrencyNameText,
+                            ]}
+                          >
+                            {CURRENCY_NAMES[currency]}
+                          </Text>
+                        )}
                       </View>
-                    )}
-                  </TouchableOpacity>
-                ))
-              ) : (
-                <View style={styles.noResultsContainer}>
-                  <Text style={styles.noResultsText}>No currencies found for "{searchQuery}"</Text>
-                </View>
-              )}
-            </ScrollView>
+                      {POPULAR_CURRENCIES.includes(currency) && (
+                        <View style={styles.popularBadge}>
+                          <Text style={styles.popularBadgeText}>Popular</Text>
+                        </View>
+                      )}
+                    </TouchableOpacity>
+                  ))
+                ) : (
+                  <View style={styles.noResultsContainer}>
+                    <Text style={styles.noResultsText}>
+                      No currencies found for "{searchQuery}"
+                    </Text>
+                  </View>
+                )}
+              </ScrollView>
+            </View>
           </View>
-        </View>
+        </KeyboardAvoidingView>
       </Modal>
     );
   };
@@ -536,8 +547,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
-    maxHeight: '80%',
-    paddingBottom: 20,
+    overflow: 'hidden',
   },
   modalHeader: {
     flexDirection: 'row',
