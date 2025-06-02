@@ -11,10 +11,10 @@ TravelPal is a mobile application built with Expo and React Native designed to b
 ### ✅ Completed Features
 
 - **Modern 3-Tab Navigation**: Redesigned app structure with Home, Trips, and Finances tabs
-- **Dashboard Home Screen**: Comprehensive overview with currency converter, trip snapshot, budget overview, recent expenses, and quick actions
+- **Modernized Dashboard Home Screen**: Comprehensive overview with currency converter, trip snapshot, budget overview, recent expenses, quick actions, and an enhanced, visually appealing UI.
 - **Trips Management**: Full trip CRUD with detailed views, trip cards, and seamless navigation
 - **Finances Hub**: Consolidated financial management with sub-navigation for Budgets, Expenses, and Reports
-- **Global FAB**: Unified floating action button for Add Expense, Add Trip, and Add Budget Item
+- **Global FAB**: Unified floating action button for Add Expense (initiates new expense type selection flow), Add Trip, and Add Budget Item
 - **Trip Details**: Dynamic routing with comprehensive trip information display
 - **Hybrid State Management**: Zustand for core data stores with React Context for UI state
 - **Currency Converter**: Live currency conversion with caching and offline support
@@ -188,9 +188,13 @@ Code Quality:
 TravelPal/
 ├── app/                  # Main application code using Expo Router
 │   ├── _layout.tsx       # Root layout with navigation and FAB setup ✅
-│   ├── index.tsx         # Dashboard home screen with widgets ✅
+│   ├── index.tsx         # Dashboard home screen with widgets (Modernized UI) ✅
 │   ├── trips.tsx         # Trips list with navigation to details ✅
 │   ├── finances.tsx      # Finances hub with sub-navigation ✅
+│   ├── expenses/         # Expense-related screens
+│   │   └── add/            # Add expense workflow
+│   │       ├── association-choice.tsx # Screen to choose linking expense to a trip or not ✅
+│   │       └── index.tsx              # Entry point for /expenses/add route ✅
 │   ├── trip/             # Trip-related screens
 │   │   ├── [id].tsx      # Dynamic trip detail screen ✅
 │   │   ├── create/       # Trip creation workflow ✅

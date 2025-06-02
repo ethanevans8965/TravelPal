@@ -16,10 +16,10 @@
 **New UI/UX Architecture (Phase 2 Complete):**
 
 - **3-Tab Navigation**: Modern navigation structure with Home, Trips, and Finances tabs
-- **Dashboard Home Screen**: Comprehensive overview with currency converter, trip snapshot, budget overview, recent expenses, and quick actions
+- **Dashboard Home Screen**: Comprehensive overview with currency converter, trip snapshot, budget overview, recent expenses, quick actions, and a modernized, visually appealing UI. ✅
 - **Trips Management**: Full trip CRUD with interactive trip cards, detailed views, and seamless navigation
 - **Finances Hub**: Consolidated financial interface with sub-navigation for Budgets, All Expenses, and Reports
-- **Global FAB**: Universal floating action button for Add Expense, Add Trip, and Add Budget Item
+- **Global FAB**: Universal floating action button for Add Expense (initiates new expense type selection flow), Add Trip, and Add Budget Item. ✅
 - **Trip Details**: Dynamic routing with comprehensive trip information display
 - **Responsive Design**: Card-based layout with consistent styling and mobile-optimized interactions
 
@@ -167,10 +167,11 @@
 
 - **Floating Plus FAB**
 
-  - Expandable menu with quick actions
-  - Navigation to creation flows
-  - Smooth animations and transitions
-  - **Status**: In development 🚧
+  - Expandable menu with quick actions (Add Expense, Add Trip, Add Budget Item).
+  - Add Expense now navigates to a new screen for selecting expense type (linked to trip or general).
+  - Navigation to creation flows.
+  - Smooth animations and transitions.
+  - **Status**: Partially Implemented (Add Expense flow started) ✅🚧
 
 - **Trip Creation Flow**
   - Budget method selection
