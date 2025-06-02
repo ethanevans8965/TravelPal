@@ -131,7 +131,7 @@ const NavigationBar = ({
             accessibilityLabel="Add Expense"
             onPress={() => {
               toggleMenu(); // Close menu on press
-              onLogExpensePress?.(); // Call the existing expense function
+              router.push('/expenses/add'); // Navigate to add expense screen
             }}
           >
             <Ionicons name="cash-outline" size={24} color="#fff" />
