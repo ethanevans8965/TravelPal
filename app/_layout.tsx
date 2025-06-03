@@ -1,6 +1,7 @@
 import { Slot } from 'expo-router';
 import { View, StyleSheet } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { AppProvider } from './context';
 import NavigationBar from './components/NavigationBar';
 import { useRouter } from 'expo-router';
@@ -14,23 +15,28 @@ export default function RootLayout() {
 
   // Always show the FAB and keep it active
   return (
-    <AppProvider>
-      <View style={styles.container}>
-        <StatusBar style="auto" />
-        <View style={styles.content}>
-          {/* This renders the current route */}
-          <Slot />
+    <GestureHandlerRootView style={styles.gestureContainer}>
+      <AppProvider>
+        <View style={styles.container}>
+          <StatusBar style="auto" />
+          <View style={styles.content}>
+            {/* This renders the current route */}
+            <Slot />
+          </View>
+
+          <View style={styles.navContainer}>
+            <NavigationBar showFAB={true} onNewTripPress={handleNewTripPress} />
+          </View>
         </View>
-        
-        <View style={styles.navContainer}>
-          <NavigationBar showFAB={true} onNewTripPress={handleNewTripPress} />
-        </View>
-      </View>
-    </AppProvider>
+      </AppProvider>
+    </GestureHandlerRootView>
   );
 }
 
 const styles = StyleSheet.create({
+  gestureContainer: {
+    flex: 1,
+  },
   container: {
     flex: 1,
   },

@@ -1,11 +1,15 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, TextInput } from 'react-native';
 import { useAppContext } from './context';
+import { useExpenseStore } from './stores/expenseStore';
 import { FontAwesome } from '@expo/vector-icons';
 import SpendingTrendChart from './components/charts/SpendingTrendChart';
 import CategoryPieChart from './components/charts/CategoryPieChart';
 import BudgetPerformanceChart from './components/charts/BudgetPerformanceChart';
 import ReportSummary from './components/reports/ReportSummary';
+import SwipeableExpenseCard from './components/SwipeableExpenseCard';
+import { useRouter } from 'expo-router';
+import { Expense } from './types';
 
 type FinanceTab = 'budgets' | 'expenses' | 'reports';
 type SortOption = 'date' | 'amount' | 'category';
@@ -20,8 +24,12 @@ export default function Finances() {
   const [sortBy, setSortBy] = useState<SortOption>('date');
   const [sortOrder, setSortOrder] = useState<SortOrder>('desc');
   const [reportTimePeriod, setReportTimePeriod] = useState<TimePeriod>('month');
+  const [expensesPerPage] = useState(20); // Show 20 expenses per page
+  const [currentPage, setCurrentPage] = useState(1);
 
   const { trips, expenses } = useAppContext();
+  const { deleteExpense } = useExpenseStore();
+  const router = useRouter();
 
   // Get unique categories from expenses
   const categories = useMemo(() => {
@@ -73,6 +81,27 @@ export default function Finances() {
 
     return filtered;
   }, [expenses, searchQuery, selectedCategory, selectedTrip, sortBy, sortOrder]);
+
+  // Paginated expenses for display
+  const paginatedExpenses = useMemo(() => {
+    return filteredExpenses.slice(0, currentPage * expensesPerPage);
+  }, [filteredExpenses, currentPage, expensesPerPage]);
+
+  const hasMoreExpenses = filteredExpenses.length > paginatedExpenses.length;
+
+  const handleLoadMore = () => {
+    setCurrentPage((prev) => prev + 1);
+  };
+
+  // Reset pagination when filters change
+  const resetPagination = () => {
+    setCurrentPage(1);
+  };
+
+  // Reset pagination when filters change
+  useEffect(() => {
+    resetPagination();
+  }, [searchQuery, selectedCategory, selectedTrip, sortBy, sortOrder]);
 
   // Calculate expense statistics
   const expenseStats = useMemo(() => {
@@ -166,6 +195,14 @@ export default function Finances() {
       percentageUsed: budget > 0 ? (totalSpent / budget) * 100 : 0,
       categorySpending,
     };
+  };
+
+  // Handle edit expense
+  const handleEditExpense = (expense: Expense) => {
+    // TODO: Navigate to edit expense screen
+    // For now, we'll show an alert
+    console.log('Edit expense:', expense);
+    // router.push(`/expenses/edit/${expense.id}`);
   };
 
   const renderExpensesTab = () => {
@@ -347,7 +384,7 @@ export default function Finances() {
         </View>
 
         {/* Expenses List */}
-        {filteredExpenses.length === 0 ? (
+        {paginatedExpenses.length === 0 ? (
           <View style={styles.emptyState}>
             <FontAwesome name="file-text" size={48} color="#C7C7CC" />
             <Text style={styles.emptyStateTitle}>
@@ -363,35 +400,25 @@ export default function Finances() {
           </View>
         ) : (
           <View style={styles.expensesList}>
-            {filteredExpenses.map((expense, index) => (
-              <View
+            {paginatedExpenses.map((expense, index) => (
+              <SwipeableExpenseCard
                 key={expense.id}
-                style={[
-                  styles.expenseCard,
-                  index === filteredExpenses.length - 1 && styles.lastExpenseCard,
-                ]}
-              >
-                <View style={styles.expenseHeader}>
-                  <View style={styles.expenseIcon}>
-                    <Text style={styles.expenseIconText}>{getCategoryEmoji(expense.category)}</Text>
-                  </View>
-                  <View style={styles.expenseInfo}>
-                    <Text style={styles.expenseName}>{expense.description}</Text>
-                    <Text style={styles.expenseCategory}>{expense.category}</Text>
-                  </View>
-                  <View style={styles.expenseAmount}>
-                    <Text style={styles.expenseAmountText}>-${expense.amount.toFixed(2)}</Text>
-                    <Text style={styles.expenseCurrency}>{expense.currency}</Text>
-                  </View>
-                </View>
-
-                <View style={styles.expenseFooter}>
-                  <Text style={styles.expenseTrip}>{getTripName(expense.tripId)}</Text>
-                  <Text style={styles.expenseDate}>{formatDate(expense.date)}</Text>
-                </View>
-              </View>
+                expense={expense}
+                onDelete={() => deleteExpense(expense.id)}
+                onEdit={() => handleEditExpense(expense)}
+                getTripName={getTripName}
+                formatDate={formatDate}
+                getCategoryEmoji={getCategoryEmoji}
+                isLast={index === paginatedExpenses.length - 1}
+              />
             ))}
           </View>
+        )}
+
+        {hasMoreExpenses && (
+          <TouchableOpacity onPress={handleLoadMore} style={styles.loadMoreButton}>
+            <Text style={styles.loadMoreButtonText}>Load More</Text>
+          </TouchableOpacity>
         )}
       </View>
     );
@@ -1178,5 +1205,16 @@ const styles = StyleSheet.create({
   activeTimePeriodButtonText: {
     color: '#FFFFFF',
     fontWeight: '600',
+  },
+  loadMoreButton: {
+    padding: 16,
+    backgroundColor: '#057B8C',
+    borderRadius: 8,
+    alignItems: 'center',
+  },
+  loadMoreButtonText: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#FFFFFF',
   },
 });
