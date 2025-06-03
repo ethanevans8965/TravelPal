@@ -1,5 +1,14 @@
 import React, { useState, useMemo, useEffect } from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, TextInput } from 'react-native';
+import {
+  View,
+  Text,
+  StyleSheet,
+  ScrollView,
+  TouchableOpacity,
+  TextInput,
+  Modal,
+  Alert,
+} from 'react-native';
 import { useAppContext } from './context';
 import { useExpenseStore } from './stores/expenseStore';
 import { FontAwesome } from '@expo/vector-icons';
@@ -10,11 +19,21 @@ import ReportSummary from './components/reports/ReportSummary';
 import SwipeableExpenseCard from './components/SwipeableExpenseCard';
 import { useRouter } from 'expo-router';
 import { Expense } from './types';
+import { LinearGradient } from 'expo-linear-gradient';
 
 type FinanceTab = 'budgets' | 'expenses' | 'reports';
 type SortOption = 'date' | 'amount' | 'category';
 type SortOrder = 'asc' | 'desc';
 type TimePeriod = 'week' | 'month' | 'year' | 'all';
+type QuickFilterPreset =
+  | 'today'
+  | 'thisWeek'
+  | 'thisMonth'
+  | 'lastMonth'
+  | 'last30Days'
+  | 'last90Days'
+  | 'thisYear'
+  | 'custom';
 
 export default function Finances() {
   const [activeTab, setActiveTab] = useState<FinanceTab>('budgets');
@@ -27,6 +46,17 @@ export default function Finances() {
   const [expensesPerPage] = useState(20); // Show 20 expenses per page
   const [currentPage, setCurrentPage] = useState(1);
 
+  // Advanced filtering states
+  const [quickFilterPreset, setQuickFilterPreset] = useState<QuickFilterPreset>('thisMonth');
+  const [dateRangeStart, setDateRangeStart] = useState<string>('');
+  const [dateRangeEnd, setDateRangeEnd] = useState<string>('');
+  const [minAmount, setMinAmount] = useState<string>('');
+  const [maxAmount, setMaxAmount] = useState<string>('');
+  const [showAdvancedFilters, setShowAdvancedFilters] = useState(false);
+  const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
+  const [selectedTrips, setSelectedTrips] = useState<string[]>([]);
+  const [multiSelectMode, setMultiSelectMode] = useState(false);
+
   const { trips, expenses } = useAppContext();
   const { deleteExpense } = useExpenseStore();
   const router = useRouter();
@@ -37,27 +67,126 @@ export default function Finances() {
     return uniqueCategories.sort();
   }, [expenses]);
 
-  // Filter and sort expenses
+  // Quick filter date calculations
+  const getQuickFilterDateRange = (preset: QuickFilterPreset) => {
+    const now = new Date();
+    const startOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+
+    switch (preset) {
+      case 'today':
+        return {
+          start: startOfDay.toISOString().split('T')[0],
+          end: now.toISOString().split('T')[0],
+        };
+      case 'thisWeek':
+        const startOfWeek = new Date(startOfDay);
+        startOfWeek.setDate(startOfDay.getDate() - startOfDay.getDay());
+        return {
+          start: startOfWeek.toISOString().split('T')[0],
+          end: now.toISOString().split('T')[0],
+        };
+      case 'thisMonth':
+        const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+        return {
+          start: startOfMonth.toISOString().split('T')[0],
+          end: now.toISOString().split('T')[0],
+        };
+      case 'lastMonth':
+        const startOfLastMonth = new Date(now.getFullYear(), now.getMonth() - 1, 1);
+        const endOfLastMonth = new Date(now.getFullYear(), now.getMonth(), 0);
+        return {
+          start: startOfLastMonth.toISOString().split('T')[0],
+          end: endOfLastMonth.toISOString().split('T')[0],
+        };
+      case 'last30Days':
+        const thirtyDaysAgo = new Date(now);
+        thirtyDaysAgo.setDate(now.getDate() - 30);
+        return {
+          start: thirtyDaysAgo.toISOString().split('T')[0],
+          end: now.toISOString().split('T')[0],
+        };
+      case 'last90Days':
+        const ninetyDaysAgo = new Date(now);
+        ninetyDaysAgo.setDate(now.getDate() - 90);
+        return {
+          start: ninetyDaysAgo.toISOString().split('T')[0],
+          end: now.toISOString().split('T')[0],
+        };
+      case 'thisYear':
+        const startOfYear = new Date(now.getFullYear(), 0, 1);
+        return {
+          start: startOfYear.toISOString().split('T')[0],
+          end: now.toISOString().split('T')[0],
+        };
+      default:
+        return { start: '', end: '' };
+    }
+  };
+
+  // Apply quick filter preset
+  useEffect(() => {
+    if (quickFilterPreset !== 'custom') {
+      const { start, end } = getQuickFilterDateRange(quickFilterPreset);
+      setDateRangeStart(start);
+      setDateRangeEnd(end);
+    }
+  }, [quickFilterPreset]);
+
+  // Filter and sort expenses with advanced filtering
   const filteredExpenses = useMemo(() => {
     let filtered = expenses;
 
-    // Filter by search query
+    // Filter by search query (enhanced to include tags and descriptions)
     if (searchQuery.trim()) {
+      const query = searchQuery.toLowerCase();
       filtered = filtered.filter(
         (expense) =>
-          expense.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          expense.category.toLowerCase().includes(searchQuery.toLowerCase())
+          expense.description.toLowerCase().includes(query) ||
+          expense.category.toLowerCase().includes(query) ||
+          (expense.tags && expense.tags.some((tag) => tag.toLowerCase().includes(query)))
       );
     }
 
-    // Filter by category
-    if (selectedCategory !== 'all') {
+    // Filter by date range
+    if (dateRangeStart && dateRangeEnd) {
+      filtered = filtered.filter((expense) => {
+        const expenseDate = expense.date.split('T')[0];
+        return expenseDate >= dateRangeStart && expenseDate <= dateRangeEnd;
+      });
+    }
+
+    // Filter by amount range
+    if (minAmount) {
+      const min = parseFloat(minAmount);
+      if (!isNaN(min)) {
+        filtered = filtered.filter((expense) => expense.amount >= min);
+      }
+    }
+    if (maxAmount) {
+      const max = parseFloat(maxAmount);
+      if (!isNaN(max)) {
+        filtered = filtered.filter((expense) => expense.amount <= max);
+      }
+    }
+
+    // Filter by categories (multi-select or single)
+    if (multiSelectMode && selectedCategories.length > 0) {
+      filtered = filtered.filter((expense) => selectedCategories.includes(expense.category));
+    } else if (!multiSelectMode && selectedCategory !== 'all') {
       filtered = filtered.filter((expense) => expense.category === selectedCategory);
     }
 
-    // Filter by trip
-    if (selectedTrip !== 'all') {
-      filtered = filtered.filter((expense) => expense.tripId === selectedTrip);
+    // Filter by trips (multi-select or single)
+    if (multiSelectMode && selectedTrips.length > 0) {
+      filtered = filtered.filter((expense) =>
+        expense.tripId ? selectedTrips.includes(expense.tripId) : selectedTrips.includes('general')
+      );
+    } else if (!multiSelectMode && selectedTrip !== 'all') {
+      if (selectedTrip === 'general') {
+        filtered = filtered.filter((expense) => !expense.tripId);
+      } else {
+        filtered = filtered.filter((expense) => expense.tripId === selectedTrip);
+      }
     }
 
     // Sort expenses
@@ -80,7 +209,56 @@ export default function Finances() {
     });
 
     return filtered;
-  }, [expenses, searchQuery, selectedCategory, selectedTrip, sortBy, sortOrder]);
+  }, [
+    expenses,
+    searchQuery,
+    dateRangeStart,
+    dateRangeEnd,
+    minAmount,
+    maxAmount,
+    selectedCategory,
+    selectedTrip,
+    selectedCategories,
+    selectedTrips,
+    multiSelectMode,
+    sortBy,
+    sortOrder,
+  ]);
+
+  // Clear all filters
+  const clearAllFilters = () => {
+    setSearchQuery('');
+    setSelectedCategory('all');
+    setSelectedTrip('all');
+    setSelectedCategories([]);
+    setSelectedTrips([]);
+    setMinAmount('');
+    setMaxAmount('');
+    setQuickFilterPreset('thisMonth');
+    setMultiSelectMode(false);
+  };
+
+  // Toggle category in multi-select mode
+  const toggleCategory = (category: string) => {
+    if (multiSelectMode) {
+      setSelectedCategories((prev) =>
+        prev.includes(category) ? prev.filter((c) => c !== category) : [...prev, category]
+      );
+    } else {
+      setSelectedCategory(category);
+    }
+  };
+
+  // Toggle trip in multi-select mode
+  const toggleTrip = (tripId: string) => {
+    if (multiSelectMode) {
+      setSelectedTrips((prev) =>
+        prev.includes(tripId) ? prev.filter((t) => t !== tripId) : [...prev, tripId]
+      );
+    } else {
+      setSelectedTrip(tripId);
+    }
+  };
 
   // Paginated expenses for display
   const paginatedExpenses = useMemo(() => {
@@ -239,6 +417,72 @@ export default function Finances() {
           )}
         </View>
 
+        {/* Quick Filter Presets */}
+        <View style={styles.quickFiltersContainer}>
+          <View style={styles.quickFiltersHeader}>
+            <Text style={styles.filterLabel}>Quick Filters</Text>
+            <View style={styles.quickFiltersActions}>
+              <TouchableOpacity
+                style={[styles.filterToggle, multiSelectMode && styles.activeFilterToggle]}
+                onPress={() => setMultiSelectMode(!multiSelectMode)}
+              >
+                <FontAwesome
+                  name="check-square-o"
+                  size={14}
+                  color={multiSelectMode ? '#057B8C' : '#8E8E93'}
+                />
+                <Text
+                  style={[
+                    styles.filterToggleText,
+                    multiSelectMode && styles.activeFilterToggleText,
+                  ]}
+                >
+                  Multi-select
+                </Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.clearFiltersButton} onPress={clearAllFilters}>
+                <FontAwesome name="refresh" size={14} color="#FF3B30" />
+                <Text style={styles.clearFiltersText}>Clear All</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+          <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            style={styles.quickFiltersScroll}
+          >
+            {(
+              [
+                { key: 'today', label: 'Today' },
+                { key: 'thisWeek', label: 'This Week' },
+                { key: 'thisMonth', label: 'This Month' },
+                { key: 'lastMonth', label: 'Last Month' },
+                { key: 'last30Days', label: 'Last 30 Days' },
+                { key: 'last90Days', label: 'Last 90 Days' },
+                { key: 'thisYear', label: 'This Year' },
+              ] as Array<{ key: QuickFilterPreset; label: string }>
+            ).map(({ key, label }) => (
+              <TouchableOpacity
+                key={key}
+                style={[
+                  styles.quickFilterChip,
+                  quickFilterPreset === key && styles.activeQuickFilterChip,
+                ]}
+                onPress={() => setQuickFilterPreset(key)}
+              >
+                <Text
+                  style={[
+                    styles.quickFilterChipText,
+                    quickFilterPreset === key && styles.activeQuickFilterChipText,
+                  ]}
+                >
+                  {label}
+                </Text>
+              </TouchableOpacity>
+            ))}
+          </ScrollView>
+        </View>
+
         {/* Search and Filters */}
         <View style={styles.filtersContainer}>
           {/* Search Bar */}
@@ -246,7 +490,7 @@ export default function Finances() {
             <FontAwesome name="search" size={16} color="#8E8E93" style={styles.searchIcon} />
             <TextInput
               style={styles.searchInput}
-              placeholder="Search expenses..."
+              placeholder="Search expenses, categories, or tags..."
               value={searchQuery}
               onChangeText={setSearchQuery}
               placeholderTextColor="#8E8E93"
@@ -258,45 +502,148 @@ export default function Finances() {
             )}
           </View>
 
+          {/* Advanced Filters Toggle */}
+          <TouchableOpacity
+            style={styles.advancedFiltersToggle}
+            onPress={() => setShowAdvancedFilters(!showAdvancedFilters)}
+          >
+            <FontAwesome name="sliders" size={16} color="#057B8C" />
+            <Text style={styles.advancedFiltersToggleText}>Advanced Filters</Text>
+            <FontAwesome
+              name={showAdvancedFilters ? 'chevron-up' : 'chevron-down'}
+              size={12}
+              color="#057B8C"
+            />
+          </TouchableOpacity>
+
+          {/* Advanced Filters Panel */}
+          {showAdvancedFilters && (
+            <View style={styles.advancedFiltersPanel}>
+              {/* Date Range */}
+              <View style={styles.advancedFilterGroup}>
+                <Text style={styles.advancedFilterLabel}>Date Range</Text>
+                <View style={styles.dateRangeContainer}>
+                  <View style={styles.dateInputGroup}>
+                    <Text style={styles.dateInputLabel}>From</Text>
+                    <TextInput
+                      style={styles.dateInput}
+                      placeholder="YYYY-MM-DD"
+                      value={dateRangeStart}
+                      onChangeText={(text) => {
+                        setDateRangeStart(text);
+                        setQuickFilterPreset('custom');
+                      }}
+                      placeholderTextColor="#8E8E93"
+                    />
+                  </View>
+                  <View style={styles.dateInputGroup}>
+                    <Text style={styles.dateInputLabel}>To</Text>
+                    <TextInput
+                      style={styles.dateInput}
+                      placeholder="YYYY-MM-DD"
+                      value={dateRangeEnd}
+                      onChangeText={(text) => {
+                        setDateRangeEnd(text);
+                        setQuickFilterPreset('custom');
+                      }}
+                      placeholderTextColor="#8E8E93"
+                    />
+                  </View>
+                </View>
+              </View>
+
+              {/* Amount Range */}
+              <View style={styles.advancedFilterGroup}>
+                <Text style={styles.advancedFilterLabel}>Amount Range</Text>
+                <View style={styles.amountRangeContainer}>
+                  <View style={styles.amountInputGroup}>
+                    <Text style={styles.amountInputLabel}>Min ($)</Text>
+                    <TextInput
+                      style={styles.amountInput}
+                      placeholder="0"
+                      value={minAmount}
+                      onChangeText={setMinAmount}
+                      keyboardType="numeric"
+                      placeholderTextColor="#8E8E93"
+                    />
+                  </View>
+                  <View style={styles.amountInputGroup}>
+                    <Text style={styles.amountInputLabel}>Max ($)</Text>
+                    <TextInput
+                      style={styles.amountInput}
+                      placeholder="∞"
+                      value={maxAmount}
+                      onChangeText={setMaxAmount}
+                      keyboardType="numeric"
+                      placeholderTextColor="#8E8E93"
+                    />
+                  </View>
+                </View>
+              </View>
+            </View>
+          )}
+
           {/* Filter Row */}
           <View style={styles.filterRow}>
             {/* Category Filter */}
             <View style={styles.filterGroup}>
-              <Text style={styles.filterLabel}>Category</Text>
+              <Text style={styles.filterLabel}>
+                Category{' '}
+                {multiSelectMode &&
+                  selectedCategories.length > 0 &&
+                  `(${selectedCategories.length})`}
+              </Text>
               <ScrollView
                 horizontal
                 showsHorizontalScrollIndicator={false}
                 style={styles.filterScroll}
               >
-                <TouchableOpacity
-                  style={[styles.filterChip, selectedCategory === 'all' && styles.activeFilterChip]}
-                  onPress={() => setSelectedCategory('all')}
-                >
-                  <Text
+                {!multiSelectMode && (
+                  <TouchableOpacity
                     style={[
-                      styles.filterChipText,
-                      selectedCategory === 'all' && styles.activeFilterChipText,
+                      styles.filterChip,
+                      selectedCategory === 'all' && styles.activeFilterChip,
                     ]}
+                    onPress={() => toggleCategory('all')}
                   >
-                    All
-                  </Text>
-                </TouchableOpacity>
+                    <Text
+                      style={[
+                        styles.filterChipText,
+                        selectedCategory === 'all' && styles.activeFilterChipText,
+                      ]}
+                    >
+                      All
+                    </Text>
+                  </TouchableOpacity>
+                )}
                 {categories.map((category) => (
                   <TouchableOpacity
                     key={category}
                     style={[
                       styles.filterChip,
-                      selectedCategory === category && styles.activeFilterChip,
+                      (multiSelectMode
+                        ? selectedCategories.includes(category)
+                        : selectedCategory === category) && styles.activeFilterChip,
                     ]}
-                    onPress={() => setSelectedCategory(category)}
+                    onPress={() => toggleCategory(category)}
                   >
                     <Text
                       style={[
                         styles.filterChipText,
-                        selectedCategory === category && styles.activeFilterChipText,
+                        (multiSelectMode
+                          ? selectedCategories.includes(category)
+                          : selectedCategory === category) && styles.activeFilterChipText,
                       ]}
                     >
                       {getCategoryEmoji(category)} {category}
+                      {multiSelectMode && selectedCategories.includes(category) && (
+                        <FontAwesome
+                          name="check"
+                          size={12}
+                          color="#057B8C"
+                          style={{ marginLeft: 4 }}
+                        />
+                      )}
                     </Text>
                   </TouchableOpacity>
                 ))}
@@ -305,38 +652,85 @@ export default function Finances() {
 
             {/* Trip Filter */}
             <View style={styles.filterGroup}>
-              <Text style={styles.filterLabel}>Trip</Text>
+              <Text style={styles.filterLabel}>
+                Trip {multiSelectMode && selectedTrips.length > 0 && `(${selectedTrips.length})`}
+              </Text>
               <ScrollView
                 horizontal
                 showsHorizontalScrollIndicator={false}
                 style={styles.filterScroll}
               >
+                {!multiSelectMode && (
+                  <TouchableOpacity
+                    style={[styles.filterChip, selectedTrip === 'all' && styles.activeFilterChip]}
+                    onPress={() => toggleTrip('all')}
+                  >
+                    <Text
+                      style={[
+                        styles.filterChipText,
+                        selectedTrip === 'all' && styles.activeFilterChipText,
+                      ]}
+                    >
+                      All Trips
+                    </Text>
+                  </TouchableOpacity>
+                )}
                 <TouchableOpacity
-                  style={[styles.filterChip, selectedTrip === 'all' && styles.activeFilterChip]}
-                  onPress={() => setSelectedTrip('all')}
+                  style={[
+                    styles.filterChip,
+                    (multiSelectMode
+                      ? selectedTrips.includes('general')
+                      : selectedTrip === 'general') && styles.activeFilterChip,
+                  ]}
+                  onPress={() => toggleTrip('general')}
                 >
                   <Text
                     style={[
                       styles.filterChipText,
-                      selectedTrip === 'all' && styles.activeFilterChipText,
+                      (multiSelectMode
+                        ? selectedTrips.includes('general')
+                        : selectedTrip === 'general') && styles.activeFilterChipText,
                     ]}
                   >
-                    All Trips
+                    💼 General
+                    {multiSelectMode && selectedTrips.includes('general') && (
+                      <FontAwesome
+                        name="check"
+                        size={12}
+                        color="#057B8C"
+                        style={{ marginLeft: 4 }}
+                      />
+                    )}
                   </Text>
                 </TouchableOpacity>
                 {trips.map((trip) => (
                   <TouchableOpacity
                     key={trip.id}
-                    style={[styles.filterChip, selectedTrip === trip.id && styles.activeFilterChip]}
-                    onPress={() => setSelectedTrip(trip.id)}
+                    style={[
+                      styles.filterChip,
+                      (multiSelectMode
+                        ? selectedTrips.includes(trip.id)
+                        : selectedTrip === trip.id) && styles.activeFilterChip,
+                    ]}
+                    onPress={() => toggleTrip(trip.id)}
                   >
                     <Text
                       style={[
                         styles.filterChipText,
-                        selectedTrip === trip.id && styles.activeFilterChipText,
+                        (multiSelectMode
+                          ? selectedTrips.includes(trip.id)
+                          : selectedTrip === trip.id) && styles.activeFilterChipText,
                       ]}
                     >
                       {trip.name}
+                      {multiSelectMode && selectedTrips.includes(trip.id) && (
+                        <FontAwesome
+                          name="check"
+                          size={12}
+                          color="#057B8C"
+                          style={{ marginLeft: 4 }}
+                        />
+                      )}
                     </Text>
                   </TouchableOpacity>
                 ))}
@@ -383,17 +777,102 @@ export default function Finances() {
           </View>
         </View>
 
+        {/* Active Filters Summary */}
+        {(searchQuery ||
+          selectedCategories.length > 0 ||
+          selectedTrips.length > 0 ||
+          minAmount ||
+          maxAmount ||
+          quickFilterPreset !== 'thisMonth') && (
+          <View style={styles.activeFiltersContainer}>
+            <Text style={styles.activeFiltersTitle}>Active Filters:</Text>
+            <ScrollView
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              style={styles.activeFiltersScroll}
+            >
+              {searchQuery && (
+                <View style={styles.activeFilterTag}>
+                  <Text style={styles.activeFilterText}>Search: "{searchQuery}"</Text>
+                  <TouchableOpacity onPress={() => setSearchQuery('')}>
+                    <FontAwesome name="times" size={12} color="#8E8E93" />
+                  </TouchableOpacity>
+                </View>
+              )}
+              {quickFilterPreset !== 'thisMonth' && (
+                <View style={styles.activeFilterTag}>
+                  <Text style={styles.activeFilterText}>
+                    {quickFilterPreset === 'custom'
+                      ? 'Custom Date'
+                      : quickFilterPreset.replace(/([A-Z])/g, ' $1')}
+                  </Text>
+                  <TouchableOpacity onPress={() => setQuickFilterPreset('thisMonth')}>
+                    <FontAwesome name="times" size={12} color="#8E8E93" />
+                  </TouchableOpacity>
+                </View>
+              )}
+              {selectedCategories.map((category) => (
+                <View key={category} style={styles.activeFilterTag}>
+                  <Text style={styles.activeFilterText}>
+                    {getCategoryEmoji(category)} {category}
+                  </Text>
+                  <TouchableOpacity onPress={() => toggleCategory(category)}>
+                    <FontAwesome name="times" size={12} color="#8E8E93" />
+                  </TouchableOpacity>
+                </View>
+              ))}
+              {selectedTrips.map((tripId) => (
+                <View key={tripId} style={styles.activeFilterTag}>
+                  <Text style={styles.activeFilterText}>
+                    {tripId === 'general' ? '💼 General' : getTripName(tripId)}
+                  </Text>
+                  <TouchableOpacity onPress={() => toggleTrip(tripId)}>
+                    <FontAwesome name="times" size={12} color="#8E8E93" />
+                  </TouchableOpacity>
+                </View>
+              ))}
+              {(minAmount || maxAmount) && (
+                <View style={styles.activeFilterTag}>
+                  <Text style={styles.activeFilterText}>
+                    ${minAmount || '0'} - ${maxAmount || '∞'}
+                  </Text>
+                  <TouchableOpacity
+                    onPress={() => {
+                      setMinAmount('');
+                      setMaxAmount('');
+                    }}
+                  >
+                    <FontAwesome name="times" size={12} color="#8E8E93" />
+                  </TouchableOpacity>
+                </View>
+              )}
+            </ScrollView>
+          </View>
+        )}
+
         {/* Expenses List */}
         {paginatedExpenses.length === 0 ? (
           <View style={styles.emptyState}>
             <FontAwesome name="file-text" size={48} color="#C7C7CC" />
             <Text style={styles.emptyStateTitle}>
-              {searchQuery || selectedCategory !== 'all' || selectedTrip !== 'all'
+              {searchQuery ||
+              selectedCategory !== 'all' ||
+              selectedTrip !== 'all' ||
+              selectedCategories.length > 0 ||
+              selectedTrips.length > 0 ||
+              minAmount ||
+              maxAmount
                 ? 'No matching expenses'
                 : 'No expenses yet'}
             </Text>
             <Text style={styles.emptyStateText}>
-              {searchQuery || selectedCategory !== 'all' || selectedTrip !== 'all'
+              {searchQuery ||
+              selectedCategory !== 'all' ||
+              selectedTrip !== 'all' ||
+              selectedCategories.length > 0 ||
+              selectedTrips.length > 0 ||
+              minAmount ||
+              maxAmount
                 ? 'Try adjusting your filters or search terms'
                 : 'Start tracking your travel expenses'}
             </Text>
@@ -417,7 +896,9 @@ export default function Finances() {
 
         {hasMoreExpenses && (
           <TouchableOpacity onPress={handleLoadMore} style={styles.loadMoreButton}>
-            <Text style={styles.loadMoreButtonText}>Load More</Text>
+            <Text style={styles.loadMoreButtonText}>
+              Load More ({filteredExpenses.length - paginatedExpenses.length} remaining)
+            </Text>
           </TouchableOpacity>
         )}
       </View>
@@ -1216,5 +1697,146 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: '600',
     color: '#FFFFFF',
+  },
+  quickFiltersContainer: {
+    marginBottom: 24,
+  },
+  quickFiltersHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 8,
+  },
+  quickFiltersActions: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  filterToggle: {
+    padding: 8,
+    borderRadius: 16,
+    marginRight: 8,
+  },
+  activeFilterToggle: {
+    backgroundColor: '#057B8C',
+  },
+  filterToggleText: {
+    fontSize: 14,
+    fontWeight: '500',
+    color: '#8E8E93',
+  },
+  activeFilterToggleText: {
+    color: '#FFFFFF',
+    fontWeight: '600',
+  },
+  clearFiltersButton: {
+    padding: 8,
+  },
+  clearFiltersText: {
+    fontSize: 14,
+    fontWeight: '500',
+    color: '#FF3B30',
+  },
+  quickFiltersScroll: {
+    marginBottom: 8,
+  },
+  quickFilterChip: {
+    padding: 8,
+    borderRadius: 16,
+    marginRight: 8,
+  },
+  activeQuickFilterChip: {
+    backgroundColor: '#057B8C',
+  },
+  quickFilterChipText: {
+    fontSize: 14,
+    fontWeight: '500',
+    color: '#FFFFFF',
+  },
+  activeQuickFilterChipText: {
+    color: '#FFFFFF',
+    fontWeight: '600',
+  },
+  advancedFiltersToggle: {
+    padding: 8,
+    borderRadius: 16,
+    marginRight: 8,
+  },
+  advancedFiltersToggleText: {
+    fontSize: 14,
+    fontWeight: '500',
+    color: '#8E8E93',
+  },
+  advancedFiltersPanel: {
+    marginBottom: 24,
+  },
+  advancedFilterGroup: {
+    marginBottom: 16,
+  },
+  advancedFilterLabel: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#1C1C1E',
+    marginBottom: 8,
+  },
+  dateRangeContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+  dateInputGroup: {
+    flex: 1,
+  },
+  dateInputLabel: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#1C1C1E',
+    marginBottom: 8,
+  },
+  dateInput: {
+    fontSize: 16,
+    color: '#8E8E93',
+  },
+  amountRangeContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+  amountInputGroup: {
+    flex: 1,
+  },
+  amountInputLabel: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#1C1C1E',
+    marginBottom: 8,
+  },
+  amountInput: {
+    fontSize: 16,
+    color: '#8E8E93',
+  },
+  activeFiltersContainer: {
+    marginBottom: 24,
+  },
+  activeFiltersTitle: {
+    fontSize: 18,
+    fontWeight: '600',
+    color: '#1C1C1E',
+    marginBottom: 8,
+  },
+  activeFiltersScroll: {
+    marginBottom: 8,
+  },
+  activeFilterTag: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#F0F9FF',
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 16,
+    marginRight: 8,
+    borderWidth: 1,
+    borderColor: '#057B8C',
+  },
+  activeFilterText: {
+    fontSize: 16,
+    fontWeight: '500',
+    color: '#1C1C1E',
   },
 });
