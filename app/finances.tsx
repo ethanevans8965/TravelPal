@@ -1256,166 +1256,568 @@ export default function Finances() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F9FAFB',
+    backgroundColor: '#F8FAFC',
   },
   header: {
     backgroundColor: '#FFFFFF',
     padding: 24,
-    borderBottomWidth: 1,
-    borderBottomColor: '#E5E5E5',
+    paddingTop: 60,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.05,
+    shadowRadius: 8,
+    elevation: 3,
   },
   title: {
     fontSize: 32,
-    fontWeight: '700',
-    color: '#1C1C1E',
+    fontWeight: '800',
+    color: '#1E293B',
     marginBottom: 4,
   },
   subtitle: {
-    fontSize: 17,
-    color: '#8E8E93',
+    fontSize: 16,
+    color: '#64748B',
+    fontWeight: '500',
   },
   tabBar: {
     flexDirection: 'row',
     backgroundColor: '#FFFFFF',
-    borderBottomWidth: 1,
-    borderBottomColor: '#E5E5E5',
+    marginHorizontal: 16,
+    marginTop: 16,
+    borderRadius: 12,
+    padding: 4,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.05,
+    shadowRadius: 4,
+    elevation: 2,
   },
   tab: {
     flex: 1,
-    paddingVertical: 16,
-    paddingHorizontal: 12,
+    paddingVertical: 12,
+    paddingHorizontal: 16,
     alignItems: 'center',
-    borderBottomWidth: 2,
-    borderBottomColor: 'transparent',
+    borderRadius: 8,
   },
   activeTab: {
-    borderBottomColor: '#057B8C',
+    backgroundColor: '#0EA5E9',
+    shadowColor: '#0EA5E9',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+    elevation: 4,
   },
   tabText: {
-    fontSize: 16,
-    fontWeight: '500',
-    color: '#8E8E93',
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#64748B',
   },
   activeTabText: {
-    color: '#057B8C',
-    fontWeight: '600',
+    color: '#FFFFFF',
+    fontWeight: '700',
   },
   scrollView: {
     flex: 1,
   },
   tabContent: {
-    padding: 24,
+    padding: 16,
   },
   contentTitle: {
     fontSize: 24,
-    fontWeight: '600',
-    color: '#1C1C1E',
+    fontWeight: '700',
+    color: '#1E293B',
     marginBottom: 8,
   },
   contentSubtitle: {
     fontSize: 16,
-    color: '#8E8E93',
+    color: '#64748B',
     marginBottom: 24,
-    lineHeight: 22,
+    fontWeight: '500',
   },
-  placeholder: {
+
+  // Stats Card
+  statsCard: {
     backgroundColor: '#FFFFFF',
-    borderRadius: 12,
-    padding: 32,
-    alignItems: 'center',
-    borderWidth: 1,
-    borderColor: '#E5E5E5',
-    borderStyle: 'dashed',
-  },
-  placeholderText: {
-    fontSize: 16,
-    color: '#8E8E93',
-    textAlign: 'center',
-    fontStyle: 'italic',
-  },
-  summaryCard: {
-    backgroundColor: '#FFFFFF',
-    borderRadius: 12,
+    borderRadius: 16,
     padding: 24,
     marginBottom: 24,
+    shadowColor: '#0F172A',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.08,
+    shadowRadius: 16,
+    elevation: 8,
   },
-  summaryHeader: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 16,
-  },
-  summaryTitle: {
-    fontSize: 18,
-    fontWeight: '600',
-    color: '#1C1C1E',
-    marginRight: 8,
-  },
-  summaryStats: {
+  statsRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     marginBottom: 16,
   },
   statItem: {
     alignItems: 'center',
+    flex: 1,
   },
   statValue: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: '#1C1C1E',
+    fontSize: 20,
+    fontWeight: '700',
+    color: '#1E293B',
+    marginBottom: 4,
   },
   statLabel: {
-    fontSize: 14,
-    color: '#8E8E93',
+    fontSize: 12,
+    color: '#64748B',
+    fontWeight: '600',
+    textTransform: 'uppercase',
+    letterSpacing: 0.5,
   },
-  progressContainer: {
+  topCategoryRow: {
+    backgroundColor: '#F1F5F9',
+    padding: 12,
+    borderRadius: 12,
+    alignItems: 'center',
+  },
+  topCategoryText: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#475569',
+    textAlign: 'center',
+  },
+
+  // Quick Filters
+  quickFiltersContainer: {
     marginBottom: 24,
   },
-  progressBar: {
-    height: 12,
-    backgroundColor: '#E5E5E5',
-    borderRadius: 6,
+  quickFiltersHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginBottom: 12,
+    paddingHorizontal: 4,
   },
-  progressFill: {
-    height: '100%',
-    borderRadius: 6,
+  filterLabel: {
+    fontSize: 16,
+    fontWeight: '700',
+    color: '#1E293B',
   },
-  progressText: {
-    fontSize: 14,
-    fontWeight: '500',
-    color: '#8E8E93',
-    marginTop: 8,
+  quickFiltersActions: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
   },
-  sectionTitle: {
-    fontSize: 20,
+  filterToggle: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#F1F5F9',
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    borderRadius: 20,
+    gap: 6,
+  },
+  activeFilterToggle: {
+    backgroundColor: '#0EA5E9',
+  },
+  filterToggleText: {
+    fontSize: 12,
     fontWeight: '600',
-    color: '#1C1C1E',
+    color: '#64748B',
+  },
+  activeFilterToggleText: {
+    color: '#FFFFFF',
+  },
+  clearFiltersButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#FEF2F2',
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    borderRadius: 20,
+    gap: 6,
+  },
+  clearFiltersText: {
+    fontSize: 12,
+    fontWeight: '600',
+    color: '#DC2626',
+  },
+  quickFiltersScroll: {
+    paddingHorizontal: 4,
+  },
+  quickFilterChip: {
+    backgroundColor: '#F8FAFC',
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
+    paddingHorizontal: 16,
+    paddingVertical: 10,
+    borderRadius: 24,
+    marginRight: 12,
+  },
+  activeQuickFilterChip: {
+    backgroundColor: '#0EA5E9',
+    borderColor: '#0EA5E9',
+    shadowColor: '#0EA5E9',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+    elevation: 4,
+  },
+  quickFilterChipText: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#475569',
+  },
+  activeQuickFilterChipText: {
+    color: '#FFFFFF',
+    fontWeight: '700',
+  },
+
+  // Filters Container
+  filtersContainer: {
+    backgroundColor: '#FFFFFF',
+    borderRadius: 16,
+    padding: 20,
+    marginBottom: 24,
+    shadowColor: '#0F172A',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.04,
+    shadowRadius: 8,
+    elevation: 4,
+  },
+  searchContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#F8FAFC',
+    borderRadius: 12,
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    marginBottom: 20,
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
+  },
+  searchIcon: {
+    marginRight: 12,
+  },
+  searchInput: {
+    flex: 1,
+    fontSize: 16,
+    color: '#1E293B',
+    fontWeight: '500',
+  },
+  clearButton: {
+    padding: 4,
+    marginLeft: 8,
+  },
+
+  // Advanced Filters
+  advancedFiltersToggle: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#F8FAFC',
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    borderRadius: 12,
+    marginBottom: 20,
+    gap: 8,
+  },
+  advancedFiltersToggleText: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#0EA5E9',
+  },
+  advancedFiltersPanel: {
+    backgroundColor: '#F8FAFC',
+    borderRadius: 12,
+    padding: 16,
+    marginBottom: 20,
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
+  },
+  advancedFilterGroup: {
+    marginBottom: 20,
+  },
+  advancedFilterLabel: {
+    fontSize: 14,
+    fontWeight: '700',
+    color: '#1E293B',
+    marginBottom: 12,
+    textTransform: 'uppercase',
+    letterSpacing: 0.5,
+  },
+  dateRangeContainer: {
+    flexDirection: 'row',
+    gap: 12,
+  },
+  dateInputGroup: {
+    flex: 1,
+  },
+  dateInputLabel: {
+    fontSize: 12,
+    fontWeight: '600',
+    color: '#64748B',
+    marginBottom: 8,
+    textTransform: 'uppercase',
+    letterSpacing: 0.5,
+  },
+  dateInput: {
+    backgroundColor: '#FFFFFF',
+    borderRadius: 8,
+    paddingHorizontal: 12,
+    paddingVertical: 10,
+    fontSize: 14,
+    color: '#1E293B',
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
+    fontWeight: '500',
+  },
+  amountRangeContainer: {
+    flexDirection: 'row',
+    gap: 12,
+  },
+  amountInputGroup: {
+    flex: 1,
+  },
+  amountInputLabel: {
+    fontSize: 12,
+    fontWeight: '600',
+    color: '#64748B',
+    marginBottom: 8,
+    textTransform: 'uppercase',
+    letterSpacing: 0.5,
+  },
+  amountInput: {
+    backgroundColor: '#FFFFFF',
+    borderRadius: 8,
+    paddingHorizontal: 12,
+    paddingVertical: 10,
+    fontSize: 14,
+    color: '#1E293B',
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
+    fontWeight: '500',
+  },
+
+  // Filter Row
+  filterRow: {
+    gap: 20,
+  },
+  filterGroup: {
     marginBottom: 16,
   },
-  emptyState: {
-    flex: 1,
-    justifyContent: 'center',
+  filterScroll: {
+    paddingVertical: 4,
+  },
+  filterChip: {
+    backgroundColor: '#F8FAFC',
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
+    paddingHorizontal: 14,
+    paddingVertical: 8,
+    borderRadius: 20,
+    marginRight: 8,
+    marginBottom: 8,
+  },
+  activeFilterChip: {
+    backgroundColor: '#0EA5E9',
+    borderColor: '#0EA5E9',
+  },
+  filterChipText: {
+    fontSize: 13,
+    fontWeight: '600',
+    color: '#475569',
+  },
+  activeFilterChipText: {
+    color: '#FFFFFF',
+  },
+
+  // Sort Options
+  sortContainer: {
+    marginTop: 8,
+  },
+  sortButtons: {
+    flexDirection: 'row',
+    gap: 8,
+  },
+  sortButton: {
+    flexDirection: 'row',
     alignItems: 'center',
+    backgroundColor: '#F8FAFC',
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
+    paddingHorizontal: 16,
+    paddingVertical: 10,
+    borderRadius: 20,
+    gap: 6,
+  },
+  activeSortButton: {
+    backgroundColor: '#0EA5E9',
+    borderColor: '#0EA5E9',
+  },
+  sortButtonText: {
+    fontSize: 13,
+    fontWeight: '600',
+    color: '#475569',
+  },
+  activeSortButtonText: {
+    color: '#FFFFFF',
+  },
+  sortIcon: {
+    marginLeft: 2,
+  },
+
+  // Active Filters
+  activeFiltersContainer: {
+    backgroundColor: '#FFFFFF',
+    borderRadius: 16,
+    padding: 20,
+    marginBottom: 24,
+    shadowColor: '#0F172A',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.04,
+    shadowRadius: 8,
+    elevation: 4,
+  },
+  activeFiltersTitle: {
+    fontSize: 16,
+    fontWeight: '700',
+    color: '#1E293B',
+    marginBottom: 12,
+  },
+  activeFiltersScroll: {
+    paddingVertical: 4,
+  },
+  activeFilterTag: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#EFF6FF',
+    borderWidth: 1,
+    borderColor: '#BFDBFE',
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    borderRadius: 20,
+    marginRight: 8,
+    marginBottom: 8,
+    gap: 8,
+  },
+  activeFilterText: {
+    fontSize: 13,
+    fontWeight: '600',
+    color: '#1E40AF',
+  },
+
+  // Expenses List
+  expensesList: {
+    gap: 12,
+  },
+
+  // Load More Button
+  loadMoreButton: {
+    backgroundColor: '#0EA5E9',
+    paddingVertical: 16,
+    paddingHorizontal: 24,
+    borderRadius: 12,
+    alignItems: 'center',
+    marginTop: 20,
+    shadowColor: '#0EA5E9',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.2,
+    shadowRadius: 8,
+    elevation: 6,
+  },
+  loadMoreButtonText: {
+    fontSize: 16,
+    fontWeight: '700',
+    color: '#FFFFFF',
+  },
+
+  // Empty State
+  emptyState: {
+    alignItems: 'center',
+    paddingVertical: 60,
+    paddingHorizontal: 24,
   },
   emptyStateTitle: {
     fontSize: 20,
-    fontWeight: '600',
-    color: '#1C1C1E',
+    fontWeight: '700',
+    color: '#1E293B',
+    marginTop: 16,
     marginBottom: 8,
+    textAlign: 'center',
   },
   emptyStateText: {
     fontSize: 16,
-    color: '#8E8E93',
+    color: '#64748B',
     textAlign: 'center',
+    lineHeight: 24,
+    fontWeight: '500',
+  },
+
+  // Budget Tab Styles
+  summaryCard: {
+    backgroundColor: '#FFFFFF',
+    borderRadius: 16,
+    padding: 24,
+    marginBottom: 24,
+    shadowColor: '#0F172A',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.08,
+    shadowRadius: 16,
+    elevation: 8,
+  },
+  summaryHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginBottom: 20,
+  },
+  summaryTitle: {
+    fontSize: 18,
+    fontWeight: '700',
+    color: '#1E293B',
+  },
+  summaryStats: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: 20,
+  },
+  progressContainer: {
+    marginTop: 8,
+  },
+  progressBar: {
+    height: 8,
+    backgroundColor: '#F1F5F9',
+    borderRadius: 4,
+    overflow: 'hidden',
+  },
+  progressFill: {
+    height: '100%',
+    borderRadius: 4,
+  },
+  progressText: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#64748B',
+    marginTop: 8,
+    textAlign: 'center',
+  },
+  sectionTitle: {
+    fontSize: 20,
+    fontWeight: '700',
+    color: '#1E293B',
+    marginBottom: 16,
   },
   tripBudgetCard: {
     backgroundColor: '#FFFFFF',
-    borderRadius: 12,
-    padding: 24,
+    borderRadius: 16,
+    padding: 20,
     marginBottom: 16,
+    shadowColor: '#0F172A',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.04,
+    shadowRadius: 8,
+    elevation: 4,
   },
   tripHeader: {
     flexDirection: 'row',
     alignItems: 'center',
+    justifyContent: 'space-between',
     marginBottom: 16,
   },
   tripInfo: {
@@ -1423,21 +1825,26 @@ const styles = StyleSheet.create({
   },
   tripName: {
     fontSize: 18,
-    fontWeight: '600',
-    color: '#1C1C1E',
+    fontWeight: '700',
+    color: '#1E293B',
+    marginBottom: 4,
   },
   tripDestination: {
     fontSize: 14,
-    color: '#8E8E93',
+    color: '#64748B',
+    fontWeight: '500',
   },
   statusBadge: {
-    padding: 4,
-    borderRadius: 4,
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 16,
   },
   statusText: {
-    fontSize: 14,
-    fontWeight: '500',
+    fontSize: 12,
+    fontWeight: '700',
     color: '#FFFFFF',
+    textTransform: 'uppercase',
+    letterSpacing: 0.5,
   },
   budgetStats: {
     flexDirection: 'row',
@@ -1446,397 +1853,113 @@ const styles = StyleSheet.create({
   },
   budgetStatItem: {
     alignItems: 'center',
+    flex: 1,
   },
   budgetAmount: {
     fontSize: 16,
-    fontWeight: '600',
-    color: '#1C1C1E',
+    fontWeight: '700',
+    color: '#1E293B',
+    marginBottom: 4,
   },
   budgetLabel: {
-    fontSize: 14,
-    color: '#8E8E93',
+    fontSize: 12,
+    color: '#64748B',
+    fontWeight: '600',
+    textTransform: 'uppercase',
+    letterSpacing: 0.5,
   },
   tripProgressContainer: {
     marginBottom: 16,
   },
   tripProgressText: {
     fontSize: 14,
-    fontWeight: '500',
-    color: '#8E8E93',
+    fontWeight: '600',
+    color: '#64748B',
+    marginTop: 8,
+    textAlign: 'center',
   },
   categoryBreakdown: {
-    marginTop: 16,
+    backgroundColor: '#F8FAFC',
+    borderRadius: 12,
+    padding: 16,
+    marginTop: 8,
   },
   categoryTitle: {
-    fontSize: 18,
-    fontWeight: '600',
-    color: '#1C1C1E',
-    marginBottom: 8,
+    fontSize: 16,
+    fontWeight: '700',
+    color: '#1E293B',
+    marginBottom: 12,
   },
   categoryItem: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 4,
+    paddingVertical: 6,
   },
   categoryName: {
-    fontSize: 16,
-    fontWeight: '500',
-    color: '#1C1C1E',
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#475569',
+    textTransform: 'capitalize',
   },
   categoryAmount: {
     fontSize: 14,
-    color: '#8E8E93',
+    fontWeight: '700',
+    color: '#0EA5E9',
   },
-  statsCard: {
-    backgroundColor: '#FFFFFF',
-    borderRadius: 12,
-    padding: 24,
-    marginBottom: 24,
-  },
-  statsRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginBottom: 16,
-  },
-  topCategoryRow: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    marginBottom: 16,
-  },
-  topCategoryText: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: '#1C1C1E',
-  },
-  filtersContainer: {
-    marginBottom: 24,
-  },
-  filterLabel: {
-    fontSize: 14,
-    fontWeight: '600',
-    color: '#1C1C1E',
-    marginBottom: 8,
-  },
-  filterScroll: {
-    flexDirection: 'row',
-  },
-  searchContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#FFFFFF',
-    borderRadius: 12,
-    padding: 12,
-    marginBottom: 16,
-  },
-  searchIcon: {
-    marginRight: 8,
-  },
-  searchInput: {
-    flex: 1,
-    fontSize: 16,
-    color: '#8E8E93',
-  },
-  clearButton: {
-    padding: 4,
-  },
-  filterRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginBottom: 16,
-  },
-  filterGroup: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  filterChip: {
-    padding: 8,
-    borderRadius: 16,
-    marginRight: 8,
-  },
-  activeFilterChip: {
-    backgroundColor: '#057B8C',
-  },
-  filterChipText: {
-    fontSize: 16,
-    fontWeight: '500',
-    color: '#8E8E93',
-  },
-  activeFilterChipText: {
-    color: '#FFFFFF',
-    fontWeight: '600',
-  },
-  sortContainer: {
-    marginBottom: 16,
-  },
-  sortButtons: {
-    flexDirection: 'row',
-  },
-  sortButton: {
-    padding: 8,
-    borderRadius: 16,
-    marginRight: 8,
-  },
-  activeSortButton: {
-    backgroundColor: '#057B8C',
-  },
-  sortButtonText: {
-    fontSize: 16,
-    fontWeight: '500',
-    color: '#8E8E93',
-  },
-  activeSortButtonText: {
-    color: '#FFFFFF',
-    fontWeight: '600',
-  },
-  sortIcon: {
-    marginLeft: 4,
-  },
-  expensesList: {
-    marginBottom: 24,
-  },
-  expenseCard: {
-    backgroundColor: '#FFFFFF',
-    borderRadius: 12,
-    padding: 16,
-    marginBottom: 12,
-  },
-  expenseHeader: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 12,
-  },
-  expenseIcon: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    backgroundColor: '#E5E5E5',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  expenseIconText: {
-    fontSize: 20,
-    fontWeight: '600',
-    color: '#1C1C1E',
-  },
-  expenseInfo: {
-    flex: 1,
-  },
-  expenseName: {
-    fontSize: 18,
-    fontWeight: '600',
-    color: '#1C1C1E',
-  },
-  expenseCategory: {
-    fontSize: 14,
-    color: '#8E8E93',
-  },
-  expenseAmount: {
-    alignItems: 'flex-end',
-  },
-  expenseAmountText: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: '#1C1C1E',
-  },
-  expenseCurrency: {
-    fontSize: 14,
-    color: '#8E8E93',
-  },
-  expenseFooter: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  },
-  expenseTrip: {
-    fontSize: 14,
-    color: '#8E8E93',
-  },
-  expenseDate: {
-    fontSize: 14,
-    color: '#8E8E93',
-  },
-  lastExpenseCard: {
-    marginBottom: 0,
-  },
+
+  // Reports Tab Styles
   timePeriodContainer: {
     marginBottom: 24,
   },
   timePeriodButtons: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    backgroundColor: '#F1F5F9',
+    borderRadius: 12,
+    padding: 4,
+    gap: 4,
   },
   timePeriodButton: {
     flex: 1,
-    paddingVertical: 8,
+    paddingVertical: 10,
     paddingHorizontal: 12,
-    marginHorizontal: 4,
     borderRadius: 8,
-    backgroundColor: '#F9FAFB',
     alignItems: 'center',
   },
   activeTimePeriodButton: {
-    backgroundColor: '#057B8C',
+    backgroundColor: '#0EA5E9',
+    shadowColor: '#0EA5E9',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+    elevation: 4,
   },
   timePeriodButtonText: {
     fontSize: 14,
-    fontWeight: '500',
-    color: '#8E8E93',
+    fontWeight: '600',
+    color: '#64748B',
   },
   activeTimePeriodButtonText: {
     color: '#FFFFFF',
-    fontWeight: '600',
+    fontWeight: '700',
   },
-  loadMoreButton: {
-    padding: 16,
-    backgroundColor: '#057B8C',
-    borderRadius: 8,
-    alignItems: 'center',
-  },
-  loadMoreButtonText: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: '#FFFFFF',
-  },
-  quickFiltersContainer: {
-    marginBottom: 24,
-  },
-  quickFiltersHeader: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 8,
-  },
-  quickFiltersActions: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  filterToggle: {
-    padding: 8,
+
+  // Placeholder
+  placeholder: {
+    backgroundColor: '#FFFFFF',
     borderRadius: 16,
-    marginRight: 8,
-  },
-  activeFilterToggle: {
-    backgroundColor: '#057B8C',
-  },
-  filterToggleText: {
-    fontSize: 14,
-    fontWeight: '500',
-    color: '#8E8E93',
-  },
-  activeFilterToggleText: {
-    color: '#FFFFFF',
-    fontWeight: '600',
-  },
-  clearFiltersButton: {
-    padding: 8,
-  },
-  clearFiltersText: {
-    fontSize: 14,
-    fontWeight: '500',
-    color: '#FF3B30',
-  },
-  quickFiltersScroll: {
-    marginBottom: 8,
-  },
-  quickFilterChip: {
-    padding: 8,
-    borderRadius: 16,
-    marginRight: 8,
-  },
-  activeQuickFilterChip: {
-    backgroundColor: '#057B8C',
-  },
-  quickFilterChipText: {
-    fontSize: 14,
-    fontWeight: '500',
-    color: '#FFFFFF',
-  },
-  activeQuickFilterChipText: {
-    color: '#FFFFFF',
-    fontWeight: '600',
-  },
-  advancedFiltersToggle: {
-    padding: 8,
-    borderRadius: 16,
-    marginRight: 8,
-  },
-  advancedFiltersToggleText: {
-    fontSize: 14,
-    fontWeight: '500',
-    color: '#8E8E93',
-  },
-  advancedFiltersPanel: {
-    marginBottom: 24,
-  },
-  advancedFilterGroup: {
-    marginBottom: 16,
-  },
-  advancedFilterLabel: {
-    fontSize: 14,
-    fontWeight: '600',
-    color: '#1C1C1E',
-    marginBottom: 8,
-  },
-  dateRangeContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-  },
-  dateInputGroup: {
-    flex: 1,
-  },
-  dateInputLabel: {
-    fontSize: 14,
-    fontWeight: '600',
-    color: '#1C1C1E',
-    marginBottom: 8,
-  },
-  dateInput: {
-    fontSize: 16,
-    color: '#8E8E93',
-  },
-  amountRangeContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-  },
-  amountInputGroup: {
-    flex: 1,
-  },
-  amountInputLabel: {
-    fontSize: 14,
-    fontWeight: '600',
-    color: '#1C1C1E',
-    marginBottom: 8,
-  },
-  amountInput: {
-    fontSize: 16,
-    color: '#8E8E93',
-  },
-  activeFiltersContainer: {
-    marginBottom: 24,
-  },
-  activeFiltersTitle: {
-    fontSize: 18,
-    fontWeight: '600',
-    color: '#1C1C1E',
-    marginBottom: 8,
-  },
-  activeFiltersScroll: {
-    marginBottom: 8,
-  },
-  activeFilterTag: {
-    flexDirection: 'row',
+    padding: 40,
     alignItems: 'center',
-    backgroundColor: '#F0F9FF',
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: 16,
-    marginRight: 8,
-    borderWidth: 1,
-    borderColor: '#057B8C',
+    borderWidth: 2,
+    borderColor: '#E2E8F0',
+    borderStyle: 'dashed',
+    marginVertical: 20,
   },
-  activeFilterText: {
+  placeholderText: {
     fontSize: 16,
+    color: '#64748B',
+    textAlign: 'center',
+    fontStyle: 'italic',
     fontWeight: '500',
-    color: '#1C1C1E',
   },
 });
