@@ -2,21 +2,30 @@ import React from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Image } from 'react-native';
 import { FontAwesome } from '@expo/vector-icons';
 import { useAppContext } from './context';
+import { useExpenseStore } from './stores/expenseStore';
 import CurrencyConverter from './components/CurrencyConverter';
 import { useRouter } from 'expo-router';
 import { LinearGradient } from 'expo-linear-gradient';
 
 export default function Index() {
-  const { trips, expenses } = useAppContext();
+  const { trips } = useAppContext();
   const router = useRouter();
+
+  // Get expenses from Zustand store
+  const { getAllExpenses, getRecentExpenses, getExpensesByTripId, getGeneralExpenses } =
+    useExpenseStore();
+
+  const allExpenses = getAllExpenses();
+  const recentExpenses = getRecentExpenses(5); // Get 5 recent expenses
+  const generalExpenses = getGeneralExpenses();
 
   // Get active trip for trip snapshot
   const activeTrip = trips.find((trip) => trip.status === 'active');
 
-  // Calculate budget overview
+  // Calculate enhanced budget overview
   const calculateBudgetOverview = () => {
     if (!activeTrip) return { spent: 0, budget: 0, remaining: 0, percentage: 0 };
-    const tripExpenses = expenses.filter((e) => e.tripId === activeTrip.id);
+    const tripExpenses = getExpensesByTripId(activeTrip.id);
     const spent = tripExpenses.reduce((sum, expense) => sum + expense.amount, 0);
     const budget = activeTrip.totalBudget || 0;
     const remaining = budget - spent;
@@ -24,11 +33,42 @@ export default function Index() {
     return { spent, budget, remaining, percentage };
   };
 
-  // Get recent expenses (last 3)
-  const getRecentExpenses = () => {
-    return expenses
-      .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
-      .slice(0, 3);
+  // Calculate monthly expense totals
+  const calculateMonthlyTotals = () => {
+    const now = new Date();
+    const currentMonth = now.getMonth();
+    const currentYear = now.getFullYear();
+
+    const thisMonthExpenses = allExpenses.filter((expense) => {
+      const expenseDate = new Date(expense.date);
+      return expenseDate.getMonth() === currentMonth && expenseDate.getFullYear() === currentYear;
+    });
+
+    const lastMonth = new Date(currentYear, currentMonth - 1);
+    const lastMonthExpenses = allExpenses.filter((expense) => {
+      const expenseDate = new Date(expense.date);
+      return (
+        expenseDate.getMonth() === lastMonth.getMonth() &&
+        expenseDate.getFullYear() === lastMonth.getFullYear()
+      );
+    });
+
+    const thisMonthTotal = thisMonthExpenses.reduce((sum, expense) => sum + expense.amount, 0);
+    const lastMonthTotal = lastMonthExpenses.reduce((sum, expense) => sum + expense.amount, 0);
+
+    return {
+      thisMonth: thisMonthTotal,
+      lastMonth: lastMonthTotal,
+      count: thisMonthExpenses.length,
+      change: lastMonthTotal > 0 ? ((thisMonthTotal - lastMonthTotal) / lastMonthTotal) * 100 : 0,
+    };
+  };
+
+  // Get trip name for expense
+  const getTripName = (tripId?: string) => {
+    if (!tripId) return 'General';
+    const trip = trips.find((t) => t.id === tripId);
+    return trip ? trip.name : 'Unknown Trip';
   };
 
   // Format date for display
@@ -39,24 +79,28 @@ export default function Index() {
     const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
     if (diffDays === 0) return 'Today';
     if (diffDays === 1) return 'Yesterday';
-    return date.toLocaleDateString();
+    if (diffDays < 7) return `${diffDays} days ago`;
+    return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
   };
 
   // Get emoji for expense category
   const getCategoryEmoji = (category: string) => {
     const emojiMap: Record<string, string> = {
       food: '🍽️',
-      transportation: '🚇',
+      transport: '🚗',
       accommodation: '🏨',
       activities: '🎯',
       shopping: '🛍️',
-      other: '💰',
+      health: '💊',
+      communication: '📱',
+      entertainment: '🎭',
+      other: '📋',
     };
     return emojiMap[category] || '💰';
   };
 
   const budgetOverview = calculateBudgetOverview();
-  const recentExpenses = getRecentExpenses();
+  const monthlyTotals = calculateMonthlyTotals();
 
   // Trip progress bar calculation
   const getTripProgress = () => {
@@ -170,9 +214,48 @@ export default function Index() {
           )}
         </View>
 
+        {/* Monthly Spending Overview */}
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>This Month's Spending</Text>
+          <LinearGradient colors={['#667eea', '#764ba2']} style={styles.monthlyCard}>
+            <View style={styles.monthlyHeader}>
+              <FontAwesome name="bar-chart" size={22} color="#fff" style={{ marginRight: 10 }} />
+              <Text style={styles.monthlyTitle}>${monthlyTotals.thisMonth.toLocaleString()}</Text>
+            </View>
+            <View style={styles.monthlyStats}>
+              <View style={styles.monthlyStat}>
+                <Text style={styles.monthlyStatValue}>{monthlyTotals.count}</Text>
+                <Text style={styles.monthlyStatLabel}>Expenses</Text>
+              </View>
+              <View style={styles.monthlyStat}>
+                <Text
+                  style={[
+                    styles.monthlyStatValue,
+                    { color: monthlyTotals.change >= 0 ? '#FF6B6B' : '#4CAF50' },
+                  ]}
+                >
+                  {monthlyTotals.change >= 0 ? '+' : ''}
+                  {monthlyTotals.change.toFixed(0)}%
+                </Text>
+                <Text style={styles.monthlyStatLabel}>vs Last Month</Text>
+              </View>
+              <View style={styles.monthlyStat}>
+                <Text style={styles.monthlyStatValue}>{generalExpenses.length}</Text>
+                <Text style={styles.monthlyStatLabel}>General</Text>
+              </View>
+            </View>
+          </LinearGradient>
+        </View>
+
         {/* Recent Expenses */}
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Recent Expenses</Text>
+          <View style={styles.sectionHeader}>
+            <Text style={styles.sectionTitle}>Recent Expenses</Text>
+            <TouchableOpacity style={styles.viewAllButton} onPress={() => router.push('/finances')}>
+              <Text style={styles.viewAllText}>View All</Text>
+              <FontAwesome name="chevron-right" size={12} color="#43cea2" />
+            </TouchableOpacity>
+          </View>
           {recentExpenses.length > 0 ? (
             <View style={styles.expensesCard}>
               {recentExpenses.map((expense, index) => (
@@ -188,9 +271,15 @@ export default function Index() {
                   </View>
                   <View style={styles.expenseDetails}>
                     <Text style={styles.expenseName}>{expense.description}</Text>
-                    <Text style={styles.expenseDate}>{formatDate(expense.date)}</Text>
+                    <View style={styles.expenseMetadata}>
+                      <Text style={styles.expenseDate}>{formatDate(expense.date)}</Text>
+                      <Text style={styles.expenseTrip}>• {getTripName(expense.tripId)}</Text>
+                    </View>
                   </View>
-                  <Text style={styles.expenseAmount}>-${expense.amount.toFixed(2)}</Text>
+                  <View style={styles.expenseAmountContainer}>
+                    <Text style={styles.expenseAmount}>-${expense.amount.toFixed(2)}</Text>
+                    <Text style={styles.expenseCurrency}>{expense.currency}</Text>
+                  </View>
                 </View>
               ))}
               <TouchableOpacity
@@ -203,6 +292,12 @@ export default function Index() {
             </View>
           ) : (
             <View style={styles.emptyCard}>
+              <FontAwesome
+                name="file-text-o"
+                size={32}
+                color="#C7C7CC"
+                style={{ marginBottom: 8 }}
+              />
               <Text style={styles.emptyText}>No expenses yet</Text>
               <Text style={styles.emptySubtext}>Start tracking your travel expenses</Text>
               <TouchableOpacity
@@ -210,7 +305,7 @@ export default function Index() {
                 onPress={() => router.push('/expenses/add')}
               >
                 <FontAwesome name="plus" size={16} color="#fff" />
-                <Text style={styles.addExpenseBtnText}>Add Expense</Text>
+                <Text style={styles.addExpenseBtnText}>Add First Expense</Text>
               </TouchableOpacity>
             </View>
           )}
@@ -540,5 +635,78 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 4,
     elevation: 3,
+  },
+  sectionHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 8,
+  },
+  viewAllButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+  },
+  viewAllText: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#43cea2',
+  },
+  monthlyCard: {
+    borderRadius: 18,
+    padding: 20,
+    shadowColor: '#667eea',
+    shadowOpacity: 0.12,
+    shadowRadius: 8,
+    elevation: 4,
+    marginBottom: 0,
+  },
+  monthlyHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 10,
+  },
+  monthlyTitle: {
+    fontSize: 18,
+    fontWeight: '700',
+    color: '#fff',
+  },
+  monthlyStats: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  monthlyStat: {
+    flex: 1,
+    alignItems: 'center',
+  },
+  monthlyStatValue: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#fff',
+    marginBottom: 4,
+  },
+  monthlyStatLabel: {
+    fontSize: 14,
+    color: '#e0f7fa',
+    fontWeight: '500',
+  },
+  expenseMetadata: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+  },
+  expenseTrip: {
+    fontSize: 14,
+    color: '#8E8E93',
+  },
+  expenseAmountContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+  },
+  expenseCurrency: {
+    fontSize: 14,
+    color: '#8E8E93',
   },
 });
