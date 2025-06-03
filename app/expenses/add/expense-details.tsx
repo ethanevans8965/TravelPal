@@ -185,9 +185,20 @@ export default function ExpenseDetailsScreen() {
       });
     } catch (error) {
       console.error('Error saving expense:', error);
-      Alert.alert('Save Failed', 'There was an error saving your expense. Please try again.', [
-        { text: 'OK' },
-      ]);
+
+      // Navigate to error screen with details
+      router.push({
+        pathname: '/expenses/add/error',
+        params: {
+          errorMessage:
+            error instanceof Error
+              ? error.message
+              : 'Failed to save expense. Please check your connection and try again.',
+          // Include basic expense data for context (no sensitive info)
+          amount: parsedAmount.toString(),
+          category: category?.key || '',
+        },
+      });
     } finally {
       setIsLoading(false);
     }
