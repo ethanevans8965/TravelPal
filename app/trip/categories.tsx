@@ -42,7 +42,7 @@ export default function CategoriesScreen() {
 
   const handleNext = () => {
     router.push({
-      pathname: '/trip/review',
+      pathname: '/trip/create/budget-planning-review',
       params: {
         ...params,
         categories: JSON.stringify(percentages),
@@ -109,10 +109,7 @@ export default function CategoriesScreen() {
         ))}
       </View>
 
-      <TouchableOpacity
-        style={styles.nextButton}
-        onPress={handleNext}
-      >
+      <TouchableOpacity style={styles.nextButton} onPress={handleNext}>
         <Text style={styles.nextButtonText}>Review Trip</Text>
         <FontAwesome name="arrow-right" size={16} color="#FFFFFF" />
       </TouchableOpacity>
@@ -214,4 +211,4 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     marginRight: 8,
   },
-}); 
+});

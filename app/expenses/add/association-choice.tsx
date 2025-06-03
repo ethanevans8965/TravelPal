@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Animated, Dimensions } from 'react-native';
 import { FontAwesome } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
+import { useRouter } from 'expo-router';
 
 const { width } = Dimensions.get('window');
 
@@ -27,6 +28,7 @@ const options = [
 export default function ExpenseAssociationChoiceScreen() {
   const [selected, setSelected] = useState<string | null>(null);
   const [buttonAnim] = useState(new Animated.Value(0));
+  const router = useRouter();
 
   // Animate the Next button when enabled
   React.useEffect(() => {
@@ -36,6 +38,14 @@ export default function ExpenseAssociationChoiceScreen() {
       useNativeDriver: false,
     }).start();
   }, [selected]);
+
+  const handleNext = () => {
+    if (selected === 'trip') {
+      router.push('/expenses/add/trip-selection');
+    } else if (selected === 'general') {
+      router.push('/expenses/add/expense-details?general=true');
+    }
+  };
 
   return (
     <View style={styles.root}>
@@ -95,9 +105,7 @@ export default function ExpenseAssociationChoiceScreen() {
         <TouchableOpacity
           style={styles.nextButtonWrapper}
           disabled={!selected}
-          onPress={() => {
-            // TODO: Navigate to next step with selected option
-          }}
+          onPress={handleNext}
         >
           <LinearGradient
             colors={['#43cea2', '#185a9d']}

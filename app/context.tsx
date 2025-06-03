@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useState } from 'react';
 import * as Crypto from 'expo-crypto';
 import { AppContextType, Expense, JournalEntry, Trip, Location } from './types';
+import { useExpenseStore } from './stores/expenseStore';
 
 const AppContext = createContext<AppContextType | null>(null);
 
@@ -14,7 +15,9 @@ const AppContext = createContext<AppContextType | null>(null);
 // ];
 
 export function AppProvider({ children }: { children: React.ReactNode }) {
-  const [expenses, setExpenses] = useState<Expense[]>([]); // Start empty
+  // Use Zustand store for expenses
+  const expenses = useExpenseStore((state) => state.expenses);
+
   const [journalEntries, setJournalEntries] = useState<JournalEntry[]>([]);
   const [trips, setTrips] = useState<Trip[]>([]); // Start empty
   const [locations, setLocations] = useState<Location[]>([]);
@@ -36,26 +39,27 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
 
   const deleteTrip = (tripId: string) => {
     setTrips((prev) => prev.filter((t) => t.id !== tripId));
-    // Also delete associated expenses and journal entries
-    setExpenses((prev) => prev.filter((e) => e.tripId !== tripId));
+    // Also delete associated expenses using expense store
+    const expenseStore = useExpenseStore.getState();
+    expenseStore.deleteExpensesByTripId(tripId);
+    // Delete associated journal entries
     setJournalEntries((prev) => prev.filter((j) => j.tripId !== tripId));
   };
 
-  // Expense operations
+  // Expense operations - delegate to Zustand store
   const addExpense = (expense: Omit<Expense, 'id'>) => {
-    const newExpense: Expense = {
-      ...expense,
-      id: Crypto.randomUUID(),
-    };
-    setExpenses((prev) => [...prev, newExpense]);
+    const expenseStore = useExpenseStore.getState();
+    return expenseStore.addExpense(expense);
   };
 
   const updateExpense = (expense: Expense) => {
-    setExpenses((prev) => prev.map((e) => (e.id === expense.id ? expense : e)));
+    const expenseStore = useExpenseStore.getState();
+    expenseStore.updateExpense(expense);
   };
 
   const deleteExpense = (expenseId: string) => {
-    setExpenses((prev) => prev.filter((e) => e.id !== expenseId));
+    const expenseStore = useExpenseStore.getState();
+    expenseStore.deleteExpense(expenseId);
   };
 
   // Journal operations
@@ -88,9 +92,10 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     setLocations((prev) => prev.map((l) => (l.id === location.id ? location : l)));
   };
 
-  // Utility functions
+  // Utility functions - delegate to Zustand store
   const getTripExpenses = (tripId: string) => {
-    return expenses.filter((e) => e.tripId === tripId);
+    const expenseStore = useExpenseStore.getState();
+    return expenseStore.getExpensesByTripId(tripId);
   };
 
   const getTripJournalEntries = (tripId: string) => {
@@ -98,7 +103,8 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   };
 
   const getLocationExpenses = (locationId: string) => {
-    return expenses.filter((e) => e.locationId === locationId);
+    const expenseStore = useExpenseStore.getState();
+    return expenseStore.getExpensesByLocationId(locationId);
   };
 
   const getLocationJournalEntries = (locationId: string) => {
@@ -106,7 +112,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   };
 
   const value: AppContextType = {
-    expenses,
+    expenses, // From Zustand store
     journalEntries,
     trips,
     locations,

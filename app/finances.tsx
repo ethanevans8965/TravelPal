@@ -121,7 +121,8 @@ export default function Finances() {
   };
 
   // Get trip name by ID
-  const getTripName = (tripId: string) => {
+  const getTripName = (tripId?: string) => {
+    if (!tripId) return 'General Expense';
     const trip = trips.find((t) => t.id === tripId);
     return trip ? trip.name : 'Unknown Trip';
   };

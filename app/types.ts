@@ -13,7 +13,7 @@ export interface Location {
 
 export interface Expense {
   id: string;
-  tripId: string; // Link to trip
+  tripId?: string; // Optional - for general expenses that aren't linked to a trip
   amount: number;
   category: string;
   description: string;

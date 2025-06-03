@@ -14,6 +14,9 @@ interface ExpenseState {
   deleteExpensesByTripId: (tripId: string) => void;
   getExpensesByTripId: (tripId: string) => Expense[];
   getExpensesByLocationId: (locationId: string) => Expense[];
+  getGeneralExpenses: () => Expense[];
+  getAllExpenses: () => Expense[];
+  getRecentExpenses: (limit?: number) => Expense[];
 }
 
 export const useExpenseStore = create<ExpenseState>()(
@@ -49,6 +52,17 @@ export const useExpenseStore = create<ExpenseState>()(
       },
       getExpensesByLocationId: (locationId) => {
         return get().expenses.filter((expense) => expense.locationId === locationId);
+      },
+      getGeneralExpenses: () => {
+        return get().expenses.filter((expense) => !expense.tripId);
+      },
+      getAllExpenses: () => {
+        return get().expenses.sort(
+          (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
+        );
+      },
+      getRecentExpenses: (limit = 5) => {
+        return get().getAllExpenses().slice(0, limit);
       },
     }),
     {
