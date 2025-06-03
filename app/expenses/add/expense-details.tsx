@@ -169,9 +169,20 @@ export default function ExpenseDetailsScreen() {
 
       console.log('Expense saved successfully:', savedExpense);
 
-      // Navigate to success screen (Step 2 - to be implemented)
-      // For now, navigate back to home
-      router.push('/');
+      // Navigate to success screen with expense data
+      const tripName = !isGeneral && tripId ? trips.find((t) => t.id === tripId)?.name : '';
+
+      router.push({
+        pathname: '/expenses/add/success',
+        params: {
+          amount: parsedAmount.toString(),
+          currency: currency.code,
+          category: category.key,
+          description: description.trim(),
+          tripName: tripName || '',
+          isGeneral: isGeneral.toString(),
+        },
+      });
     } catch (error) {
       console.error('Error saving expense:', error);
       Alert.alert('Save Failed', 'There was an error saving your expense. Please try again.', [
