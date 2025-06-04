@@ -4,6 +4,7 @@ import { FontAwesome } from '@expo/vector-icons';
 import { useAppContext } from './context';
 import { useExpenseStore } from './stores/expenseStore';
 import CurrencyConverter from './components/CurrencyConverter';
+import MonthlyOverviewWidget from './components/MonthlyOverviewWidget';
 import { useRouter } from 'expo-router';
 import { LinearGradient } from 'expo-linear-gradient';
 
@@ -31,37 +32,6 @@ export default function Index() {
     const remaining = budget - spent;
     const percentage = budget > 0 ? (spent / budget) * 100 : 0;
     return { spent, budget, remaining, percentage };
-  };
-
-  // Calculate monthly expense totals
-  const calculateMonthlyTotals = () => {
-    const now = new Date();
-    const currentMonth = now.getMonth();
-    const currentYear = now.getFullYear();
-
-    const thisMonthExpenses = allExpenses.filter((expense) => {
-      const expenseDate = new Date(expense.date);
-      return expenseDate.getMonth() === currentMonth && expenseDate.getFullYear() === currentYear;
-    });
-
-    const lastMonth = new Date(currentYear, currentMonth - 1);
-    const lastMonthExpenses = allExpenses.filter((expense) => {
-      const expenseDate = new Date(expense.date);
-      return (
-        expenseDate.getMonth() === lastMonth.getMonth() &&
-        expenseDate.getFullYear() === lastMonth.getFullYear()
-      );
-    });
-
-    const thisMonthTotal = thisMonthExpenses.reduce((sum, expense) => sum + expense.amount, 0);
-    const lastMonthTotal = lastMonthExpenses.reduce((sum, expense) => sum + expense.amount, 0);
-
-    return {
-      thisMonth: thisMonthTotal,
-      lastMonth: lastMonthTotal,
-      count: thisMonthExpenses.length,
-      change: lastMonthTotal > 0 ? ((thisMonthTotal - lastMonthTotal) / lastMonthTotal) * 100 : 0,
-    };
   };
 
   // Get trip name for expense
@@ -100,7 +70,6 @@ export default function Index() {
   };
 
   const budgetOverview = calculateBudgetOverview();
-  const monthlyTotals = calculateMonthlyTotals();
 
   // Trip progress bar calculation
   const getTripProgress = () => {
@@ -235,44 +204,10 @@ export default function Index() {
             )}
           </View>
 
-          {/* Monthly Overview Card */}
+          {/* Monthly Overview Widget */}
           <View style={styles.section}>
-            <Text style={styles.sectionTitle}>This Month's Spending</Text>
-            <View style={styles.modernCard}>
-              <View style={styles.monthlyHeader}>
-                <View style={styles.monthlyIconContainer}>
-                  <FontAwesome name="bar-chart" size={20} color="#0EA5E9" />
-                </View>
-                <View style={styles.monthlyInfo}>
-                  <Text style={styles.monthlyAmount}>
-                    ${monthlyTotals.thisMonth.toLocaleString()}
-                  </Text>
-                  <Text style={styles.monthlyLabel}>Total spent this month</Text>
-                </View>
-              </View>
-              <View style={styles.monthlyStats}>
-                <View style={styles.statItem}>
-                  <Text style={styles.statValue}>{monthlyTotals.count}</Text>
-                  <Text style={styles.statLabel}>Expenses</Text>
-                </View>
-                <View style={styles.statItem}>
-                  <Text
-                    style={[
-                      styles.statValue,
-                      { color: monthlyTotals.change >= 0 ? '#EF4444' : '#10B981' },
-                    ]}
-                  >
-                    {monthlyTotals.change >= 0 ? '+' : ''}
-                    {monthlyTotals.change.toFixed(0)}%
-                  </Text>
-                  <Text style={styles.statLabel}>vs Last Month</Text>
-                </View>
-                <View style={styles.statItem}>
-                  <Text style={styles.statValue}>{generalExpenses.length}</Text>
-                  <Text style={styles.statLabel}>General</Text>
-                </View>
-              </View>
-            </View>
+            <Text style={styles.sectionTitle}>This Month's Overview</Text>
+            <MonthlyOverviewWidget allExpenses={allExpenses} generalExpenses={generalExpenses} />
           </View>
 
           {/* Recent Expenses Card */}
@@ -584,60 +519,6 @@ const styles = StyleSheet.create({
     fontWeight: '500',
     color: '#64748B',
     textAlign: 'center',
-  },
-  // Monthly Card Styles
-  monthlyHeader: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    padding: 20,
-    paddingBottom: 16,
-  },
-  monthlyIconContainer: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    backgroundColor: '#F0F9FF',
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginRight: 16,
-  },
-  monthlyInfo: {
-    flex: 1,
-  },
-  monthlyAmount: {
-    fontSize: 24,
-    fontWeight: '700',
-    color: '#1E293B',
-    marginBottom: 2,
-  },
-  monthlyLabel: {
-    fontSize: 14,
-    fontWeight: '500',
-    color: '#64748B',
-  },
-  monthlyStats: {
-    flexDirection: 'row',
-    paddingHorizontal: 20,
-    paddingBottom: 20,
-    gap: 16,
-  },
-  statItem: {
-    flex: 1,
-    alignItems: 'center',
-    paddingVertical: 12,
-    backgroundColor: '#F8FAFC',
-    borderRadius: 12,
-  },
-  statValue: {
-    fontSize: 18,
-    fontWeight: '700',
-    color: '#1E293B',
-    marginBottom: 2,
-  },
-  statLabel: {
-    fontSize: 12,
-    fontWeight: '500',
-    color: '#64748B',
   },
   // Expense Item Styles
   expenseItem: {
