@@ -4,19 +4,20 @@ import { AppContextType, Expense, JournalEntry, Trip, Location } from './types';
 import { useExpenseStore } from './stores/expenseStore';
 import { useTripStore } from './stores/tripStore';
 import { useLocationStore } from './stores/locationStore';
+import { useUserStore } from './stores/userStore';
 
 const AppContext = createContext<AppContextType | null>(null);
 
 export function AppProvider({ children }: { children: React.ReactNode }) {
-  // Use Zustand stores for expenses, trips, and locations (with persistence)
+  // Use Zustand stores for expenses, trips, locations, and user settings (with persistence)
   const expenses = useExpenseStore((state) => state.expenses);
   const trips = useTripStore((state) => state.trips);
   const locations = useLocationStore((state) => state.locations);
+  const dailyBudget = useUserStore((state) => state.dailyBudget);
+  const baseCurrency = useUserStore((state) => state.baseCurrency);
 
   // Local state for data not yet migrated to stores
   const [journalEntries, setJournalEntries] = useState<JournalEntry[]>([]);
-  const [dailyBudget, setDailyBudget] = useState(100); // Default daily budget
-  const [baseCurrency, setBaseCurrency] = useState('USD'); // Default currency
 
   // Trip operations - delegate to TripStore (all operations are now persisted)
   const addTrip = (trip: Omit<Trip, 'id'>) => {
@@ -78,6 +79,17 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   const updateLocation = (location: Location) => {
     const locationStore = useLocationStore.getState();
     locationStore.updateLocation(location);
+  };
+
+  // User settings operations - delegate to UserStore (all operations are now persisted)
+  const setDailyBudget = (budget: number) => {
+    const userStore = useUserStore.getState();
+    userStore.setDailyBudget(budget);
+  };
+
+  const setBaseCurrency = (currency: string) => {
+    const userStore = useUserStore.getState();
+    userStore.setBaseCurrency(currency);
   };
 
   // Cross-domain utility functions

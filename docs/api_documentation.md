@@ -477,6 +477,71 @@ interface LocationState {
 
 ---
 
+## UserStore API
+
+**Purpose**: Manages user settings and preferences with persistent storage.
+
+**⚡ Storage**: Zustand with AsyncStorage persistence (`travelpal-user-storage`)
+
+**🎯 Features**:
+
+- User preferences persistence
+- Default value management
+- Settings reset functionality
+
+### State Structure
+
+```typescript
+interface UserStore {
+  // Settings data
+  dailyBudget: number;
+  baseCurrency: string;
+
+  // Operations
+  setDailyBudget: (budget: number) => void;
+  setBaseCurrency: (currency: string) => void;
+  resetToDefaults: () => void;
+}
+```
+
+### Operations
+
+##### `setDailyBudget(budget: number): void`
+
+- Updates the default daily budget for new trips
+- Persists immediately to AsyncStorage
+- **Access**: Via Context API `setDailyBudget()` or direct store access
+
+##### `setBaseCurrency(currency: string): void`
+
+- Updates the default base currency for expenses
+- Persists immediately to AsyncStorage
+- **Access**: Via Context API `setBaseCurrency()` or direct store access
+
+##### `resetToDefaults(): void`
+
+- Resets all user settings to default values
+- **Default values**: `dailyBudget: 100`, `baseCurrency: 'USD'`
+- **Access**: Direct store access only
+
+### Usage Examples
+
+```typescript
+// Via Context API (recommended for most components)
+const { dailyBudget, baseCurrency, setDailyBudget, setBaseCurrency } = useAppContext();
+
+// Direct store access for performance-critical scenarios
+const userStore = useUserStore();
+const dailyBudget = useUserStore((state) => state.dailyBudget);
+const resetToDefaults = useUserStore((state) => state.resetToDefaults);
+
+// Update settings
+setDailyBudget(150);
+setBaseCurrency('EUR');
+```
+
+---
+
 ### AppContext (Delegation Layer)
 
 **Purpose**: Provides a unified interface for all app data while delegating to appropriate stores.
@@ -487,7 +552,7 @@ interface LocationState {
 - ✅ **Expenses**: Fully migrated to ExpenseStore (persistent)
 - ✅ **Locations**: Fully migrated to LocationStore (persistent)
 - 📋 **Journals**: Phase 3 - Planned for JournalStore migration
-- ⚙️ **Settings**: Phase 4 - Planned for UserStore migration
+- ⚙️ **Settings**: ✅ **Completed** - UserStore with persistence
 
 #### **Current Architecture**:
 
@@ -497,11 +562,11 @@ interface AppContextType {
   trips: Trip[]; // ← TripStore
   expenses: Expense[]; // ← ExpenseStore
   locations: Location[]; // ← LocationStore
+  dailyBudget: number; // ← UserStore
+  baseCurrency: string; // ← UserStore
 
   // Temporary local state (will be migrated)
-  journalEntries: JournalEntry[]; // → JournalStore
-  dailyBudget: number; // → UserStore
-  baseCurrency: string; // → UserStore
+  journalEntries: JournalEntry[]; // → JournalStore (Phase 3 - Planned)
 }
 ```
 
