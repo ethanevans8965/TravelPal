@@ -1,16 +1,26 @@
-import React from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Image } from 'react-native';
+import React, { useState, useCallback } from 'react';
+import {
+  View,
+  Text,
+  StyleSheet,
+  ScrollView,
+  TouchableOpacity,
+  Image,
+  RefreshControl,
+} from 'react-native';
 import { FontAwesome } from '@expo/vector-icons';
 import { useAppContext } from './context';
 import { useExpenseStore } from './stores/expenseStore';
 import CurrencyConverter from './components/CurrencyConverter';
 import MonthlyOverviewWidget from './components/MonthlyOverviewWidget';
+import { PageTransition, StaggeredTransition, WidgetSkeleton } from './components/PageTransition';
 import { useRouter } from 'expo-router';
 import { LinearGradient } from 'expo-linear-gradient';
 
 export default function Index() {
   const { trips } = useAppContext();
   const router = useRouter();
+  const [refreshing, setRefreshing] = useState(false);
 
   // Get expenses from Zustand store
   const { getAllExpenses, getRecentExpenses, getExpensesByTripId, getGeneralExpenses } =
@@ -22,6 +32,20 @@ export default function Index() {
 
   // Get active trip for trip snapshot
   const activeTrip = trips.find((trip) => trip.status === 'active');
+
+  // Pull to refresh handler
+  const onRefresh = useCallback(async () => {
+    setRefreshing(true);
+    try {
+      // Simulate data refresh - in a real app, this would refresh from API
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+      // You could call refreshExpenses() here if it exists
+    } catch (error) {
+      console.error('Error refreshing data:', error);
+    } finally {
+      setRefreshing(false);
+    }
+  }, []);
 
   // Calculate enhanced budget overview
   const calculateBudgetOverview = () => {
@@ -86,231 +110,249 @@ export default function Index() {
 
   return (
     <View style={styles.container}>
-      <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
+      <ScrollView
+        style={styles.scrollView}
+        showsVerticalScrollIndicator={false}
+        refreshControl={
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={onRefresh}
+            tintColor="#0EA5E9"
+            colors={['#0EA5E9']}
+            progressBackgroundColor="#FFFFFF"
+          />
+        }
+      >
         {/* Modern Header */}
-        <LinearGradient colors={['#1E293B', '#0EA5E9']} style={styles.header}>
-          <View style={styles.headerContent}>
-            <View style={styles.headerIconContainer}>
-              <FontAwesome name="globe" size={28} color="#FFFFFF" />
+        <PageTransition transitionType="slideUp" duration={600}>
+          <LinearGradient colors={['#1E293B', '#0EA5E9']} style={styles.header}>
+            <View style={styles.headerContent}>
+              <View style={styles.headerIconContainer}>
+                <FontAwesome name="globe" size={28} color="#FFFFFF" />
+              </View>
+              <View style={styles.headerTextContainer}>
+                <Text style={styles.headerTitle}>Welcome back!</Text>
+                <Text style={styles.headerSubtitle}>Here's your travel overview</Text>
+              </View>
             </View>
-            <View style={styles.headerTextContainer}>
-              <Text style={styles.headerTitle}>Welcome back!</Text>
-              <Text style={styles.headerSubtitle}>Here's your travel overview</Text>
-            </View>
-          </View>
-        </LinearGradient>
+          </LinearGradient>
+        </PageTransition>
 
         <View style={styles.contentContainer}>
-          {/* Current Trip Card */}
-          <View style={styles.section}>
-            <Text style={styles.sectionTitle}>Current Trip</Text>
-            {activeTrip ? (
-              <View style={styles.modernCard}>
-                <LinearGradient colors={['#0EA5E9', '#1E293B']} style={styles.tripCardGradient}>
-                  <View style={styles.tripHeader}>
-                    <View style={styles.tripInfo}>
-                      <Text style={styles.tripName}>{activeTrip.name}</Text>
-                      <View style={styles.tripLocationRow}>
-                        <FontAwesome name="map-marker" size={14} color="#FFFFFF" />
-                        <Text style={styles.tripDestination}>
-                          {activeTrip.destination?.name || 'Unknown destination'}
-                        </Text>
+          <StaggeredTransition staggerDelay={150} transitionType="slideUp">
+            {/* Current Trip Card */}
+            <View style={styles.section}>
+              <Text style={styles.sectionTitle}>Current Trip</Text>
+              {activeTrip ? (
+                <View style={styles.modernCard}>
+                  <LinearGradient colors={['#0EA5E9', '#1E293B']} style={styles.tripCardGradient}>
+                    <View style={styles.tripHeader}>
+                      <View style={styles.tripInfo}>
+                        <Text style={styles.tripName}>{activeTrip.name}</Text>
+                        <View style={styles.tripLocationRow}>
+                          <FontAwesome name="map-marker" size={14} color="#FFFFFF" />
+                          <Text style={styles.tripDestination}>
+                            {activeTrip.destination?.name || 'Unknown destination'}
+                          </Text>
+                        </View>
+                      </View>
+                      <View style={styles.statusBadge}>
+                        <Text style={styles.statusText}>Active</Text>
                       </View>
                     </View>
-                    <View style={styles.statusBadge}>
-                      <Text style={styles.statusText}>Active</Text>
+                    <View style={styles.tripProgress}>
+                      <View style={styles.tripProgressBar}>
+                        <View
+                          style={[styles.tripProgressFill, { width: `${getTripProgress()}%` }]}
+                        />
+                      </View>
+                      <Text style={styles.tripProgressText}>
+                        {(() => {
+                          const endDate = new Date(activeTrip.endDate || '');
+                          const now = new Date();
+                          const diffTime = endDate.getTime() - now.getTime();
+                          const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+                          return diffDays > 0 ? `${diffDays} days remaining` : 'Trip completed';
+                        })()}
+                      </Text>
                     </View>
-                  </View>
-                  <View style={styles.tripProgress}>
-                    <View style={styles.tripProgressBar}>
-                      <View style={[styles.tripProgressFill, { width: `${getTripProgress()}%` }]} />
-                    </View>
-                    <Text style={styles.tripProgressText}>
-                      {(() => {
-                        const endDate = new Date(activeTrip.endDate || '');
-                        const now = new Date();
-                        const diffTime = endDate.getTime() - now.getTime();
-                        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-                        return diffDays > 0 ? `${diffDays} days remaining` : 'Trip completed';
-                      })()}
-                    </Text>
-                  </View>
-                </LinearGradient>
-              </View>
-            ) : (
-              <View style={styles.modernCard}>
-                <View style={styles.emptyState}>
-                  <FontAwesome name="plane" size={32} color="#64748B" style={styles.emptyIcon} />
-                  <Text style={styles.emptyTitle}>No active trips</Text>
-                  <Text style={styles.emptySubtitle}>Create a trip to get started</Text>
+                  </LinearGradient>
                 </View>
-              </View>
-            )}
-          </View>
-
-          {/* Budget Overview Card */}
-          <View style={styles.section}>
-            <Text style={styles.sectionTitle}>Budget Overview</Text>
-            {activeTrip ? (
-              <View style={styles.modernCard}>
-                <View style={styles.budgetHeader}>
-                  <View style={styles.budgetIconContainer}>
-                    <FontAwesome name="money" size={20} color="#0EA5E9" />
-                  </View>
-                  <View style={styles.budgetInfo}>
-                    <Text style={styles.budgetAmount}>
-                      ${budgetOverview.spent.toLocaleString()}
-                    </Text>
-                    <Text style={styles.budgetTotal}>
-                      of ${budgetOverview.budget.toLocaleString()}
-                    </Text>
-                  </View>
-                  <View style={styles.budgetPercentage}>
-                    <Text style={styles.budgetPercentageText}>
-                      {budgetOverview.percentage.toFixed(0)}%
-                    </Text>
+              ) : (
+                <View style={styles.modernCard}>
+                  <View style={styles.emptyState}>
+                    <FontAwesome name="plane" size={32} color="#64748B" style={styles.emptyIcon} />
+                    <Text style={styles.emptyTitle}>No active trips</Text>
+                    <Text style={styles.emptySubtitle}>Create a trip to get started</Text>
                   </View>
                 </View>
-                <View style={styles.budgetProgressContainer}>
-                  <View style={styles.budgetProgressBar}>
-                    <View
-                      style={[
-                        styles.budgetProgressFill,
-                        { width: `${Math.min(budgetOverview.percentage, 100)}%` },
-                      ]}
-                    />
-                  </View>
-                  <Text style={styles.budgetRemainingText}>
-                    ${Math.abs(budgetOverview.remaining).toLocaleString()}{' '}
-                    {budgetOverview.remaining >= 0 ? 'remaining' : 'over budget'}
-                  </Text>
-                </View>
-              </View>
-            ) : (
-              <View style={styles.modernCard}>
-                <View style={styles.emptyState}>
-                  <FontAwesome
-                    name="pie-chart"
-                    size={32}
-                    color="#64748B"
-                    style={styles.emptyIcon}
-                  />
-                  <Text style={styles.emptyTitle}>No budget data</Text>
-                  <Text style={styles.emptySubtitle}>
-                    Create a trip with budget to track spending
-                  </Text>
-                </View>
-              </View>
-            )}
-          </View>
-
-          {/* Monthly Overview Widget */}
-          <View style={styles.section}>
-            <Text style={styles.sectionTitle}>This Month's Overview</Text>
-            <MonthlyOverviewWidget allExpenses={allExpenses} generalExpenses={generalExpenses} />
-          </View>
-
-          {/* Recent Expenses Card */}
-          <View style={styles.section}>
-            <View style={styles.sectionHeader}>
-              <Text style={styles.sectionTitle}>Recent Expenses</Text>
-              <TouchableOpacity
-                style={styles.viewAllButton}
-                onPress={() => router.push('/finances')}
-              >
-                <Text style={styles.viewAllText}>View All</Text>
-                <FontAwesome name="chevron-right" size={12} color="#0EA5E9" />
-              </TouchableOpacity>
+              )}
             </View>
-            {recentExpenses.length > 0 ? (
-              <View style={styles.modernCard}>
-                {recentExpenses.map((expense, index) => (
-                  <View
-                    key={expense.id}
-                    style={[
-                      styles.expenseItem,
-                      index === recentExpenses.length - 1 && styles.lastExpenseItem,
-                    ]}
-                  >
-                    <View style={styles.expenseIconContainer}>
-                      <Text style={styles.expenseIcon}>{getCategoryEmoji(expense.category)}</Text>
+
+            {/* Budget Overview Card */}
+            <View style={styles.section}>
+              <Text style={styles.sectionTitle}>Budget Overview</Text>
+              {activeTrip ? (
+                <View style={styles.modernCard}>
+                  <View style={styles.budgetHeader}>
+                    <View style={styles.budgetIconContainer}>
+                      <FontAwesome name="money" size={20} color="#0EA5E9" />
                     </View>
-                    <View style={styles.expenseDetails}>
-                      <Text style={styles.expenseDescription}>{expense.description}</Text>
-                      <View style={styles.expenseMetadata}>
-                        <Text style={styles.expenseDate}>{formatDate(expense.date)}</Text>
-                        <Text style={styles.expenseTrip}>• {getTripName(expense.tripId)}</Text>
-                      </View>
+                    <View style={styles.budgetInfo}>
+                      <Text style={styles.budgetAmount}>
+                        ${budgetOverview.spent.toLocaleString()}
+                      </Text>
+                      <Text style={styles.budgetTotal}>
+                        of ${budgetOverview.budget.toLocaleString()}
+                      </Text>
                     </View>
-                    <View style={styles.expenseAmountContainer}>
-                      <Text style={styles.expenseAmount}>-${expense.amount.toFixed(2)}</Text>
-                      <Text style={styles.expenseCurrency}>{expense.currency}</Text>
+                    <View style={styles.budgetPercentage}>
+                      <Text style={styles.budgetPercentageText}>
+                        {budgetOverview.percentage.toFixed(0)}%
+                      </Text>
                     </View>
                   </View>
-                ))}
+                  <View style={styles.budgetProgressContainer}>
+                    <View style={styles.budgetProgressBar}>
+                      <View
+                        style={[
+                          styles.budgetProgressFill,
+                          { width: `${Math.min(budgetOverview.percentage, 100)}%` },
+                        ]}
+                      />
+                    </View>
+                    <Text style={styles.budgetRemainingText}>
+                      ${Math.abs(budgetOverview.remaining).toLocaleString()}{' '}
+                      {budgetOverview.remaining >= 0 ? 'remaining' : 'over budget'}
+                    </Text>
+                  </View>
+                </View>
+              ) : (
+                <View style={styles.modernCard}>
+                  <View style={styles.emptyState}>
+                    <FontAwesome
+                      name="pie-chart"
+                      size={32}
+                      color="#64748B"
+                      style={styles.emptyIcon}
+                    />
+                    <Text style={styles.emptyTitle}>No budget data</Text>
+                    <Text style={styles.emptySubtitle}>
+                      Create a trip with budget to track spending
+                    </Text>
+                  </View>
+                </View>
+              )}
+            </View>
+
+            {/* Monthly Overview Widget */}
+            <View style={styles.section}>
+              <Text style={styles.sectionTitle}>This Month's Overview</Text>
+              <MonthlyOverviewWidget allExpenses={allExpenses} generalExpenses={generalExpenses} />
+            </View>
+
+            {/* Recent Expenses Card */}
+            <View style={styles.section}>
+              <View style={styles.sectionHeader}>
+                <Text style={styles.sectionTitle}>Recent Expenses</Text>
                 <TouchableOpacity
-                  style={styles.addExpenseButton}
-                  onPress={() => router.push('/expenses/add')}
+                  style={styles.viewAllButton}
+                  onPress={() => router.push('/finances')}
                 >
-                  <FontAwesome name="plus" size={16} color="#FFFFFF" />
-                  <Text style={styles.addExpenseButtonText}>Add Expense</Text>
+                  <Text style={styles.viewAllText}>View All</Text>
+                  <FontAwesome name="chevron-right" size={12} color="#0EA5E9" />
                 </TouchableOpacity>
               </View>
-            ) : (
-              <View style={styles.modernCard}>
-                <View style={styles.emptyState}>
-                  <FontAwesome
-                    name="file-text-o"
-                    size={32}
-                    color="#64748B"
-                    style={styles.emptyIcon}
-                  />
-                  <Text style={styles.emptyTitle}>No expenses yet</Text>
-                  <Text style={styles.emptySubtitle}>Start tracking your travel expenses</Text>
+              {recentExpenses.length > 0 ? (
+                <View style={styles.modernCard}>
+                  {recentExpenses.map((expense, index) => (
+                    <View
+                      key={expense.id}
+                      style={[
+                        styles.expenseItem,
+                        index === recentExpenses.length - 1 && styles.lastExpenseItem,
+                      ]}
+                    >
+                      <View style={styles.expenseIconContainer}>
+                        <Text style={styles.expenseIcon}>{getCategoryEmoji(expense.category)}</Text>
+                      </View>
+                      <View style={styles.expenseDetails}>
+                        <Text style={styles.expenseDescription}>{expense.description}</Text>
+                        <View style={styles.expenseMetadata}>
+                          <Text style={styles.expenseDate}>{formatDate(expense.date)}</Text>
+                          <Text style={styles.expenseTrip}>• {getTripName(expense.tripId)}</Text>
+                        </View>
+                      </View>
+                      <View style={styles.expenseAmountContainer}>
+                        <Text style={styles.expenseAmount}>-${expense.amount.toFixed(2)}</Text>
+                        <Text style={styles.expenseCurrency}>{expense.currency}</Text>
+                      </View>
+                    </View>
+                  ))}
                   <TouchableOpacity
                     style={styles.addExpenseButton}
                     onPress={() => router.push('/expenses/add')}
                   >
                     <FontAwesome name="plus" size={16} color="#FFFFFF" />
-                    <Text style={styles.addExpenseButtonText}>Add First Expense</Text>
+                    <Text style={styles.addExpenseButtonText}>Add Expense</Text>
                   </TouchableOpacity>
                 </View>
+              ) : (
+                <View style={styles.modernCard}>
+                  <View style={styles.emptyState}>
+                    <FontAwesome
+                      name="file-text-o"
+                      size={32}
+                      color="#64748B"
+                      style={styles.emptyIcon}
+                    />
+                    <Text style={styles.emptyTitle}>No expenses yet</Text>
+                    <Text style={styles.emptySubtitle}>Start tracking your travel expenses</Text>
+                    <TouchableOpacity
+                      style={styles.addExpenseButton}
+                      onPress={() => router.push('/expenses/add')}
+                    >
+                      <FontAwesome name="plus" size={16} color="#FFFFFF" />
+                      <Text style={styles.addExpenseButtonText}>Add First Expense</Text>
+                    </TouchableOpacity>
+                  </View>
+                </View>
+              )}
+            </View>
+
+            {/* Quick Actions Card */}
+            <View style={styles.section}>
+              <Text style={styles.sectionTitle}>Quick Actions</Text>
+              <View style={styles.quickActionsContainer}>
+                <TouchableOpacity
+                  style={[styles.quickActionCard, { backgroundColor: '#0EA5E9' }]}
+                  onPress={() => router.push('/expenses/add')}
+                >
+                  <View style={styles.quickActionIconContainer}>
+                    <FontAwesome name="money" size={24} color="#FFFFFF" />
+                  </View>
+                  <Text style={styles.quickActionText}>Add Expense</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={[styles.quickActionCard, { backgroundColor: '#10B981' }]}
+                  onPress={() => router.push('/trip/create/trip-name')}
+                >
+                  <View style={styles.quickActionIconContainer}>
+                    <FontAwesome name="plane" size={24} color="#FFFFFF" />
+                  </View>
+                  <Text style={styles.quickActionText}>Plan New Trip</Text>
+                </TouchableOpacity>
               </View>
-            )}
-          </View>
-
-          {/* Quick Actions Card */}
-          <View style={styles.section}>
-            <Text style={styles.sectionTitle}>Quick Actions</Text>
-            <View style={styles.quickActionsContainer}>
-              <TouchableOpacity
-                style={[styles.quickActionCard, { backgroundColor: '#0EA5E9' }]}
-                onPress={() => router.push('/expenses/add')}
-              >
-                <View style={styles.quickActionIconContainer}>
-                  <FontAwesome name="money" size={24} color="#FFFFFF" />
-                </View>
-                <Text style={styles.quickActionText}>Add Expense</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={[styles.quickActionCard, { backgroundColor: '#10B981' }]}
-                onPress={() => router.push('/trip/create/trip-name')}
-              >
-                <View style={styles.quickActionIconContainer}>
-                  <FontAwesome name="plane" size={24} color="#FFFFFF" />
-                </View>
-                <Text style={styles.quickActionText}>Plan New Trip</Text>
-              </TouchableOpacity>
             </View>
-          </View>
 
-          {/* Currency Converter Card */}
-          <View style={styles.section}>
-            <Text style={styles.sectionTitle}>Currency Converter</Text>
-            <View style={styles.modernCard}>
-              <CurrencyConverter />
+            {/* Currency Converter Card */}
+            <View style={styles.section}>
+              <Text style={styles.sectionTitle}>Currency Converter</Text>
+              <View style={styles.modernCard}>
+                <CurrencyConverter />
+              </View>
             </View>
-          </View>
+          </StaggeredTransition>
         </View>
       </ScrollView>
     </View>
