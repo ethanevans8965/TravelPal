@@ -1,18 +1,20 @@
 import React, { createContext, useContext, useState } from 'react';
+import * as Crypto from 'expo-crypto';
 import { AppContextType, Expense, JournalEntry, Trip, Location } from './types';
 import { useExpenseStore } from './stores/expenseStore';
 import { useTripStore } from './stores/tripStore';
+import { useLocationStore } from './stores/locationStore';
 
 const AppContext = createContext<AppContextType | null>(null);
 
 export function AppProvider({ children }: { children: React.ReactNode }) {
-  // Use Zustand stores for expenses and trips (with persistence)
+  // Use Zustand stores for expenses, trips, and locations (with persistence)
   const expenses = useExpenseStore((state) => state.expenses);
   const trips = useTripStore((state) => state.trips);
+  const locations = useLocationStore((state) => state.locations);
 
   // Local state for data not yet migrated to stores
   const [journalEntries, setJournalEntries] = useState<JournalEntry[]>([]);
-  const [locations, setLocations] = useState<Location[]>([]);
   const [dailyBudget, setDailyBudget] = useState(100); // Default daily budget
   const [baseCurrency, setBaseCurrency] = useState('USD'); // Default currency
 
@@ -54,7 +56,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   const addJournalEntry = (entry: Omit<JournalEntry, 'id'>) => {
     const newEntry: JournalEntry = {
       ...entry,
-      id: crypto.randomUUID(),
+      id: Crypto.randomUUID(),
     };
     setJournalEntries((prev) => [...prev, newEntry]);
   };
@@ -67,17 +69,15 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     setJournalEntries((prev) => prev.filter((e) => e.id !== entryId));
   };
 
-  // Location operations (local state - will be migrated to LocationStore in Phase 2)
+  // Location operations - delegate to LocationStore (all operations are now persisted)
   const addLocation = (location: Omit<Location, 'id'>) => {
-    const newLocation: Location = {
-      ...location,
-      id: crypto.randomUUID(),
-    };
-    setLocations((prev) => [...prev, newLocation]);
+    const locationStore = useLocationStore.getState();
+    return locationStore.addLocation(location);
   };
 
   const updateLocation = (location: Location) => {
-    setLocations((prev) => prev.map((l) => (l.id === location.id ? location : l)));
+    const locationStore = useLocationStore.getState();
+    locationStore.updateLocation(location);
   };
 
   // Cross-domain utility functions
@@ -91,8 +91,8 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   };
 
   const getLocationExpenses = (locationId: string) => {
-    const expenseStore = useExpenseStore.getState();
-    return expenseStore.getExpensesByLocationId(locationId);
+    const locationStore = useLocationStore.getState();
+    return locationStore.getLocationExpenses(locationId);
   };
 
   const getLocationJournalEntries = (locationId: string) => {
@@ -103,10 +103,10 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     // Data from Zustand stores (persistent)
     expenses,
     trips,
+    locations,
 
     // Data from local state (temporary - will be migrated)
     journalEntries,
-    locations,
     dailyBudget,
     baseCurrency,
 

@@ -393,6 +393,142 @@ interface TripState {
 - Components using `useAppContext()` automatically get persistence
 - No component changes required for the migration
 
+### LocationStore (Zustand)
+
+**Purpose**: Global state management for locations with persistence.
+
+#### **Current Usage**:
+
+- **Primary Interface**: Used through Context API (`useAppContext()`)
+- **Direct Access**: Available via `useLocationStore()` for advanced use cases
+- **Persistence**: Automatically persists to AsyncStorage with key `'travelpal-location-storage'`
+
+#### **State Interface**:
+
+```typescript
+interface LocationState {
+  locations: Location[];
+  isLoading: boolean;
+  error: string | null;
+}
+```
+
+#### **Actions**:
+
+##### `addLocation(location: Omit<Location, 'id'>): Location`
+
+- Creates new location with auto-generated ID
+- Validates location data
+- Persists to AsyncStorage immediately
+- Returns the created location object
+- **Access**: Via Context API `addLocation()` or direct store access
+
+##### `updateLocation(location: Location): void`
+
+- Updates existing location by ID
+- Merges with existing data
+- Triggers re-renders and persistence
+- Validates updated data
+- **Access**: Via Context API `updateLocation()` or direct store access
+
+##### `deleteLocation(locationId: string): void`
+
+- Removes location from store
+- Automatically deletes associated expenses via ExpenseStore
+- Handles cascading updates
+- Persists changes immediately
+- **Access**: Direct store access only
+
+##### `getLocationById(locationId: string): Location | undefined`
+
+- Returns specific location by ID
+- Cached for performance
+- **Access**: Direct store access only
+
+##### `getLocationsByCountry(country: string): Location[]`
+
+- Filters locations by country (case-insensitive)
+- Returns sorted array
+- **Access**: Direct store access only
+
+##### `getAllCountries(): string[]`
+
+- Returns unique list of all countries from locations
+- Sorted alphabetically
+- **Access**: Direct store access only
+
+##### `searchLocations(query: string): Location[]`
+
+- Full-text search across location names and countries
+- Case-insensitive matching
+- **Access**: Direct store access only
+
+##### `getLocationExpenses(locationId: string): Expense[]`
+
+- Returns all expenses for a specific location
+- Delegates to ExpenseStore for data consistency
+- **Access**: Via Context API `getLocationExpenses()` or direct store access
+
+##### `getLocationJournalEntries(locationId: string): JournalEntry[]`
+
+- Returns all journal entries for a specific location
+- Currently returns empty array (pending JournalStore implementation)
+- **Access**: Via Context API `getLocationJournalEntries()` or direct store access
+
+---
+
+### AppContext (Delegation Layer)
+
+**Purpose**: Provides a unified interface for all app data while delegating to appropriate stores.
+
+**⚠️ Migration Status**:
+
+- ✅ **Trips**: Fully migrated to TripStore (persistent)
+- ✅ **Expenses**: Fully migrated to ExpenseStore (persistent)
+- ✅ **Locations**: Fully migrated to LocationStore (persistent)
+- 📋 **Journals**: Phase 3 - Planned for JournalStore migration
+- ⚙️ **Settings**: Phase 4 - Planned for UserStore migration
+
+#### **Current Architecture**:
+
+```typescript
+interface AppContextType {
+  // Persistent data (from Zustand stores)
+  trips: Trip[]; // ← TripStore
+  expenses: Expense[]; // ← ExpenseStore
+  locations: Location[]; // ← LocationStore
+
+  // Temporary local state (will be migrated)
+  journalEntries: JournalEntry[]; // → JournalStore
+  dailyBudget: number; // → UserStore
+  baseCurrency: string; // → UserStore
+}
+```
+
+#### **Usage Patterns**:
+
+##### **For Components**:
+
+```typescript
+const { trips, addTrip, expenses, addExpense, locations, addLocation } = useAppContext();
+```
+
+##### **For Advanced Use Cases**:
+
+```typescript
+// Direct store access for performance-critical operations
+const trips = useTripStore((state) => state.trips);
+const getUpcomingTrips = useTripStore((state) => state.getUpcomingTrips);
+const searchLocations = useLocationStore((state) => state.searchLocations);
+```
+
+#### **Benefits of Current Design**:
+
+- **Backward Compatibility**: Existing components work unchanged
+- **Gradual Migration**: Migrate one domain at a time
+- **Performance**: Can opt into direct store access when needed
+- **Consistency**: Single import for all app data
+
 ## 🛠️ Utility Functions
 
 ### Date Utilities
@@ -838,54 +974,3 @@ interface SkeletonProps {
 ---
 
 This API documentation will be updated as new features are added and existing APIs evolve. For the most current information, refer to the TypeScript definitions in the source code.
-
-### AppContext (Delegation Layer)
-
-**Purpose**: Provides a unified interface for all app data while delegating to appropriate stores.
-
-**⚠️ Migration Status**:
-
-- ✅ **Trips**: Fully migrated to TripStore (persistent)
-- ✅ **Expenses**: Fully migrated to ExpenseStore (persistent)
-- 🔄 **Locations**: Phase 2 - Planned for LocationStore migration
-- 📋 **Journals**: Phase 3 - Planned for JournalStore migration
-- ⚙️ **Settings**: Phase 4 - Planned for UserStore migration
-
-#### **Current Architecture**:
-
-```typescript
-interface AppContextType {
-  // Persistent data (from Zustand stores)
-  trips: Trip[]; // ← TripStore
-  expenses: Expense[]; // ← ExpenseStore
-
-  // Temporary local state (will be migrated)
-  journalEntries: JournalEntry[]; // → JournalStore
-  locations: Location[]; // → LocationStore
-  dailyBudget: number; // → UserStore
-  baseCurrency: string; // → UserStore
-}
-```
-
-#### **Usage Patterns**:
-
-##### **For Components**:
-
-```typescript
-const { trips, addTrip, expenses, addExpense } = useAppContext();
-```
-
-##### **For Advanced Use Cases**:
-
-```typescript
-// Direct store access for performance-critical operations
-const trips = useTripStore((state) => state.trips);
-const getUpcomingTrips = useTripStore((state) => state.getUpcomingTrips);
-```
-
-#### **Benefits of Current Design**:
-
-- **Backward Compatibility**: Existing components work unchanged
-- **Gradual Migration**: Migrate one domain at a time
-- **Performance**: Can opt into direct store access when needed
-- **Consistency**: Single import for all app data
