@@ -116,227 +116,265 @@ export default function Index() {
   };
 
   return (
-    <View style={styles.rootBg}>
-      <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
-        {/* Gradient Header */}
-        <LinearGradient colors={['#43cea2', '#185a9d']} style={styles.headerBg}>
+    <View style={styles.container}>
+      <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
+        {/* Modern Header */}
+        <LinearGradient colors={['#1E293B', '#0EA5E9']} style={styles.header}>
           <View style={styles.headerContent}>
-            <View style={styles.headerIconCircle}>
-              <FontAwesome name="globe" size={32} color="#fff" />
+            <View style={styles.headerIconContainer}>
+              <FontAwesome name="globe" size={28} color="#FFFFFF" />
             </View>
-            <View>
-              <Text style={styles.title}>Welcome back!</Text>
-              <Text style={styles.subtitle}>Here's your travel overview</Text>
+            <View style={styles.headerTextContainer}>
+              <Text style={styles.headerTitle}>Welcome back!</Text>
+              <Text style={styles.headerSubtitle}>Here's your travel overview</Text>
             </View>
           </View>
         </LinearGradient>
 
-        {/* Trip Snapshot */}
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Current Trip</Text>
-          {activeTrip ? (
-            <LinearGradient colors={['#43cea2', '#185a9d']} style={styles.tripCard}>
-              <View style={styles.tripHeader}>
-                <View style={styles.tripInfo}>
-                  <Text style={styles.tripName}>{activeTrip.name}</Text>
-                  <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
-                    <FontAwesome name="map-marker" size={16} color="#fff" />
-                    <Text style={styles.tripDestination}>
-                      {activeTrip.destination?.name || 'Unknown destination'}
+        <View style={styles.contentContainer}>
+          {/* Current Trip Card */}
+          <View style={styles.section}>
+            <Text style={styles.sectionTitle}>Current Trip</Text>
+            {activeTrip ? (
+              <View style={styles.modernCard}>
+                <LinearGradient colors={['#0EA5E9', '#1E293B']} style={styles.tripCardGradient}>
+                  <View style={styles.tripHeader}>
+                    <View style={styles.tripInfo}>
+                      <Text style={styles.tripName}>{activeTrip.name}</Text>
+                      <View style={styles.tripLocationRow}>
+                        <FontAwesome name="map-marker" size={14} color="#FFFFFF" />
+                        <Text style={styles.tripDestination}>
+                          {activeTrip.destination?.name || 'Unknown destination'}
+                        </Text>
+                      </View>
+                    </View>
+                    <View style={styles.statusBadge}>
+                      <Text style={styles.statusText}>Active</Text>
+                    </View>
+                  </View>
+                  <View style={styles.tripProgress}>
+                    <View style={styles.tripProgressBar}>
+                      <View style={[styles.tripProgressFill, { width: `${getTripProgress()}%` }]} />
+                    </View>
+                    <Text style={styles.tripProgressText}>
+                      {(() => {
+                        const endDate = new Date(activeTrip.endDate || '');
+                        const now = new Date();
+                        const diffTime = endDate.getTime() - now.getTime();
+                        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+                        return diffDays > 0 ? `${diffDays} days remaining` : 'Trip completed';
+                      })()}
+                    </Text>
+                  </View>
+                </LinearGradient>
+              </View>
+            ) : (
+              <View style={styles.modernCard}>
+                <View style={styles.emptyState}>
+                  <FontAwesome name="plane" size={32} color="#64748B" style={styles.emptyIcon} />
+                  <Text style={styles.emptyTitle}>No active trips</Text>
+                  <Text style={styles.emptySubtitle}>Create a trip to get started</Text>
+                </View>
+              </View>
+            )}
+          </View>
+
+          {/* Budget Overview Card */}
+          <View style={styles.section}>
+            <Text style={styles.sectionTitle}>Budget Overview</Text>
+            {activeTrip ? (
+              <View style={styles.modernCard}>
+                <View style={styles.budgetHeader}>
+                  <View style={styles.budgetIconContainer}>
+                    <FontAwesome name="money" size={20} color="#0EA5E9" />
+                  </View>
+                  <View style={styles.budgetInfo}>
+                    <Text style={styles.budgetAmount}>
+                      ${budgetOverview.spent.toLocaleString()}
+                    </Text>
+                    <Text style={styles.budgetTotal}>
+                      of ${budgetOverview.budget.toLocaleString()}
+                    </Text>
+                  </View>
+                  <View style={styles.budgetPercentage}>
+                    <Text style={styles.budgetPercentageText}>
+                      {budgetOverview.percentage.toFixed(0)}%
                     </Text>
                   </View>
                 </View>
-                <View style={styles.statusBadge}>
-                  <Text style={styles.statusText}>Active</Text>
-                </View>
-              </View>
-              <View style={styles.tripDetails}>
-                <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
-                  <FontAwesome name="calendar" size={14} color="#fff" />
-                  <Text style={styles.tripDates}>
-                    {activeTrip.startDate} - {activeTrip.endDate}
+                <View style={styles.budgetProgressContainer}>
+                  <View style={styles.budgetProgressBar}>
+                    <View
+                      style={[
+                        styles.budgetProgressFill,
+                        { width: `${Math.min(budgetOverview.percentage, 100)}%` },
+                      ]}
+                    />
+                  </View>
+                  <Text style={styles.budgetRemainingText}>
+                    ${Math.abs(budgetOverview.remaining).toLocaleString()}{' '}
+                    {budgetOverview.remaining >= 0 ? 'remaining' : 'over budget'}
                   </Text>
                 </View>
-                <View style={styles.tripProgressBarBg}>
-                  <View style={[styles.tripProgressBarFill, { width: `${getTripProgress()}%` }]} />
+              </View>
+            ) : (
+              <View style={styles.modernCard}>
+                <View style={styles.emptyState}>
+                  <FontAwesome
+                    name="pie-chart"
+                    size={32}
+                    color="#64748B"
+                    style={styles.emptyIcon}
+                  />
+                  <Text style={styles.emptyTitle}>No budget data</Text>
+                  <Text style={styles.emptySubtitle}>
+                    Create a trip with budget to track spending
+                  </Text>
                 </View>
-                <Text style={styles.tripDuration}>
-                  {(() => {
-                    const endDate = new Date(activeTrip.endDate || '');
-                    const now = new Date();
-                    const diffTime = endDate.getTime() - now.getTime();
-                    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-                    return diffDays > 0 ? `${diffDays} days remaining` : 'Trip completed';
-                  })()}
-                </Text>
               </View>
-            </LinearGradient>
-          ) : (
-            <View style={styles.emptyCard}>
-              <Text style={styles.emptyText}>No active trips</Text>
-              <Text style={styles.emptySubtext}>Create a trip to get started</Text>
-            </View>
-          )}
-        </View>
-
-        {/* Budget Overview */}
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Budget Overview</Text>
-          {activeTrip ? (
-            <LinearGradient colors={['#ffb347', '#ffcc33']} style={styles.budgetCard}>
-              <View style={styles.budgetHeader}>
-                <FontAwesome name="money" size={22} color="#fff" style={{ marginRight: 10 }} />
-                <Text style={styles.budgetTitle}>
-                  ${budgetOverview.spent.toLocaleString()} / $
-                  {budgetOverview.budget.toLocaleString()}
-                </Text>
-              </View>
-              <View style={styles.budgetProgressBarBg}>
-                <View
-                  style={[
-                    styles.budgetProgressBarFill,
-                    { width: `${Math.min(budgetOverview.percentage, 100)}%` },
-                  ]}
-                />
-              </View>
-              <Text style={styles.budgetStatus}>
-                <FontAwesome name="pie-chart" size={14} color="#fff" /> $
-                {Math.abs(budgetOverview.remaining).toLocaleString()}{' '}
-                {budgetOverview.remaining >= 0 ? 'remaining' : 'over budget'} •{' '}
-                {budgetOverview.percentage.toFixed(0)}% used
-              </Text>
-            </LinearGradient>
-          ) : (
-            <View style={styles.emptyCard}>
-              <Text style={styles.emptyText}>No budget data</Text>
-              <Text style={styles.emptySubtext}>Create a trip with budget to track spending</Text>
-            </View>
-          )}
-        </View>
-
-        {/* Monthly Spending Overview */}
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>This Month's Spending</Text>
-          <LinearGradient colors={['#667eea', '#764ba2']} style={styles.monthlyCard}>
-            <View style={styles.monthlyHeader}>
-              <FontAwesome name="bar-chart" size={22} color="#fff" style={{ marginRight: 10 }} />
-              <Text style={styles.monthlyTitle}>${monthlyTotals.thisMonth.toLocaleString()}</Text>
-            </View>
-            <View style={styles.monthlyStats}>
-              <View style={styles.monthlyStat}>
-                <Text style={styles.monthlyStatValue}>{monthlyTotals.count}</Text>
-                <Text style={styles.monthlyStatLabel}>Expenses</Text>
-              </View>
-              <View style={styles.monthlyStat}>
-                <Text
-                  style={[
-                    styles.monthlyStatValue,
-                    { color: monthlyTotals.change >= 0 ? '#FF6B6B' : '#4CAF50' },
-                  ]}
-                >
-                  {monthlyTotals.change >= 0 ? '+' : ''}
-                  {monthlyTotals.change.toFixed(0)}%
-                </Text>
-                <Text style={styles.monthlyStatLabel}>vs Last Month</Text>
-              </View>
-              <View style={styles.monthlyStat}>
-                <Text style={styles.monthlyStatValue}>{generalExpenses.length}</Text>
-                <Text style={styles.monthlyStatLabel}>General</Text>
-              </View>
-            </View>
-          </LinearGradient>
-        </View>
-
-        {/* Recent Expenses */}
-        <View style={styles.section}>
-          <View style={styles.sectionHeader}>
-            <Text style={styles.sectionTitle}>Recent Expenses</Text>
-            <TouchableOpacity style={styles.viewAllButton} onPress={() => router.push('/finances')}>
-              <Text style={styles.viewAllText}>View All</Text>
-              <FontAwesome name="chevron-right" size={12} color="#43cea2" />
-            </TouchableOpacity>
+            )}
           </View>
-          {recentExpenses.length > 0 ? (
-            <View style={styles.expensesCard}>
-              {recentExpenses.map((expense, index) => (
-                <View
-                  key={expense.id}
-                  style={[
-                    styles.expenseItem,
-                    index === recentExpenses.length - 1 && styles.lastExpenseItem,
-                  ]}
-                >
-                  <View style={styles.expenseIcon}>
-                    <Text style={styles.expenseIconText}>{getCategoryEmoji(expense.category)}</Text>
-                  </View>
-                  <View style={styles.expenseDetails}>
-                    <Text style={styles.expenseName}>{expense.description}</Text>
-                    <View style={styles.expenseMetadata}>
-                      <Text style={styles.expenseDate}>{formatDate(expense.date)}</Text>
-                      <Text style={styles.expenseTrip}>• {getTripName(expense.tripId)}</Text>
+
+          {/* Monthly Overview Card */}
+          <View style={styles.section}>
+            <Text style={styles.sectionTitle}>This Month's Spending</Text>
+            <View style={styles.modernCard}>
+              <View style={styles.monthlyHeader}>
+                <View style={styles.monthlyIconContainer}>
+                  <FontAwesome name="bar-chart" size={20} color="#0EA5E9" />
+                </View>
+                <View style={styles.monthlyInfo}>
+                  <Text style={styles.monthlyAmount}>
+                    ${monthlyTotals.thisMonth.toLocaleString()}
+                  </Text>
+                  <Text style={styles.monthlyLabel}>Total spent this month</Text>
+                </View>
+              </View>
+              <View style={styles.monthlyStats}>
+                <View style={styles.statItem}>
+                  <Text style={styles.statValue}>{monthlyTotals.count}</Text>
+                  <Text style={styles.statLabel}>Expenses</Text>
+                </View>
+                <View style={styles.statItem}>
+                  <Text
+                    style={[
+                      styles.statValue,
+                      { color: monthlyTotals.change >= 0 ? '#EF4444' : '#10B981' },
+                    ]}
+                  >
+                    {monthlyTotals.change >= 0 ? '+' : ''}
+                    {monthlyTotals.change.toFixed(0)}%
+                  </Text>
+                  <Text style={styles.statLabel}>vs Last Month</Text>
+                </View>
+                <View style={styles.statItem}>
+                  <Text style={styles.statValue}>{generalExpenses.length}</Text>
+                  <Text style={styles.statLabel}>General</Text>
+                </View>
+              </View>
+            </View>
+          </View>
+
+          {/* Recent Expenses Card */}
+          <View style={styles.section}>
+            <View style={styles.sectionHeader}>
+              <Text style={styles.sectionTitle}>Recent Expenses</Text>
+              <TouchableOpacity
+                style={styles.viewAllButton}
+                onPress={() => router.push('/finances')}
+              >
+                <Text style={styles.viewAllText}>View All</Text>
+                <FontAwesome name="chevron-right" size={12} color="#0EA5E9" />
+              </TouchableOpacity>
+            </View>
+            {recentExpenses.length > 0 ? (
+              <View style={styles.modernCard}>
+                {recentExpenses.map((expense, index) => (
+                  <View
+                    key={expense.id}
+                    style={[
+                      styles.expenseItem,
+                      index === recentExpenses.length - 1 && styles.lastExpenseItem,
+                    ]}
+                  >
+                    <View style={styles.expenseIconContainer}>
+                      <Text style={styles.expenseIcon}>{getCategoryEmoji(expense.category)}</Text>
+                    </View>
+                    <View style={styles.expenseDetails}>
+                      <Text style={styles.expenseDescription}>{expense.description}</Text>
+                      <View style={styles.expenseMetadata}>
+                        <Text style={styles.expenseDate}>{formatDate(expense.date)}</Text>
+                        <Text style={styles.expenseTrip}>• {getTripName(expense.tripId)}</Text>
+                      </View>
+                    </View>
+                    <View style={styles.expenseAmountContainer}>
+                      <Text style={styles.expenseAmount}>-${expense.amount.toFixed(2)}</Text>
+                      <Text style={styles.expenseCurrency}>{expense.currency}</Text>
                     </View>
                   </View>
-                  <View style={styles.expenseAmountContainer}>
-                    <Text style={styles.expenseAmount}>-${expense.amount.toFixed(2)}</Text>
-                    <Text style={styles.expenseCurrency}>{expense.currency}</Text>
-                  </View>
+                ))}
+                <TouchableOpacity
+                  style={styles.addExpenseButton}
+                  onPress={() => router.push('/expenses/add')}
+                >
+                  <FontAwesome name="plus" size={16} color="#FFFFFF" />
+                  <Text style={styles.addExpenseButtonText}>Add Expense</Text>
+                </TouchableOpacity>
+              </View>
+            ) : (
+              <View style={styles.modernCard}>
+                <View style={styles.emptyState}>
+                  <FontAwesome
+                    name="file-text-o"
+                    size={32}
+                    color="#64748B"
+                    style={styles.emptyIcon}
+                  />
+                  <Text style={styles.emptyTitle}>No expenses yet</Text>
+                  <Text style={styles.emptySubtitle}>Start tracking your travel expenses</Text>
+                  <TouchableOpacity
+                    style={styles.addExpenseButton}
+                    onPress={() => router.push('/expenses/add')}
+                  >
+                    <FontAwesome name="plus" size={16} color="#FFFFFF" />
+                    <Text style={styles.addExpenseButtonText}>Add First Expense</Text>
+                  </TouchableOpacity>
                 </View>
-              ))}
-              <TouchableOpacity
-                style={styles.addExpenseBtn}
-                onPress={() => router.push('/expenses/add')}
-              >
-                <FontAwesome name="plus" size={16} color="#fff" />
-                <Text style={styles.addExpenseBtnText}>Add Expense</Text>
-              </TouchableOpacity>
-            </View>
-          ) : (
-            <View style={styles.emptyCard}>
-              <FontAwesome
-                name="file-text-o"
-                size={32}
-                color="#C7C7CC"
-                style={{ marginBottom: 8 }}
-              />
-              <Text style={styles.emptyText}>No expenses yet</Text>
-              <Text style={styles.emptySubtext}>Start tracking your travel expenses</Text>
-              <TouchableOpacity
-                style={styles.addExpenseBtn}
-                onPress={() => router.push('/expenses/add')}
-              >
-                <FontAwesome name="plus" size={16} color="#fff" />
-                <Text style={styles.addExpenseBtnText}>Add First Expense</Text>
-              </TouchableOpacity>
-            </View>
-          )}
-        </View>
-
-        {/* Quick Actions */}
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Quick Actions</Text>
-          <View style={styles.actionsContainer}>
-            <TouchableOpacity
-              style={[styles.actionButton, { backgroundColor: '#43cea2' }]}
-              onPress={() => router.push('/expenses/add')}
-            >
-              <FontAwesome name="money" size={24} color="#fff" />
-              <Text style={styles.actionText}>Add Expense</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={[styles.actionButton, { backgroundColor: '#ffb347' }]}
-              onPress={() => router.push('/trip/create/trip-name')}
-            >
-              <FontAwesome name="plane" size={24} color="#fff" />
-              <Text style={styles.actionText}>Plan New Trip</Text>
-            </TouchableOpacity>
+              </View>
+            )}
           </View>
-        </View>
 
-        {/* Currency Converter */}
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Currency Converter</Text>
-          <View style={styles.converterCard}>
-            <CurrencyConverter />
+          {/* Quick Actions Card */}
+          <View style={styles.section}>
+            <Text style={styles.sectionTitle}>Quick Actions</Text>
+            <View style={styles.quickActionsContainer}>
+              <TouchableOpacity
+                style={[styles.quickActionCard, { backgroundColor: '#0EA5E9' }]}
+                onPress={() => router.push('/expenses/add')}
+              >
+                <View style={styles.quickActionIconContainer}>
+                  <FontAwesome name="money" size={24} color="#FFFFFF" />
+                </View>
+                <Text style={styles.quickActionText}>Add Expense</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={[styles.quickActionCard, { backgroundColor: '#10B981' }]}
+                onPress={() => router.push('/trip/create/trip-name')}
+              >
+                <View style={styles.quickActionIconContainer}>
+                  <FontAwesome name="plane" size={24} color="#FFFFFF" />
+                </View>
+                <Text style={styles.quickActionText}>Plan New Trip</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+
+          {/* Currency Converter Card */}
+          <View style={styles.section}>
+            <Text style={styles.sectionTitle}>Currency Converter</Text>
+            <View style={styles.modernCard}>
+              <CurrencyConverter />
+            </View>
           </View>
         </View>
       </ScrollView>
@@ -345,78 +383,99 @@ export default function Index() {
 }
 
 const styles = StyleSheet.create({
-  rootBg: {
-    flex: 1,
-    backgroundColor: '#F6F8FB',
-  },
   container: {
     flex: 1,
-    paddingHorizontal: 0,
-    paddingTop: 0,
+    backgroundColor: '#F8FAFC',
   },
-  headerBg: {
-    paddingTop: 56,
-    paddingBottom: 36,
-    paddingHorizontal: 28,
-    borderBottomLeftRadius: 32,
-    borderBottomRightRadius: 32,
-    marginBottom: 18,
+  scrollView: {
+    flex: 1,
+  },
+  // Header Styles
+  header: {
+    paddingTop: 60,
+    paddingBottom: 32,
+    paddingHorizontal: 24,
+    borderBottomLeftRadius: 24,
+    borderBottomRightRadius: 24,
   },
   headerContent: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 18,
   },
-  headerIconCircle: {
-    width: 56,
-    height: 56,
-    borderRadius: 28,
-    backgroundColor: 'rgba(255,255,255,0.18)',
+  headerIconContainer: {
+    width: 48,
+    height: 48,
+    borderRadius: 24,
+    backgroundColor: 'rgba(255, 255, 255, 0.2)',
     alignItems: 'center',
     justifyContent: 'center',
-    marginRight: 12,
-    shadowColor: '#fff',
-    shadowOpacity: 0.12,
-    shadowRadius: 8,
-    elevation: 4,
+    marginRight: 16,
   },
-  title: {
-    fontSize: 30,
-    fontWeight: 'bold',
-    color: '#fff',
+  headerTextContainer: {
+    flex: 1,
+  },
+  headerTitle: {
+    fontSize: 28,
+    fontWeight: '800',
+    color: '#FFFFFF',
     marginBottom: 4,
-    letterSpacing: 0.5,
   },
-  subtitle: {
+  headerSubtitle: {
     fontSize: 16,
-    color: '#e0f7fa',
     fontWeight: '500',
+    color: 'rgba(255, 255, 255, 0.8)',
   },
+  // Content Container
+  contentContainer: {
+    paddingHorizontal: 24,
+    paddingTop: 24,
+  },
+  // Section Styles
   section: {
-    width: '100%',
-    marginBottom: 24,
-    paddingHorizontal: 18,
+    marginBottom: 32,
+  },
+  sectionHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 16,
   },
   sectionTitle: {
-    fontSize: 18,
-    fontWeight: '600',
-    color: '#1C1C1E',
-    marginBottom: 12,
+    fontSize: 20,
+    fontWeight: '700',
+    color: '#1E293B',
+    marginBottom: 16,
   },
-  tripCard: {
-    borderRadius: 18,
-    padding: 20,
-    shadowColor: '#43cea2',
-    shadowOpacity: 0.12,
+  viewAllButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+  },
+  viewAllText: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#0EA5E9',
+  },
+  // Modern Card System
+  modernCard: {
+    backgroundColor: '#FFFFFF',
+    borderRadius: 16,
+    shadowColor: '#1E293B',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.1,
     shadowRadius: 8,
-    elevation: 4,
-    marginBottom: 0,
+    elevation: 8,
+    overflow: 'hidden',
+  },
+  // Trip Card Styles
+  tripCardGradient: {
+    padding: 20,
   },
   tripHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 8,
+    alignItems: 'flex-start',
+    marginBottom: 16,
   },
   tripInfo: {
     flex: 1,
@@ -424,17 +483,23 @@ const styles = StyleSheet.create({
   tripName: {
     fontSize: 20,
     fontWeight: '700',
-    color: '#fff',
+    color: '#FFFFFF',
+    marginBottom: 8,
+  },
+  tripLocationRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
   },
   tripDestination: {
     fontSize: 14,
-    color: '#e0f7fa',
-    marginLeft: 2,
+    fontWeight: '500',
+    color: 'rgba(255, 255, 255, 0.8)',
   },
   statusBadge: {
-    backgroundColor: '#34C759',
-    paddingHorizontal: 10,
-    paddingVertical: 4,
+    backgroundColor: 'rgba(255, 255, 255, 0.2)',
+    paddingHorizontal: 12,
+    paddingVertical: 6,
     borderRadius: 12,
   },
   statusText: {
@@ -442,271 +507,258 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     color: '#FFFFFF',
   },
-  tripDetails: {
+  tripProgress: {
     marginTop: 8,
   },
-  tripDates: {
-    fontSize: 14,
-    color: '#e0f7fa',
-    marginBottom: 4,
-    marginLeft: 2,
-  },
-  tripProgressBarBg: {
-    height: 8,
-    backgroundColor: 'rgba(255,255,255,0.25)',
-    borderRadius: 4,
-    overflow: 'hidden',
+  tripProgressBar: {
+    height: 6,
+    backgroundColor: 'rgba(255, 255, 255, 0.2)',
+    borderRadius: 3,
     marginBottom: 8,
   },
-  tripProgressBarFill: {
+  tripProgressFill: {
     height: '100%',
-    backgroundColor: '#fff',
-    borderRadius: 4,
-  },
-  tripDuration: {
-    fontSize: 14,
-    color: '#fff',
-    fontWeight: '500',
-    marginLeft: 2,
-  },
-  emptyCard: {
     backgroundColor: '#FFFFFF',
-    borderRadius: 12,
-    padding: 16,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 3,
-    alignItems: 'center',
+    borderRadius: 3,
   },
-  emptyText: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: '#1C1C1E',
-    marginBottom: 8,
-  },
-  emptySubtext: {
+  tripProgressText: {
     fontSize: 14,
-    color: '#8E8E93',
-    textAlign: 'center',
-    marginBottom: 8,
+    fontWeight: '500',
+    color: 'rgba(255, 255, 255, 0.8)',
   },
-  budgetCard: {
-    borderRadius: 18,
-    padding: 20,
-    shadowColor: '#ffb347',
-    shadowOpacity: 0.12,
-    shadowRadius: 8,
-    elevation: 4,
-    marginBottom: 0,
-  },
+  // Budget Card Styles
   budgetHeader: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 10,
+    padding: 20,
+    paddingBottom: 16,
   },
-  budgetTitle: {
-    fontSize: 18,
-    fontWeight: '700',
-    color: '#fff',
-  },
-  budgetProgressBarBg: {
-    height: 8,
-    backgroundColor: 'rgba(255,255,255,0.25)',
-    borderRadius: 4,
-    overflow: 'hidden',
-    marginBottom: 8,
-  },
-  budgetProgressBarFill: {
-    height: '100%',
-    backgroundColor: '#fff',
-    borderRadius: 4,
-  },
-  budgetStatus: {
-    fontSize: 14,
-    color: '#fff',
-    textAlign: 'center',
-    marginTop: 2,
-  },
-  expensesCard: {
-    backgroundColor: '#FFFFFF',
-    borderRadius: 12,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 3,
-    padding: 0,
-    marginBottom: 0,
-  },
-  expenseItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    padding: 16,
-    borderBottomWidth: 1,
-    borderBottomColor: '#F0F0F0',
-  },
-  expenseIcon: {
+  budgetIconContainer: {
     width: 40,
     height: 40,
     borderRadius: 20,
-    backgroundColor: '#F9FAFB',
-    justifyContent: 'center',
+    backgroundColor: '#F0F9FF',
     alignItems: 'center',
-    marginRight: 12,
+    justifyContent: 'center',
+    marginRight: 16,
   },
-  expenseIconText: {
-    fontSize: 20,
-  },
-  expenseDetails: {
+  budgetInfo: {
     flex: 1,
   },
-  expenseName: {
-    fontSize: 16,
-    fontWeight: '500',
-    color: '#1C1C1E',
+  budgetAmount: {
+    fontSize: 24,
+    fontWeight: '700',
+    color: '#1E293B',
     marginBottom: 2,
   },
-  expenseDate: {
+  budgetTotal: {
     fontSize: 14,
-    color: '#8E8E93',
+    fontWeight: '500',
+    color: '#64748B',
   },
-  expenseAmount: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: '#FF3B30',
+  budgetPercentage: {
+    alignItems: 'flex-end',
+  },
+  budgetPercentageText: {
+    fontSize: 18,
+    fontWeight: '700',
+    color: '#0EA5E9',
+  },
+  budgetProgressContainer: {
+    paddingHorizontal: 20,
+    paddingBottom: 20,
+  },
+  budgetProgressBar: {
+    height: 8,
+    backgroundColor: '#F1F5F9',
+    borderRadius: 4,
+    marginBottom: 8,
+  },
+  budgetProgressFill: {
+    height: '100%',
+    backgroundColor: '#0EA5E9',
+    borderRadius: 4,
+  },
+  budgetRemainingText: {
+    fontSize: 14,
+    fontWeight: '500',
+    color: '#64748B',
+    textAlign: 'center',
+  },
+  // Monthly Card Styles
+  monthlyHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: 20,
+    paddingBottom: 16,
+  },
+  monthlyIconContainer: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: '#F0F9FF',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginRight: 16,
+  },
+  monthlyInfo: {
+    flex: 1,
+  },
+  monthlyAmount: {
+    fontSize: 24,
+    fontWeight: '700',
+    color: '#1E293B',
+    marginBottom: 2,
+  },
+  monthlyLabel: {
+    fontSize: 14,
+    fontWeight: '500',
+    color: '#64748B',
+  },
+  monthlyStats: {
+    flexDirection: 'row',
+    paddingHorizontal: 20,
+    paddingBottom: 20,
+    gap: 16,
+  },
+  statItem: {
+    flex: 1,
+    alignItems: 'center',
+    paddingVertical: 12,
+    backgroundColor: '#F8FAFC',
+    borderRadius: 12,
+  },
+  statValue: {
+    fontSize: 18,
+    fontWeight: '700',
+    color: '#1E293B',
+    marginBottom: 2,
+  },
+  statLabel: {
+    fontSize: 12,
+    fontWeight: '500',
+    color: '#64748B',
+  },
+  // Expense Item Styles
+  expenseItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: 20,
+    borderBottomWidth: 1,
+    borderBottomColor: '#F1F5F9',
   },
   lastExpenseItem: {
     borderBottomWidth: 0,
   },
-  addExpenseBtn: {
-    flexDirection: 'row',
+  expenseIconContainer: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: '#F8FAFC',
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#43cea2',
-    borderRadius: 12,
-    paddingVertical: 10,
-    margin: 16,
-    marginTop: 8,
-    gap: 8,
-    shadowColor: '#43cea2',
-    shadowOpacity: 0.12,
-    shadowRadius: 4,
-    elevation: 2,
+    marginRight: 16,
   },
-  addExpenseBtnText: {
-    color: '#fff',
-    fontWeight: '600',
-    fontSize: 15,
-    marginLeft: 4,
-  },
-  actionsContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    gap: 16,
-  },
-  actionButton: {
-    flex: 1,
-    borderRadius: 14,
-    paddingVertical: 18,
-    alignItems: 'center',
-    justifyContent: 'center',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.08,
-    shadowRadius: 4,
-    elevation: 2,
-    marginBottom: 0,
-    gap: 8,
-  },
-  actionText: {
-    fontSize: 15,
-    fontWeight: '600',
-    color: '#fff',
-    textAlign: 'center',
-  },
-  converterCard: {
-    backgroundColor: '#FFFFFF',
-    borderRadius: 12,
-    padding: 16,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 3,
-  },
-  sectionHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 8,
-  },
-  viewAllButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-  },
-  viewAllText: {
-    fontSize: 14,
-    fontWeight: '600',
-    color: '#43cea2',
-  },
-  monthlyCard: {
-    borderRadius: 18,
-    padding: 20,
-    shadowColor: '#667eea',
-    shadowOpacity: 0.12,
-    shadowRadius: 8,
-    elevation: 4,
-    marginBottom: 0,
-  },
-  monthlyHeader: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 10,
-  },
-  monthlyTitle: {
+  expenseIcon: {
     fontSize: 18,
-    fontWeight: '700',
-    color: '#fff',
   },
-  monthlyStats: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  },
-  monthlyStat: {
+  expenseDetails: {
     flex: 1,
-    alignItems: 'center',
   },
-  monthlyStatValue: {
+  expenseDescription: {
     fontSize: 16,
     fontWeight: '600',
-    color: '#fff',
+    color: '#1E293B',
     marginBottom: 4,
-  },
-  monthlyStatLabel: {
-    fontSize: 14,
-    color: '#e0f7fa',
-    fontWeight: '500',
   },
   expenseMetadata: {
     flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
+  },
+  expenseDate: {
+    fontSize: 14,
+    fontWeight: '500',
+    color: '#64748B',
   },
   expenseTrip: {
     fontSize: 14,
-    color: '#8E8E93',
+    fontWeight: '500',
+    color: '#64748B',
   },
   expenseAmountContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
+    alignItems: 'flex-end',
+  },
+  expenseAmount: {
+    fontSize: 16,
+    fontWeight: '700',
+    color: '#EF4444',
+    marginBottom: 2,
   },
   expenseCurrency: {
+    fontSize: 12,
+    fontWeight: '500',
+    color: '#64748B',
+  },
+  // Add Expense Button
+  addExpenseButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#0EA5E9',
+    paddingVertical: 16,
+    margin: 20,
+    marginTop: 12,
+    borderRadius: 12,
+    gap: 8,
+  },
+  addExpenseButtonText: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#FFFFFF',
+  },
+  // Quick Actions
+  quickActionsContainer: {
+    flexDirection: 'row',
+    gap: 16,
+  },
+  quickActionCard: {
+    flex: 1,
+    alignItems: 'center',
+    paddingVertical: 24,
+    paddingHorizontal: 16,
+    borderRadius: 16,
+    shadowColor: '#1E293B',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.1,
+    shadowRadius: 8,
+    elevation: 8,
+  },
+  quickActionIconContainer: {
+    marginBottom: 12,
+  },
+  quickActionText: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#FFFFFF',
+    textAlign: 'center',
+  },
+  // Empty States
+  emptyState: {
+    alignItems: 'center',
+    padding: 32,
+  },
+  emptyIcon: {
+    marginBottom: 12,
+  },
+  emptyTitle: {
+    fontSize: 18,
+    fontWeight: '600',
+    color: '#1E293B',
+    marginBottom: 8,
+  },
+  emptySubtitle: {
     fontSize: 14,
-    color: '#8E8E93',
+    fontWeight: '500',
+    color: '#64748B',
+    textAlign: 'center',
   },
 });
