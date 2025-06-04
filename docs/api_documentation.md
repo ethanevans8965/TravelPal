@@ -838,3 +838,54 @@ interface SkeletonProps {
 ---
 
 This API documentation will be updated as new features are added and existing APIs evolve. For the most current information, refer to the TypeScript definitions in the source code.
+
+### AppContext (Delegation Layer)
+
+**Purpose**: Provides a unified interface for all app data while delegating to appropriate stores.
+
+**⚠️ Migration Status**:
+
+- ✅ **Trips**: Fully migrated to TripStore (persistent)
+- ✅ **Expenses**: Fully migrated to ExpenseStore (persistent)
+- 🔄 **Locations**: Phase 2 - Planned for LocationStore migration
+- 📋 **Journals**: Phase 3 - Planned for JournalStore migration
+- ⚙️ **Settings**: Phase 4 - Planned for UserStore migration
+
+#### **Current Architecture**:
+
+```typescript
+interface AppContextType {
+  // Persistent data (from Zustand stores)
+  trips: Trip[]; // ← TripStore
+  expenses: Expense[]; // ← ExpenseStore
+
+  // Temporary local state (will be migrated)
+  journalEntries: JournalEntry[]; // → JournalStore
+  locations: Location[]; // → LocationStore
+  dailyBudget: number; // → UserStore
+  baseCurrency: string; // → UserStore
+}
+```
+
+#### **Usage Patterns**:
+
+##### **For Components**:
+
+```typescript
+const { trips, addTrip, expenses, addExpense } = useAppContext();
+```
+
+##### **For Advanced Use Cases**:
+
+```typescript
+// Direct store access for performance-critical operations
+const trips = useTripStore((state) => state.trips);
+const getUpcomingTrips = useTripStore((state) => state.getUpcomingTrips);
+```
+
+#### **Benefits of Current Design**:
+
+- **Backward Compatibility**: Existing components work unchanged
+- **Gradual Migration**: Migrate one domain at a time
+- **Performance**: Can opt into direct store access when needed
+- **Consistency**: Single import for all app data

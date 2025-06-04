@@ -1,33 +1,22 @@
 import React, { createContext, useContext, useState } from 'react';
-import * as Crypto from 'expo-crypto';
 import { AppContextType, Expense, JournalEntry, Trip, Location } from './types';
 import { useExpenseStore } from './stores/expenseStore';
 import { useTripStore } from './stores/tripStore';
 
 const AppContext = createContext<AppContextType | null>(null);
 
-// Sample data for demonstration
-// const sampleTrips: Trip[] = [
-//   ... (removed)
-// ];
-
-// const sampleExpenses: Expense[] = [
-//   ... (removed)
-// ];
-
 export function AppProvider({ children }: { children: React.ReactNode }) {
-  // Use Zustand store for expenses
+  // Use Zustand stores for expenses and trips (with persistence)
   const expenses = useExpenseStore((state) => state.expenses);
-
-  // Use Zustand store for trips
   const trips = useTripStore((state) => state.trips);
 
+  // Local state for data not yet migrated to stores
   const [journalEntries, setJournalEntries] = useState<JournalEntry[]>([]);
   const [locations, setLocations] = useState<Location[]>([]);
   const [dailyBudget, setDailyBudget] = useState(100); // Default daily budget
   const [baseCurrency, setBaseCurrency] = useState('USD'); // Default currency
 
-  // Trip operations - delegate to TripStore
+  // Trip operations - delegate to TripStore (all operations are now persisted)
   const addTrip = (trip: Omit<Trip, 'id'>) => {
     const tripStore = useTripStore.getState();
     return tripStore.addTrip(trip);
@@ -45,7 +34,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     setJournalEntries((prev) => prev.filter((j) => j.tripId !== tripId));
   };
 
-  // Expense operations - delegate to Zustand store
+  // Expense operations - delegate to ExpenseStore (all operations are persisted)
   const addExpense = (expense: Omit<Expense, 'id'>) => {
     const expenseStore = useExpenseStore.getState();
     return expenseStore.addExpense(expense);
@@ -61,11 +50,11 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     expenseStore.deleteExpense(expenseId);
   };
 
-  // Journal operations
+  // Journal operations (local state - will be migrated to JournalStore in Phase 3)
   const addJournalEntry = (entry: Omit<JournalEntry, 'id'>) => {
     const newEntry: JournalEntry = {
       ...entry,
-      id: Crypto.randomUUID(),
+      id: crypto.randomUUID(),
     };
     setJournalEntries((prev) => [...prev, newEntry]);
   };
@@ -78,11 +67,11 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     setJournalEntries((prev) => prev.filter((e) => e.id !== entryId));
   };
 
-  // Location operations
+  // Location operations (local state - will be migrated to LocationStore in Phase 2)
   const addLocation = (location: Omit<Location, 'id'>) => {
     const newLocation: Location = {
       ...location,
-      id: Crypto.randomUUID(),
+      id: crypto.randomUUID(),
     };
     setLocations((prev) => [...prev, newLocation]);
   };
@@ -91,7 +80,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     setLocations((prev) => prev.map((l) => (l.id === location.id ? location : l)));
   };
 
-  // Utility functions - delegate to TripStore
+  // Cross-domain utility functions
   const getTripExpenses = (tripId: string) => {
     const tripStore = useTripStore.getState();
     return tripStore.getTripExpenses(tripId);
@@ -111,12 +100,17 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   };
 
   const value: AppContextType = {
-    expenses, // From Zustand store
+    // Data from Zustand stores (persistent)
+    expenses,
+    trips,
+
+    // Data from local state (temporary - will be migrated)
     journalEntries,
-    trips, // From Zustand store
     locations,
     dailyBudget,
     baseCurrency,
+
+    // Operations (delegated to appropriate stores)
     addTrip,
     updateTrip,
     deleteTrip,
@@ -130,6 +124,8 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     updateLocation,
     setDailyBudget,
     setBaseCurrency,
+
+    // Cross-domain utilities
     getTripExpenses,
     getTripJournalEntries,
     getLocationExpenses,
