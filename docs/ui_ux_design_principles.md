@@ -500,6 +500,167 @@ const MyComponent = () => {
 
 ---
 
+## 🧭 **Navigation & Animation Design**
+
+### **Modern Navigation System**
+
+TravelPal's navigation system prioritizes clarity, efficiency, and delight:
+
+#### **Tab Bar Design Standards**
+
+```typescript
+const navigationStyles = {
+  // Modern Tab Bar
+  tabBar: {
+    backgroundColor: colors.white,
+    borderRadius: 24,
+    height: 64,
+    shadowColor: colors.slate900,
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.15,
+    shadowRadius: 16,
+    elevation: 12,
+  },
+
+  // Active Indicator
+  activeIndicator: {
+    height: 48,
+    borderRadius: 20,
+    // Color changes based on active tab:
+    // Home: #0EA5E9, Trips: #10B981, Finances: #F59E0B
+  },
+
+  // Tab Items
+  tabItem: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 8,
+  },
+};
+```
+
+#### **Floating Action Button**
+
+```typescript
+const fabStyles = {
+  container: {
+    width: 56,
+    height: 56,
+    borderRadius: 28,
+    shadowColor: colors.slate900,
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.25,
+    shadowRadius: 12,
+    elevation: 15,
+  },
+
+  gradient: {
+    colors: ['#0EA5E9', '#1E293B'],
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+};
+```
+
+### **Animation & Transition Standards**
+
+Smooth, purposeful animations enhance the user experience:
+
+#### **Page Transitions**
+
+```typescript
+const transitionTypes = {
+  // Fade Transition
+  fade: {
+    duration: 400,
+    easing: Easing.bezier(0.2, 0, 0.2, 1),
+    opacity: { from: 0, to: 1 },
+  },
+
+  // Slide Transition
+  slide: {
+    duration: 400,
+    translateX: { from: screenWidth * 0.1, to: 0 },
+    opacity: { from: 0, to: 1 },
+  },
+
+  // Slide Up Transition
+  slideUp: {
+    duration: 400,
+    translateY: { from: 50, to: 0 },
+    opacity: { from: 0, to: 1 },
+  },
+
+  // Scale Transition
+  scale: {
+    duration: 400,
+    scale: { from: 0.95, to: 1 },
+    opacity: { from: 0, to: 1 },
+  },
+};
+```
+
+#### **Staggered Animations**
+
+```typescript
+const staggeredAnimation = {
+  baseDelay: 0,
+  staggerDelay: 150, // ms between each item
+  duration: 400,
+  maxStagger: 1000, // Maximum total delay
+};
+```
+
+### **Loading States & Skeletons**
+
+Professional loading experiences maintain user engagement:
+
+#### **Skeleton Design**
+
+```typescript
+const skeletonStyles = {
+  base: {
+    backgroundColor: '#E2E8F0',
+    borderRadius: 8,
+  },
+
+  pulse: {
+    animation: {
+      duration: 1000,
+      easing: Easing.inOut(Easing.ease),
+      opacity: { from: 0.3, to: 0.7 },
+      repeat: -1,
+      reverse: true,
+    },
+  },
+};
+```
+
+### **Haptic Feedback Guidelines**
+
+iOS haptic feedback enhances user interactions:
+
+```typescript
+const hapticFeedback = {
+  // Navigation interactions
+  tabPress: Haptics.ImpactFeedbackStyle.Medium,
+  fabPress: Haptics.ImpactFeedbackStyle.Medium,
+
+  // Success actions
+  expenseAdded: Haptics.NotificationFeedbackType.Success,
+  tripCreated: Haptics.NotificationFeedbackType.Success,
+
+  // Warning actions
+  budgetAlert: Haptics.NotificationFeedbackType.Warning,
+
+  // Error actions
+  deleteAction: Haptics.ImpactFeedbackStyle.Heavy,
+  validationError: Haptics.NotificationFeedbackType.Error,
+};
+```
+
+---
+
 **TravelPal's design principles ensure every interaction is beautiful, efficient, and accessible - creating an exceptional user experience that users love and recommend.** ✨📱💫
 
 ---

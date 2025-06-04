@@ -609,4 +609,170 @@ const typography = {
 
 ---
 
+#### `NavigationBar`
+
+**Purpose**: Enhanced navigation component with modern styling, animations, and haptic feedback.
+
+**Props Interface**:
+
+```typescript
+interface NavigationBarProps {
+  showFAB?: boolean;
+  fabAction?: () => void;
+  fabIcon?: string;
+  onNewTripPress?: () => void;
+  onLogExpensePress?: () => void;
+  onNewMemoryPress?: () => void;
+}
+```
+
+**Features**:
+
+- Modern tab bar with color-coded active indicators
+- Smooth sliding indicator that follows active tab
+- Haptic feedback for touch interactions (iOS)
+- Floating action button with expandable menu
+- Gradient designs and staggered animations
+- Automatic route detection and highlighting
+
+**Usage**:
+
+```tsx
+<NavigationBar showFAB={true} onNewTripPress={handleNewTrip} onLogExpensePress={handleLogExpense} />
+```
+
+---
+
+#### `PageTransition`
+
+**Purpose**: Smooth page transitions with multiple animation types and loading states.
+
+**Props Interface**:
+
+```typescript
+interface PageTransitionProps {
+  children: React.ReactNode;
+  transitionType?: 'fade' | 'slide' | 'scale' | 'slideUp';
+  duration?: number;
+  delay?: number;
+  style?: any;
+}
+```
+
+**Features**:
+
+- Multiple transition types (fade, slide, scale, slideUp)
+- Configurable duration and delay
+- Smooth bezier curve animations
+- Native driver optimization for 60fps performance
+- Automatic cleanup on unmount
+
+**Usage**:
+
+```tsx
+<PageTransition transitionType="slideUp" duration={600}>
+  <YourComponent />
+</PageTransition>
+```
+
+---
+
+#### `StaggeredTransition`
+
+**Purpose**: Staggered animations for list items and multiple components.
+
+**Props Interface**:
+
+```typescript
+interface StaggeredTransitionProps {
+  children: React.ReactNode[];
+  staggerDelay?: number;
+  transitionType?: 'fade' | 'slide' | 'slideUp';
+  style?: any;
+}
+```
+
+**Features**:
+
+- Automatic staggering of child component animations
+- Configurable delay between items
+- Supports all PageTransition animation types
+- Perfect for list items and card grids
+
+**Usage**:
+
+```tsx
+<StaggeredTransition staggerDelay={150} transitionType="slideUp">
+  <Card1 />
+  <Card2 />
+  <Card3 />
+</StaggeredTransition>
+```
+
+---
+
+### Loading Components
+
+#### `Skeleton`
+
+**Purpose**: Loading placeholder with pulse animation.
+
+**Props Interface**:
+
+```typescript
+interface SkeletonProps {
+  width?: number | string;
+  height?: number;
+  borderRadius?: number;
+  style?: any;
+}
+```
+
+**Features**:
+
+- Smooth pulse animation
+- Customizable dimensions and border radius
+- Matches app color scheme
+- Native driver optimization
+
+---
+
+#### `ExpenseCardSkeleton`
+
+**Purpose**: Loading placeholder specifically for expense cards.
+
+**Features**:
+
+- Matches expense card layout exactly
+- Icon, text, and amount placeholders
+- Consistent spacing and sizing
+- Automatic pulse animation
+
+**Usage**:
+
+```tsx
+{
+  isLoading ? (
+    <ExpenseListSkeleton itemCount={5} />
+  ) : (
+    expenses.map((expense) => <ExpenseCard key={expense.id} expense={expense} />)
+  );
+}
+```
+
+---
+
+#### `WidgetSkeleton`
+
+**Purpose**: Loading placeholder for home screen widgets.
+
+**Features**:
+
+- Widget-specific layout
+- Header and content sections
+- Stats grid placeholders
+- Progress bar placeholders
+
+---
+
 This API documentation will be updated as new features are added and existing APIs evolve. For the most current information, refer to the TypeScript definitions in the source code.
