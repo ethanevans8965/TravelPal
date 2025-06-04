@@ -22,6 +22,10 @@ interface TripState {
   getCurrentTrips: () => Trip[];
   getPastTrips: () => Trip[];
 
+  // Cross-store utility functions (matching Context API)
+  getTripExpenses: (tripId: string) => any[];
+  getTripJournalEntries: (tripId: string) => any[];
+
   // Batch operations for coordination with other stores
   deleteExpensesByTripId: (tripId: string) => void;
   deleteJournalEntriesByTripId: (tripId: string) => void;
@@ -101,6 +105,19 @@ export const useTripStore = create<TripState>()(
             if (!a.endDate || !b.endDate) return 0;
             return new Date(b.endDate).getTime() - new Date(a.endDate).getTime();
           });
+      },
+
+      // Cross-store utility functions (matching Context API interface)
+      getTripExpenses: (tripId) => {
+        const expenseStore = useExpenseStore.getState();
+        return expenseStore.getExpensesByTripId(tripId);
+      },
+
+      getTripJournalEntries: (tripId) => {
+        // TODO: Implement when journal store is created
+        // For now, return empty array to maintain interface compatibility
+        console.log('getTripJournalEntries called for tripId:', tripId);
+        return [];
       },
 
       // Coordination methods - these will call other stores

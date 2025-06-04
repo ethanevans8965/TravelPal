@@ -291,16 +291,21 @@ interface ExpenseStore {
 
 ---
 
-### TripStore (Context)
+### TripStore (Zustand)
 
-**Purpose**: Trip management with comprehensive CRUD operations.
+**Purpose**: Global state management for trips with persistence.
+
+#### **Current Usage**:
+
+- **Primary Interface**: Used through Context API (`useAppContext()`)
+- **Direct Access**: Available via `useTripStore()` for advanced use cases
+- **Persistence**: Automatically persists to AsyncStorage with key `'travelpal-trip-storage'`
 
 #### **State Interface**:
 
 ```typescript
-interface TripContextType {
+interface TripState {
   trips: Trip[];
-  activeTrip: Trip | null;
   isLoading: boolean;
   error: string | null;
 }
@@ -308,28 +313,85 @@ interface TripContextType {
 
 #### **Actions**:
 
-##### `createTrip(trip: Omit<Trip, 'id'>): Promise<Trip>`
+##### `addTrip(trip: Omit<Trip, 'id'>): Trip`
 
-- Creates new trip with validation
-- Generates unique ID
-- Sets up initial budget structure
-- Returns created trip
+- Creates new trip with auto-generated ID
+- Validates trip data
+- Persists to AsyncStorage immediately
+- Returns the created trip object
+- **Access**: Via Context API `addTrip()` or direct store access
 
-##### `updateTrip(id: string, updates: Partial<Trip>): Promise<void>`
+##### `updateTrip(trip: Trip): void`
 
-- Updates existing trip
-- Validates budget constraints
-- Handles status transitions
-- Persists changes
+- Updates existing trip by ID
+- Merges with existing data
+- Triggers re-renders and persistence
+- Validates updated data
+- **Access**: Via Context API `updateTrip()` or direct store access
 
-##### `deleteTrip(id: string): Promise<void>`
+##### `deleteTrip(tripId: string): void`
 
-- Removes trip and associated data
-- Handles expense cleanup
-- Confirms deletion with user
-- Updates active trip if necessary
+- Removes trip from store
+- Automatically deletes associated expenses via ExpenseStore
+- Handles cascading updates
+- Persists changes immediately
+- **Access**: Via Context API `deleteTrip()` or direct store access
+
+##### `getTripById(tripId: string): Trip | undefined`
+
+- Returns specific trip by ID
+- Cached for performance
+- **Access**: Direct store access only
+
+##### `getTripsByStatus(status: Trip['status']): Trip[]`
+
+- Filters trips by status (planning, active, completed, cancelled)
+- Returns sorted array
+- **Access**: Direct store access only
+
+##### `getUpcomingTrips(): Trip[]`
+
+- Returns trips with start date in the future
+- Sorted by start date (earliest first)
+- **Access**: Direct store access only
+
+##### `getCurrentTrips(): Trip[]`
+
+- Returns trips that are currently active (between start and end dates)
+- **Access**: Direct store access only
+
+##### `getPastTrips(): Trip[]`
+
+- Returns completed trips (end date in the past)
+- Sorted by end date (most recent first)
+- **Access**: Direct store access only
+
+##### `getTripExpenses(tripId: string): Expense[]`
+
+- Returns all expenses for a specific trip
+- Delegates to ExpenseStore for data consistency
+- **Access**: Via Context API `getTripExpenses()` or direct store access
+
+##### `getTripJournalEntries(tripId: string): JournalEntry[]`
+
+- Returns all journal entries for a specific trip
+- Currently returns empty array (pending JournalStore implementation)
+- **Access**: Via Context API `getTripJournalEntries()` or direct store access
 
 ---
+
+### TripStore (Context) - **DEPRECATED PATTERN**
+
+**Purpose**: Trip management with comprehensive CRUD operations.
+
+**⚠️ Important**: As of the latest update, the Context API now delegates all trip operations to the TripStore (Zustand) above. This provides persistence while maintaining the same interface for components.
+
+#### **Migration Notes**:
+
+- All trip data is now persisted via TripStore
+- Context API methods remain unchanged for backward compatibility
+- Components using `useAppContext()` automatically get persistence
+- No component changes required for the migration
 
 ## 🛠️ Utility Functions
 

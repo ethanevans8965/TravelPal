@@ -2,6 +2,7 @@ import React, { createContext, useContext, useState } from 'react';
 import * as Crypto from 'expo-crypto';
 import { AppContextType, Expense, JournalEntry, Trip, Location } from './types';
 import { useExpenseStore } from './stores/expenseStore';
+import { useTripStore } from './stores/tripStore';
 
 const AppContext = createContext<AppContextType | null>(null);
 
@@ -18,31 +19,29 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   // Use Zustand store for expenses
   const expenses = useExpenseStore((state) => state.expenses);
 
+  // Use Zustand store for trips
+  const trips = useTripStore((state) => state.trips);
+
   const [journalEntries, setJournalEntries] = useState<JournalEntry[]>([]);
-  const [trips, setTrips] = useState<Trip[]>([]); // Start empty
   const [locations, setLocations] = useState<Location[]>([]);
   const [dailyBudget, setDailyBudget] = useState(100); // Default daily budget
   const [baseCurrency, setBaseCurrency] = useState('USD'); // Default currency
 
-  // Trip operations
+  // Trip operations - delegate to TripStore
   const addTrip = (trip: Omit<Trip, 'id'>) => {
-    const newTrip: Trip = {
-      ...trip,
-      id: Crypto.randomUUID(),
-    };
-    setTrips((prev) => [...prev, newTrip]);
+    const tripStore = useTripStore.getState();
+    return tripStore.addTrip(trip);
   };
 
   const updateTrip = (trip: Trip) => {
-    setTrips((prev) => prev.map((t) => (t.id === trip.id ? trip : t)));
+    const tripStore = useTripStore.getState();
+    tripStore.updateTrip(trip);
   };
 
   const deleteTrip = (tripId: string) => {
-    setTrips((prev) => prev.filter((t) => t.id !== tripId));
-    // Also delete associated expenses using expense store
-    const expenseStore = useExpenseStore.getState();
-    expenseStore.deleteExpensesByTripId(tripId);
-    // Delete associated journal entries
+    const tripStore = useTripStore.getState();
+    tripStore.deleteTrip(tripId);
+    // Note: TripStore handles expense cleanup internally, but we still need to clean up journal entries
     setJournalEntries((prev) => prev.filter((j) => j.tripId !== tripId));
   };
 
@@ -92,10 +91,10 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     setLocations((prev) => prev.map((l) => (l.id === location.id ? location : l)));
   };
 
-  // Utility functions - delegate to Zustand store
+  // Utility functions - delegate to TripStore
   const getTripExpenses = (tripId: string) => {
-    const expenseStore = useExpenseStore.getState();
-    return expenseStore.getExpensesByTripId(tripId);
+    const tripStore = useTripStore.getState();
+    return tripStore.getTripExpenses(tripId);
   };
 
   const getTripJournalEntries = (tripId: string) => {
@@ -114,7 +113,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   const value: AppContextType = {
     expenses, // From Zustand store
     journalEntries,
-    trips,
+    trips, // From Zustand store
     locations,
     dailyBudget,
     baseCurrency,
