@@ -51,14 +51,24 @@ const NavigationBar: React.FC<NavigationBarProps> = ({
   const insets = useSafeAreaInsets();
 
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [activeIndex, setActiveIndex] = useState(0);
+  const [activeIndex, setActiveIndex] = useState(() => {
+    const currentIndex = NAV_ITEMS.findIndex((item) => item.route === pathname);
+    return currentIndex !== -1 ? currentIndex : 0;
+  });
 
   // Animation values
   const slideAnim = useRef(new Animated.Value(0)).current;
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const rotateAnim = useRef(new Animated.Value(0)).current;
   const scaleAnim = useRef(new Animated.Value(1)).current;
-  const indicatorAnim = useRef(new Animated.Value(0)).current;
+  const indicatorAnim = useRef(
+    new Animated.Value(
+      (() => {
+        const currentIndex = NAV_ITEMS.findIndex((item) => item.route === pathname);
+        return currentIndex !== -1 ? currentIndex : 0;
+      })()
+    )
+  ).current;
 
   // Haptic feedback
   const triggerHaptic = () => {
@@ -70,7 +80,7 @@ const NavigationBar: React.FC<NavigationBarProps> = ({
   // Update active index based on current route
   useEffect(() => {
     const currentIndex = NAV_ITEMS.findIndex((item) => item.route === pathname);
-    if (currentIndex !== -1 && currentIndex !== activeIndex) {
+    if (currentIndex !== -1) {
       setActiveIndex(currentIndex);
       Animated.spring(indicatorAnim, {
         toValue: currentIndex,
@@ -79,7 +89,7 @@ const NavigationBar: React.FC<NavigationBarProps> = ({
         friction: 8,
       }).start();
     }
-  }, [pathname, activeIndex]);
+  }, [pathname]);
 
   const toggleMenu = () => {
     triggerHaptic();
@@ -170,9 +180,17 @@ const NavigationBar: React.FC<NavigationBarProps> = ({
     outputRange: [100, 0],
   });
 
+  const NAV_BAR_HORIZONTAL_PADDING = 20;
+  const NAV_BAR_WIDTH = screenWidth - NAV_BAR_HORIZONTAL_PADDING * 2;
+  const NAV_ITEM_WIDTH = NAV_BAR_WIDTH / NAV_ITEMS.length;
+
   const indicatorTranslateX = indicatorAnim.interpolate({
-    inputRange: [0, NAV_ITEMS.length - 1],
-    outputRange: [0, ((screenWidth - 80) / NAV_ITEMS.length) * (NAV_ITEMS.length - 1)],
+    inputRange: [0, 1, 2],
+    outputRange: [
+      0, // Home
+      NAV_ITEM_WIDTH, // Trips
+      NAV_ITEM_WIDTH * 2, // Finances
+    ],
   });
 
   return (
@@ -242,12 +260,13 @@ const NavigationBar: React.FC<NavigationBarProps> = ({
       )}
 
       {/* Main Navigation Bar */}
-      <Animated.View style={[styles.navigationBar, { transform: [{ scale: scaleAnim }] }]}>
+      <Animated.View style={[styles.navigationBar, { width: NAV_BAR_WIDTH }]}>
         {/* Active Indicator */}
         <Animated.View
           style={[
             styles.activeIndicator,
             {
+              width: NAV_ITEM_WIDTH,
               transform: [{ translateX: indicatorTranslateX }],
               backgroundColor: NAV_ITEMS[activeIndex]?.color || '#0EA5E9',
             },
@@ -359,7 +378,6 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFFFFF',
     borderRadius: 24,
     height: 64,
-    width: screenWidth - 40,
     shadowColor: '#1E293B',
     shadowOffset: { width: 0, height: 8 },
     shadowOpacity: 0.15,
@@ -367,12 +385,12 @@ const styles = StyleSheet.create({
     elevation: 12,
     position: 'relative',
     zIndex: 3,
+    flexDirection: 'row',
+    overflow: 'hidden',
   },
   activeIndicator: {
     position: 'absolute',
     top: 8,
-    left: 8,
-    width: (screenWidth - 80) / NAV_ITEMS.length,
     height: 48,
     borderRadius: 20,
     zIndex: 1,
@@ -381,7 +399,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     height: '100%',
     alignItems: 'center',
-    paddingHorizontal: 8,
+    flex: 1,
+    paddingHorizontal: 0,
   },
   navItem: {
     flex: 1,

@@ -27,7 +27,7 @@ export default function RootLayout() {
             </View>
 
             <View style={styles.navContainer}>
-              <NavigationBar showFAB={true} onNewTripPress={handleNewTripPress} />
+              <NavigationBar showFAB={false} onNewTripPress={handleNewTripPress} />
             </View>
           </SafeAreaView>
         </AppProvider>

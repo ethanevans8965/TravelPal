@@ -174,12 +174,6 @@ export default function Dashboard() {
                 <Text style={styles.headerGreeting}>{getGreeting()}!</Text>
                 <Text style={styles.headerDate}>{getCurrentDate()}</Text>
               </View>
-              <TouchableOpacity
-                style={styles.headerAction}
-                onPress={() => router.push('/expenses/add' as any)}
-              >
-                <FontAwesome name="plus" size={24} color="#FFFFFF" />
-              </TouchableOpacity>
             </View>
           </LinearGradient>
         </PageTransition>
@@ -342,14 +336,6 @@ const styles = StyleSheet.create({
   headerDate: {
     fontSize: 16,
     color: 'rgba(255, 255, 255, 0.8)',
-  },
-  headerAction: {
-    width: 48,
-    height: 48,
-    borderRadius: 24,
-    backgroundColor: 'rgba(255, 255, 255, 0.2)',
-    alignItems: 'center',
-    justifyContent: 'center',
   },
   contentContainer: {
     padding: 24,
