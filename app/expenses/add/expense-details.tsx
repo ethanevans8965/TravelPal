@@ -70,83 +70,74 @@ export default function ExpenseDetailsScreen() {
 
   const handleSave = async () => {
     // Comprehensive validation
+    const validationErrors: string[] = [];
+
+    // Amount validation
     if (!amount.trim()) {
-      Alert.alert('Missing Amount', 'Please enter an amount for this expense.');
-      return;
-    }
-
-    if (!category) {
-      Alert.alert('Missing Category', 'Please select a category for this expense.');
-      return;
-    }
-
-    const parsedAmount = parseFloat(amount);
-    if (isNaN(parsedAmount)) {
-      Alert.alert('Invalid Amount', 'Please enter a valid number for the amount.');
-      return;
-    }
-
-    if (parsedAmount <= 0) {
-      Alert.alert('Invalid Amount', 'Amount must be greater than zero.');
-      return;
-    }
-
-    if (parsedAmount > 999999) {
-      Alert.alert('Amount Too Large', 'Please enter a reasonable amount (less than 1,000,000).');
-      return;
-    }
-
-    // Validate trip association
-    if (!isGeneral && tripId) {
-      const trip = trips.find((t) => t.id === tripId);
-      if (!trip) {
-        Alert.alert(
-          'Trip Not Found',
-          'The selected trip no longer exists. Please select a different trip or record as a general expense.'
-        );
-        return;
+      validationErrors.push('Please enter an amount for this expense.');
+    } else {
+      const parsedAmount = parseFloat(amount);
+      if (isNaN(parsedAmount)) {
+        validationErrors.push('Please enter a valid number for the amount.');
+      } else if (parsedAmount <= 0) {
+        validationErrors.push('Amount must be greater than zero.');
+      } else if (parsedAmount > 999999) {
+        validationErrors.push('Please enter a reasonable amount (less than 1,000,000).');
       }
     }
 
-    // Validate date
+    // Category validation
+    if (!category) {
+      validationErrors.push('Please select a category for this expense.');
+    }
+
+    // Trip validation
+    if (!isGeneral && tripId) {
+      const trip = trips.find((t) => t.id === tripId);
+      if (!trip) {
+        validationErrors.push(
+          'The selected trip no longer exists. Please select a different trip or record as a general expense.'
+        );
+      }
+    }
+
+    // Date validation
     const expenseDate = new Date(date);
     const today = new Date();
     const maxPastDate = new Date();
-    maxPastDate.setFullYear(today.getFullYear() - 5); // No expenses older than 5 years
+    maxPastDate.setFullYear(today.getFullYear() - 5);
 
     if (expenseDate > today) {
-      Alert.alert('Invalid Date', 'Expense date cannot be in the future.');
-      return;
+      validationErrors.push('Expense date cannot be in the future.');
+    } else if (expenseDate < maxPastDate) {
+      validationErrors.push('Expense date cannot be more than 5 years ago.');
     }
 
-    if (expenseDate < maxPastDate) {
-      Alert.alert('Invalid Date', 'Expense date cannot be more than 5 years ago.');
-      return;
-    }
-
-    // Validate description length
+    // Description validation
     if (description.length > 500) {
-      Alert.alert('Description Too Long', 'Description must be less than 500 characters.');
-      return;
+      validationErrors.push('Description must be less than 500 characters.');
     }
 
-    // Validate tags
+    // Tags validation
     const processedTags = tags
       .split(',')
       .map((tag) => tag.trim())
       .filter(Boolean);
+
     if (processedTags.length > 10) {
-      Alert.alert('Too Many Tags', 'Please use no more than 10 tags.');
-      return;
+      validationErrors.push('Please use no more than 10 tags.');
     }
 
-    // Check for overly long tags
     const invalidTag = processedTags.find((tag) => tag.length > 50);
     if (invalidTag) {
-      Alert.alert(
-        'Tag Too Long',
+      validationErrors.push(
         `Tag "${invalidTag}" is too long. Tags must be less than 50 characters.`
       );
+    }
+
+    // Show all validation errors if any exist
+    if (validationErrors.length > 0) {
+      Alert.alert('Validation Error', validationErrors.join('\n\n'), [{ text: 'OK' }]);
       return;
     }
 
@@ -155,19 +146,17 @@ export default function ExpenseDetailsScreen() {
     try {
       // Prepare expense data
       const expenseData = {
-        amount: parsedAmount,
+        amount: parseFloat(amount),
         currency: currency.code,
-        category: category.key,
+        category: category?.key || 'other',
         date,
         description: description.trim(),
         tags: processedTags,
-        tripId: isGeneral ? undefined : tripId, // Optional tripId
+        tripId: isGeneral ? undefined : tripId,
       };
 
       // Save to store
       const savedExpense = addExpense(expenseData);
-
-      console.log('Expense saved successfully:', savedExpense);
 
       // Navigate to success screen with expense data
       const tripName = !isGeneral && tripId ? trips.find((t) => t.id === tripId)?.name : '';
@@ -175,27 +164,25 @@ export default function ExpenseDetailsScreen() {
       router.push({
         pathname: '/expenses/add/success',
         params: {
-          amount: parsedAmount.toString(),
+          amount: amount,
           currency: currency.code,
-          category: category.key,
+          category: category?.key || 'other',
           description: description.trim(),
           tripName: tripName || '',
           isGeneral: isGeneral.toString(),
         },
       });
     } catch (error) {
-      console.error('Error saving expense:', error);
+      const errorMessage =
+        error instanceof Error
+          ? error.message
+          : 'Failed to save expense. Please check your connection and try again.';
 
-      // Navigate to error screen with details
       router.push({
         pathname: '/expenses/add/error',
         params: {
-          errorMessage:
-            error instanceof Error
-              ? error.message
-              : 'Failed to save expense. Please check your connection and try again.',
-          // Include basic expense data for context (no sensitive info)
-          amount: parsedAmount.toString(),
+          errorMessage,
+          amount: amount,
           category: category?.key || '',
         },
       });

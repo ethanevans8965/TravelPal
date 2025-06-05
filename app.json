@@ -8,12 +8,20 @@
     "scheme": "myapp",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
+    "backgroundColor": "#ffffff",
+    "primaryColor": "#ffffff",
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "statusBarStyle": "auto",
+      "backgroundColor": "#ffffff"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
+        "backgroundColor": "#ffffff"
+      },
+      "statusBar": {
+        "barStyle": "dark-content",
         "backgroundColor": "#ffffff"
       }
     },

@@ -108,7 +108,7 @@ export default function SmartInsightsWidget() {
           type: 'trend',
           title: `${trend.category} Trend`,
           description: `${Math.abs(trend.percentage).toFixed(0)}% ${trend.trend === 'up' ? 'increase' : 'decrease'} this month`,
-          icon: trend.trend === 'up' ? 'trending-up' : 'trending-down',
+          icon: trend.trend === 'up' ? 'arrow-up' : 'arrow-down',
           color: trend.trend === 'up' ? '#F59E0B' : '#10B981',
           priority: 3,
         });

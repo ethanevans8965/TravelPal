@@ -13,6 +13,7 @@ import { FontAwesome } from '@expo/vector-icons';
 import { useRouter, usePathname } from 'expo-router';
 import * as Haptics from 'expo-haptics';
 import { LinearGradient } from 'expo-linear-gradient';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 const { width: screenWidth } = Dimensions.get('window');
 
@@ -47,6 +48,7 @@ const NavigationBar: React.FC<NavigationBarProps> = ({
 }) => {
   const router = useRouter();
   const pathname = usePathname();
+  const insets = useSafeAreaInsets();
 
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [activeIndex, setActiveIndex] = useState(0);
@@ -174,7 +176,7 @@ const NavigationBar: React.FC<NavigationBarProps> = ({
   });
 
   return (
-    <View style={styles.navigationContainer}>
+    <View style={[styles.navigationContainer, { paddingBottom: Math.max(insets.bottom, 24) }]}>
       {/* Menu Backdrop */}
       {isMenuOpen && <Animated.View style={[styles.menuBackdrop, { opacity: fadeAnim }]} />}
 
@@ -200,14 +202,14 @@ const NavigationBar: React.FC<NavigationBarProps> = ({
               start={{ x: 0, y: 0 }}
               end={{ x: 1, y: 1 }}
             >
-              <FontAwesome name="credit-card" size={20} color="#FFFFFF" />
-              <Text style={styles.menuItemText}>Add Expense</Text>
+              <FontAwesome name="money" size={20} color="#FFFFFF" />
+              <Text style={styles.menuItemText}>Log Expense</Text>
             </LinearGradient>
           </TouchableOpacity>
 
           <TouchableOpacity
             style={[styles.menuItem, { backgroundColor: '#10B981' }]}
-            onPress={() => handleMenuAction(() => onNewTripPress?.())}
+            onPress={() => handleMenuAction(() => router.push('/trip/create/trip-name'))}
             activeOpacity={0.8}
           >
             <LinearGradient
@@ -223,7 +225,7 @@ const NavigationBar: React.FC<NavigationBarProps> = ({
 
           <TouchableOpacity
             style={[styles.menuItem, { backgroundColor: '#F59E0B' }]}
-            onPress={() => handleMenuAction(() => {})}
+            onPress={() => handleMenuAction(() => console.log('Budget item pressed'))}
             activeOpacity={0.8}
           >
             <LinearGradient
@@ -310,9 +312,9 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     alignItems: 'center',
-    paddingBottom: Platform.OS === 'ios' ? 34 : 24,
     paddingHorizontal: 20,
     zIndex: 100,
+    backgroundColor: '#ffffff',
   },
   menuBackdrop: {
     position: 'absolute',

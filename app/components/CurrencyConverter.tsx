@@ -193,51 +193,40 @@ export default function CurrencyConverter() {
   const isAmountValid = amount.trim() !== '' && !isNaN(Number(amount));
 
   const handleConvert = () => {
-    console.log('Convert pressed');
-    console.log('Rates object:', rates);
-    console.log('From currency:', fromCurrency, 'To currency:', toCurrency);
-    if (!rates) return;
+    if (!rates) {
+      Alert.alert('Error', 'Exchange rates not available. Please try again later.');
+      return;
+    }
+
     const amt = parseFloat(amount);
     if (isNaN(amt)) {
       setConverted('');
       return;
     }
+
     try {
       if (fromCurrency === toCurrency) {
         setConverted(amount);
         return;
       }
-      console.log('Rate for', fromCurrency, ':', rates[fromCurrency]);
-      console.log('Rate for', toCurrency, ':', rates[toCurrency]);
-      if (!rates[fromCurrency] || !rates[toCurrency]) throw new Error('Currency not supported');
+
+      if (!rates[fromCurrency] || !rates[toCurrency]) {
+        throw new Error('Selected currency not supported');
+      }
+
       let result = 0;
       if (fromCurrency === 'USD') {
         result = amt * rates[toCurrency];
-        console.log('USD to', toCurrency, ':', amt, '*', rates[toCurrency], '=', result);
       } else if (toCurrency === 'USD') {
         result = amt / rates[fromCurrency];
-        console.log(fromCurrency, 'to USD:', amt, '/', rates[fromCurrency], '=', result);
       } else {
         result = (amt / rates[fromCurrency]) * rates[toCurrency];
-        console.log(
-          fromCurrency,
-          'to',
-          toCurrency,
-          ':',
-          amt,
-          '/',
-          rates[fromCurrency],
-          '*',
-          rates[toCurrency],
-          '=',
-          result
-        );
       }
-      console.log('Final result:', result);
+
       setConverted(result.toFixed(2));
-    } catch (e: any) {
-      console.log('Conversion error:', e.message);
-      Alert.alert('Error', e.message || 'Conversion error');
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : 'An unexpected error occurred';
+      Alert.alert('Conversion Error', errorMessage);
       setConverted('');
     }
   };

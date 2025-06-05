@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Alert } from 'react-native';
 import { useRouter, useLocalSearchParams } from 'expo-router';
 import { FontAwesome } from '@expo/vector-icons';
 import { useAppContext } from '../../context';
@@ -43,6 +43,17 @@ export default function BudgetPlanningReviewScreen() {
 
   const handleSaveTrip = () => {
     try {
+      // Validate required fields
+      if (!params.tripName || !params.country) {
+        Alert.alert('Missing Information', 'Please provide both trip name and destination.');
+        return;
+      }
+
+      if (!params.startDate || !params.endDate) {
+        Alert.alert('Missing Dates', 'Please select both start and end dates for your trip.');
+        return;
+      }
+
       // Create location first
       const locationData = {
         name: params.country as string,
@@ -64,7 +75,7 @@ export default function BudgetPlanningReviewScreen() {
         },
         startDate: params.startDate as string,
         endDate: params.endDate as string,
-        budgetMethod: 'total-budget' as const, // Use existing type
+        budgetMethod: 'total-budget' as const,
         travelStyle: params.travelStyle as 'Budget' | 'Mid-range' | 'Luxury',
         totalBudget: totalBudgetAmount || undefined,
         dailyBudget: dailyBudgetAmount,
@@ -76,13 +87,26 @@ export default function BudgetPlanningReviewScreen() {
       // Save trip
       addTrip(tripData);
 
-      console.log('Trip saved successfully:', tripData);
-
-      // Navigate back to trips list
-      router.push('/trips');
+      // Show success message
+      Alert.alert('Success', 'Your trip has been created successfully!', [
+        {
+          text: 'OK',
+          onPress: () => router.push('/trips'),
+        },
+      ]);
     } catch (error) {
-      console.error('Error saving trip:', error);
-      // TODO: Show error message to user
+      const errorMessage = error instanceof Error ? error.message : 'Failed to create trip';
+      Alert.alert('Error', errorMessage, [
+        {
+          text: 'Try Again',
+          style: 'default',
+        },
+        {
+          text: 'Go Back',
+          onPress: () => router.back(),
+          style: 'cancel',
+        },
+      ]);
     }
   };
 

@@ -89,13 +89,18 @@ export default function BudgetPlanningDailyScreen() {
     }
   }, [confirmedDailyBudget]);
 
-  const updateCategoryValue = (categoryId: keyof typeof categoryConfig, newValue: number) => {
-    setCategories((prev) =>
-      prev.map((cat) =>
-        cat.id === categoryId ? { ...cat, dailyValue: Math.round(newValue) } : cat
-      )
-    );
-    setError('');
+  const updateCategoryValue = (categoryId: string, value: number) => {
+    const newCategories = categories.map((cat) => {
+      if (cat.id === categoryId) {
+        // Ensure value is within reasonable bounds
+        const validatedValue = Math.max(0, Math.min(value, confirmedDailyBudget * 2));
+        return { ...cat, dailyValue: validatedValue };
+      }
+      return cat;
+    });
+
+    setCategories(newCategories);
+    setError(''); // Clear any previous errors
   };
 
   const getAllocatedTotal = () => {
@@ -108,36 +113,49 @@ export default function BudgetPlanningDailyScreen() {
   };
 
   const handleContinue = () => {
-    const allocatedTotal = getAllocatedTotal();
-
-    if (confirmedDailyBudget <= 0) {
-      setError('Please enter a valid daily budget amount');
+    // Validate total allocation
+    if (allocatedTotal > confirmedDailyBudget) {
+      setError(
+        `Your allocated amount ($${allocatedTotal}) exceeds your daily budget ($${confirmedDailyBudget})`
+      );
       return;
     }
 
-    if (allocatedTotal <= 0) {
-      setError('Please allocate at least some budget to continue');
+    // Validate minimum allocation
+    const unallocatedAmount = confirmedDailyBudget - allocatedTotal;
+    if (unallocatedAmount > 0) {
+      setError(`You still have $${unallocatedAmount} left to allocate in your daily budget`);
       return;
     }
 
-    // Convert categories to the format expected by the next screen
-    const categoryValues = categories.reduce(
-      (acc, cat) => {
-        acc[cat.id] = cat.dailyValue;
+    // Validate category allocations
+    const emptyCategories = categories.filter((cat) => cat.dailyValue === 0);
+    if (emptyCategories.length > 0) {
+      setError(
+        `Please allocate some budget to: ${emptyCategories.map((cat) => cat.name).join(', ')}`
+      );
+      return;
+    }
+
+    // Prepare category data for the next screen
+    const categoryData = categories.reduce(
+      (acc, category) => {
+        acc[category.id] = category.dailyValue;
         return acc;
       },
       {} as Record<string, number>
     );
 
+    // Navigate to review screen
     router.push({
-      pathname: '/trip/create/budget-planning-dates',
+      pathname: '/trip/create/budget-planning-review',
       params: {
         tripName,
         country,
         totalBudget: totalBudgetAmount?.toString() || undefined,
         travelStyle,
         dailyBudget: confirmedDailyBudget.toString(),
-        categories: JSON.stringify(categoryValues),
+        categories: JSON.stringify(categoryData),
       },
     } as any);
   };
@@ -234,7 +252,7 @@ export default function BudgetPlanningDailyScreen() {
                   maximumValue={Math.max(confirmedDailyBudget, 100)}
                   step={5}
                   value={category.dailyValue}
-                  onValueChange={(value) => updateCategoryValue(category.id, value)}
+                  onValueChange={(value) => updateCategoryValue(category.id.toString(), value)}
                   minimumTrackTintColor={category.color}
                   maximumTrackTintColor="#E5E5E5"
                   thumbTintColor={category.color}

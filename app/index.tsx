@@ -1,6 +1,7 @@
 import React, { useState, useCallback } from 'react';
 import { View, Text, StyleSheet, ScrollView, RefreshControl, TouchableOpacity } from 'react-native';
 import { FontAwesome } from '@expo/vector-icons';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useAppContext } from './context';
 import { useExpenseStore } from './stores/expenseStore';
 import { useTripStore } from './stores/tripStore';
@@ -22,6 +23,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 export default function Dashboard() {
   const { trips, expenses } = useAppContext();
   const router = useRouter();
+  const insets = useSafeAreaInsets();
   const [refreshing, setRefreshing] = useState(false);
 
   // Store access for performance-critical operations
@@ -163,7 +165,10 @@ export default function Dashboard() {
       >
         {/* Modern Header */}
         <PageTransition transitionType="slideUp" duration={600}>
-          <LinearGradient colors={['#057B8C', '#0EA5E9']} style={styles.header}>
+          <LinearGradient
+            colors={['#057B8C', '#0EA5E9']}
+            style={[styles.header, { paddingTop: insets.top + 16 }]}
+          >
             <View style={styles.headerContent}>
               <View style={styles.headerMain}>
                 <Text style={styles.headerGreeting}>{getGreeting()}!</Text>
@@ -315,7 +320,6 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   header: {
-    paddingTop: 60,
     paddingBottom: 32,
     paddingHorizontal: 24,
     borderBottomLeftRadius: 24,
