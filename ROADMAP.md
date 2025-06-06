@@ -16,6 +16,7 @@
 - ✅ **Modern home screen redesign** with interactive widgets
 - ✅ **Enhanced navigation system** with smooth animations
 - ✅ **Page transitions** with loading states and skeletons
+- ✅ **Past date support** for trip creation and expense tracking
 - ✅ **220+ commits** of continuous development
 
 ---

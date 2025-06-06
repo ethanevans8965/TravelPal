@@ -70,7 +70,7 @@ export default function DateSelector({ label, value, onChange, minimumDate }: Da
               selectedDayColor="#43cea2"
               selectedDayTextColor="#FFFFFF"
               dayShape="circle"
-              minDate={minimumDate || new Date()}
+              minDate={minimumDate}
               textStyle={{
                 fontFamily: undefined,
                 color: '#1A2A36',

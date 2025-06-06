@@ -46,7 +46,7 @@ export default function DateSelectionScreen() {
     <View style={styles.container}>
       <View style={styles.content}>
         <Text style={styles.title}>Trip Dates</Text>
-        <Text style={styles.subtitle}>When are you planning to travel? (Optional)</Text>
+        <Text style={styles.subtitle}>When did/do/will you travel? (Optional)</Text>
 
         <CalendarPicker
           allowRangeSelection={true}
@@ -60,26 +60,23 @@ export default function DateSelectionScreen() {
           selectedRangeStartStyle={{ borderTopLeftRadius: 999, borderBottomLeftRadius: 999 }}
           selectedRangeEndStyle={{ borderTopRightRadius: 999, borderBottomRightRadius: 999 }}
           dayShape="circle"
-          minDate={new Date()} // Cannot select dates before today
+          // Allow past dates for travel records
           // Hide month/year navigation titles if needed, can customize later
-          // previousTitle="" 
-          // nextTitle="" 
+          // previousTitle=""
+          // nextTitle=""
           // monthTitleStyle={{ display: 'none' }}
           // yearTitleStyle={{ display: 'none' }}
         />
 
         <View style={styles.buttonContainer}>
-          <TouchableOpacity
-            style={styles.skipButton}
-            onPress={handleSkip}
-          >
+          <TouchableOpacity style={styles.skipButton} onPress={handleSkip}>
             <Text style={styles.skipButtonText}>Skip</Text>
           </TouchableOpacity>
 
           <TouchableOpacity
             style={[
               styles.nextButton,
-              !selectedStartDate && !selectedEndDate && styles.nextButtonDisabled
+              !selectedStartDate && !selectedEndDate && styles.nextButtonDisabled,
             ]}
             onPress={handleNext}
             disabled={!selectedStartDate && !selectedEndDate}
@@ -175,4 +172,4 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     marginRight: 8,
   },
-}); 
+});

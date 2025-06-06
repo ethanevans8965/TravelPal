@@ -189,7 +189,7 @@ export default function DatesScreen() {
           <Text style={styles.subtitle}>
             {budgetMethod === 'total-budget'
               ? `You can afford up to ${maxTripLength} days with your budget`
-              : 'Choose your travel dates'}
+              : 'Choose your travel dates (past, present, or future)'}
           </Text>
         </View>
 
@@ -206,7 +206,6 @@ export default function DatesScreen() {
             selectedRangeStartStyle={{ borderTopLeftRadius: 999, borderBottomLeftRadius: 999 }}
             selectedRangeEndStyle={{ borderTopRightRadius: 999, borderBottomRightRadius: 999 }}
             dayShape="circle"
-            minDate={new Date()}
             customDatesStyles={getCustomDatesStyles()}
           />
 

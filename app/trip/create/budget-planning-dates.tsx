@@ -205,7 +205,7 @@ export default function BudgetPlanningDatesScreen() {
     if (maxTripLength) {
       return `With your budget, you can afford up to ${maxTripLength} days`;
     }
-    return 'Choose your travel dates';
+    return 'Choose your travel dates (past, present, or future)';
   };
 
   return (
@@ -229,7 +229,6 @@ export default function BudgetPlanningDatesScreen() {
             selectedRangeStartStyle={{ borderTopLeftRadius: 999, borderBottomLeftRadius: 999 }}
             selectedRangeEndStyle={{ borderTopRightRadius: 999, borderBottomRightRadius: 999 }}
             dayShape="circle"
-            minDate={new Date()}
             customDatesStyles={getCustomDatesStyles()}
           />
 
