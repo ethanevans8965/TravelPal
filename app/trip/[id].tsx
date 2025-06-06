@@ -1,5 +1,14 @@
-import React, { useState } from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
+import React, { useState, useRef, useEffect } from 'react';
+import {
+  View,
+  Text,
+  StyleSheet,
+  ScrollView,
+  TouchableOpacity,
+  Modal,
+  Alert,
+  Animated,
+} from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useAppContext } from '../context';
 import { useExpenseStore } from '../stores/expenseStore';
@@ -7,7 +16,7 @@ import { FontAwesome } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import SwipeableExpenseCard from '../components/SwipeableExpenseCard';
 
-type TripTab = 'overview' | 'expenses' | 'budget';
+type TripTab = 'overview' | 'budget';
 
 const getStatusColor = (status: string) => {
   switch (status) {
@@ -51,10 +60,19 @@ const getCategoryEmoji = (category: string) => {
 
 export default function TripDetailScreen() {
   const { id } = useLocalSearchParams();
-  const { trips, locations } = useAppContext();
+  const { trips, locations, deleteTrip } = useAppContext();
   const { getExpensesByTripId, deleteExpense } = useExpenseStore();
   const router = useRouter();
   const [activeTab, setActiveTab] = useState<TripTab>('overview');
+  const [expensesModalVisible, setExpensesModalVisible] = useState(false);
+  const [menuVisible, setMenuVisible] = useState(false);
+
+  // Animation refs
+  const fadeAnim = useRef(new Animated.Value(0)).current;
+  const editMenuAnim = useRef(new Animated.Value(0)).current;
+  const deleteMenuAnim = useRef(new Animated.Value(0)).current;
+  const editScaleAnim = useRef(new Animated.Value(0.8)).current;
+  const deleteScaleAnim = useRef(new Animated.Value(0.8)).current;
 
   const trip = trips.find((t) => t.id === id);
   const location = locations.find((l) => l.id === trip?.locationId);
@@ -115,14 +133,262 @@ export default function TripDetailScreen() {
     });
   };
 
+  const handleViewAllExpenses = () => {
+    setExpensesModalVisible(true);
+  };
+
+  const showMenu = () => {
+    setMenuVisible(true);
+
+    // Reset animations
+    fadeAnim.setValue(0);
+    editMenuAnim.setValue(-20);
+    deleteMenuAnim.setValue(-20);
+    editScaleAnim.setValue(0.8);
+    deleteScaleAnim.setValue(0.8);
+
+    // Start animations with staggered timing
+    Animated.parallel([
+      Animated.timing(fadeAnim, {
+        toValue: 1,
+        duration: 200,
+        useNativeDriver: true,
+      }),
+      Animated.sequence([
+        Animated.delay(50),
+        Animated.parallel([
+          Animated.spring(editMenuAnim, {
+            toValue: 0,
+            tension: 100,
+            friction: 8,
+            useNativeDriver: true,
+          }),
+          Animated.spring(editScaleAnim, {
+            toValue: 1,
+            tension: 100,
+            friction: 8,
+            useNativeDriver: true,
+          }),
+        ]),
+      ]),
+      Animated.sequence([
+        Animated.delay(100),
+        Animated.parallel([
+          Animated.spring(deleteMenuAnim, {
+            toValue: 0,
+            tension: 100,
+            friction: 8,
+            useNativeDriver: true,
+          }),
+          Animated.spring(deleteScaleAnim, {
+            toValue: 1,
+            tension: 100,
+            friction: 8,
+            useNativeDriver: true,
+          }),
+        ]),
+      ]),
+    ]).start();
+  };
+
+  const hideMenu = () => {
+    Animated.parallel([
+      Animated.timing(fadeAnim, {
+        toValue: 0,
+        duration: 150,
+        useNativeDriver: true,
+      }),
+      Animated.timing(editMenuAnim, {
+        toValue: -10,
+        duration: 150,
+        useNativeDriver: true,
+      }),
+      Animated.timing(deleteMenuAnim, {
+        toValue: -10,
+        duration: 150,
+        useNativeDriver: true,
+      }),
+      Animated.timing(editScaleAnim, {
+        toValue: 0.9,
+        duration: 150,
+        useNativeDriver: true,
+      }),
+      Animated.timing(deleteScaleAnim, {
+        toValue: 0.9,
+        duration: 150,
+        useNativeDriver: true,
+      }),
+    ]).start(() => {
+      setMenuVisible(false);
+    });
+  };
+
+  const handleEditTrip = () => {
+    hideMenu();
+    setTimeout(() => {
+      Alert.alert('Edit Trip', 'Edit trip functionality will be implemented soon!');
+    }, 200);
+  };
+
+  const handleDeleteTrip = () => {
+    hideMenu();
+
+    setTimeout(() => {
+      Alert.alert(
+        'Delete Trip',
+        `Are you sure you want to delete "${trip.name}"? This will also delete all associated expenses and cannot be undone.`,
+        [
+          {
+            text: 'Cancel',
+            style: 'cancel',
+          },
+          {
+            text: 'Delete',
+            style: 'destructive',
+            onPress: () => {
+              try {
+                deleteTrip(trip.id);
+                Alert.alert('Success', 'Trip deleted successfully!', [
+                  {
+                    text: 'OK',
+                    onPress: () => router.push('/trips'),
+                  },
+                ]);
+              } catch (error) {
+                Alert.alert('Error', 'Failed to delete trip. Please try again.');
+                console.error('Error deleting trip:', error);
+              }
+            },
+          },
+        ]
+      );
+    }, 200);
+  };
+
+  const renderExpensesModal = () => (
+    <Modal
+      visible={expensesModalVisible}
+      animationType="slide"
+      presentationStyle="pageSheet"
+      onRequestClose={() => setExpensesModalVisible(false)}
+    >
+      <View style={styles.modalContainer}>
+        <View style={styles.modalHeader}>
+          <TouchableOpacity
+            style={styles.modalCloseButton}
+            onPress={() => setExpensesModalVisible(false)}
+          >
+            <Text style={styles.modalCloseText}>Close</Text>
+          </TouchableOpacity>
+          <Text style={styles.modalTitle}>Trip Expenses</Text>
+          <TouchableOpacity style={styles.modalAddButton} onPress={handleAddExpense}>
+            <FontAwesome name="plus" size={16} color="#0EA5E9" />
+          </TouchableOpacity>
+        </View>
+
+        <ScrollView style={styles.modalContent}>
+          {tripExpenses.length > 0 ? (
+            <View style={styles.expensesList}>
+              {tripExpenses.map((expense, index) => (
+                <SwipeableExpenseCard
+                  key={expense.id}
+                  expense={expense}
+                  onEdit={handleEditExpense}
+                  onDelete={deleteExpense}
+                  getTripName={() => trip.name}
+                  formatDate={formatDate}
+                  getCategoryEmoji={getCategoryEmoji}
+                  isLast={index === tripExpenses.length - 1}
+                />
+              ))}
+            </View>
+          ) : (
+            <View style={styles.modalEmptyState}>
+              <FontAwesome name="file-text-o" size={48} color="#C7C7CC" />
+              <Text style={styles.emptyStateTitle}>No expenses yet</Text>
+              <Text style={styles.emptyStateText}>Start tracking expenses for this trip</Text>
+              <TouchableOpacity style={styles.addButton} onPress={handleAddExpense}>
+                <FontAwesome name="plus" size={16} color="#fff" />
+                <Text style={styles.addButtonText}>Add First Expense</Text>
+              </TouchableOpacity>
+            </View>
+          )}
+        </ScrollView>
+      </View>
+    </Modal>
+  );
+
+  const renderActionMenu = () => (
+    <Modal visible={menuVisible} transparent={true} animationType="none" onRequestClose={hideMenu}>
+      <TouchableOpacity style={styles.menuOverlay} activeOpacity={1} onPress={hideMenu}>
+        <Animated.View
+          style={[
+            styles.menuBackdrop,
+            {
+              opacity: fadeAnim,
+            },
+          ]}
+        />
+
+        <View style={styles.menuPositioner}>
+          <Animated.View
+            style={[
+              styles.menuItem,
+              {
+                opacity: fadeAnim,
+                transform: [{ translateY: editMenuAnim }, { scale: editScaleAnim }],
+              },
+            ]}
+          >
+            <TouchableOpacity style={styles.menuItemButton} onPress={handleEditTrip}>
+              <View style={styles.menuItemContent}>
+                <View style={[styles.menuItemIcon, { backgroundColor: '#0EA5E9' }]}>
+                  <FontAwesome name="edit" size={16} color="#FFFFFF" />
+                </View>
+                <Text style={styles.menuItemText}>Edit Trip</Text>
+              </View>
+            </TouchableOpacity>
+          </Animated.View>
+
+          <Animated.View
+            style={[
+              styles.menuItem,
+              {
+                opacity: fadeAnim,
+                transform: [{ translateY: deleteMenuAnim }, { scale: deleteScaleAnim }],
+              },
+            ]}
+          >
+            <TouchableOpacity style={styles.menuItemButton} onPress={handleDeleteTrip}>
+              <View style={styles.menuItemContent}>
+                <View style={[styles.menuItemIcon, { backgroundColor: '#FF3B30' }]}>
+                  <FontAwesome name="trash" size={16} color="#FFFFFF" />
+                </View>
+                <Text style={[styles.menuItemText, { color: '#FF3B30' }]}>Delete Trip</Text>
+              </View>
+            </TouchableOpacity>
+          </Animated.View>
+        </View>
+      </TouchableOpacity>
+    </Modal>
+  );
+
   const renderOverviewTab = () => (
     <ScrollView style={styles.tabContent}>
       {/* Trip Header */}
       <LinearGradient colors={['#43cea2', '#185a9d']} style={styles.tripHeader}>
-        <Text style={styles.tripName}>{trip.name}</Text>
-        <Text style={styles.destination}>{destinationName}</Text>
-        <View style={[styles.statusBadge, { backgroundColor: getStatusColor(trip.status) }]}>
-          <Text style={styles.statusText}>{trip.status}</Text>
+        <View style={styles.tripHeaderContent}>
+          <View style={styles.tripHeaderText}>
+            <Text style={styles.tripName}>{trip.name}</Text>
+            <Text style={styles.destination}>{destinationName}</Text>
+            <View style={[styles.statusBadge, { backgroundColor: getStatusColor(trip.status) }]}>
+              <Text style={styles.statusText}>{trip.status}</Text>
+            </View>
+          </View>
+
+          <TouchableOpacity style={styles.menuButton} onPress={showMenu}>
+            <FontAwesome name="ellipsis-v" size={20} color="#FFFFFF" />
+          </TouchableOpacity>
         </View>
       </LinearGradient>
 
@@ -181,7 +447,7 @@ export default function TripDetailScreen() {
       <View style={styles.section}>
         <View style={styles.sectionHeader}>
           <Text style={styles.sectionTitle}>Recent Expenses</Text>
-          <TouchableOpacity onPress={() => setActiveTab('expenses')}>
+          <TouchableOpacity onPress={handleViewAllExpenses}>
             <Text style={styles.viewAllText}>View All</Text>
           </TouchableOpacity>
         </View>
@@ -201,45 +467,6 @@ export default function TripDetailScreen() {
           <Text style={styles.emptyText}>No expenses recorded for this trip yet</Text>
         )}
       </View>
-    </ScrollView>
-  );
-
-  const renderExpensesTab = () => (
-    <ScrollView style={styles.tabContent}>
-      <View style={styles.expensesHeader}>
-        <Text style={styles.expensesTitle}>Trip Expenses</Text>
-        <TouchableOpacity style={styles.addButton} onPress={handleAddExpense}>
-          <FontAwesome name="plus" size={16} color="#fff" />
-          <Text style={styles.addButtonText}>Add Expense</Text>
-        </TouchableOpacity>
-      </View>
-
-      {tripExpenses.length > 0 ? (
-        <View style={styles.expensesList}>
-          {tripExpenses.map((expense, index) => (
-            <SwipeableExpenseCard
-              key={expense.id}
-              expense={expense}
-              onEdit={handleEditExpense}
-              onDelete={deleteExpense}
-              getTripName={() => trip.name}
-              formatDate={formatDate}
-              getCategoryEmoji={getCategoryEmoji}
-              isLast={index === tripExpenses.length - 1}
-            />
-          ))}
-        </View>
-      ) : (
-        <View style={styles.emptyState}>
-          <FontAwesome name="file-text-o" size={48} color="#C7C7CC" />
-          <Text style={styles.emptyStateTitle}>No expenses yet</Text>
-          <Text style={styles.emptyStateText}>Start tracking expenses for this trip</Text>
-          <TouchableOpacity style={styles.addButton} onPress={handleAddExpense}>
-            <FontAwesome name="plus" size={16} color="#fff" />
-            <Text style={styles.addButtonText}>Add First Expense</Text>
-          </TouchableOpacity>
-        </View>
-      )}
     </ScrollView>
   );
 
@@ -306,8 +533,6 @@ export default function TripDetailScreen() {
     switch (activeTab) {
       case 'overview':
         return renderOverviewTab();
-      case 'expenses':
-        return renderExpensesTab();
       case 'budget':
         return renderBudgetTab();
       default:
@@ -329,15 +554,6 @@ export default function TripDetailScreen() {
         </TouchableOpacity>
 
         <TouchableOpacity
-          style={[styles.tab, activeTab === 'expenses' && styles.activeTab]}
-          onPress={() => setActiveTab('expenses')}
-        >
-          <Text style={[styles.tabText, activeTab === 'expenses' && styles.activeTabText]}>
-            Expenses ({tripExpenses.length})
-          </Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity
           style={[styles.tab, activeTab === 'budget' && styles.activeTab]}
           onPress={() => setActiveTab('budget')}
         >
@@ -349,6 +565,12 @@ export default function TripDetailScreen() {
 
       {/* Tab Content */}
       {renderTabContent()}
+
+      {/* Expenses Modal */}
+      {renderExpensesModal()}
+
+      {/* Action Menu */}
+      {renderActionMenu()}
     </View>
   );
 }
@@ -414,6 +636,14 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 16,
     elevation: 8,
+  },
+  tripHeaderContent: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  tripHeaderText: {
+    flexDirection: 'column',
   },
   tripName: {
     fontSize: 28,
@@ -702,5 +932,125 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginTop: 50,
     fontWeight: '600',
+  },
+
+  // Modal
+  modalContainer: {
+    flex: 1,
+    backgroundColor: '#F8FAFC',
+  },
+  modalHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: 20,
+    paddingTop: 60,
+    paddingBottom: 20,
+    backgroundColor: '#FFFFFF',
+    borderBottomWidth: 1,
+    borderBottomColor: '#E5E5E5',
+  },
+  modalCloseButton: {
+    paddingVertical: 8,
+    paddingHorizontal: 12,
+  },
+  modalCloseText: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#8E8E93',
+  },
+  modalTitle: {
+    fontSize: 18,
+    fontWeight: '700',
+    color: '#1E293B',
+  },
+  modalAddButton: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: '#F1F5F9',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  modalContent: {
+    flex: 1,
+    padding: 16,
+  },
+  modalEmptyState: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 80,
+    paddingHorizontal: 24,
+    backgroundColor: '#FFFFFF',
+    borderRadius: 16,
+    marginTop: 40,
+    shadowColor: '#0F172A',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.04,
+    shadowRadius: 8,
+    elevation: 4,
+  },
+
+  // Action Menu
+  menuOverlay: {
+    flex: 1,
+    justifyContent: 'flex-start',
+    alignItems: 'flex-end',
+    paddingTop: 160, // Position menu below the header
+    paddingRight: 20,
+  },
+  menuBackdrop: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: 'rgba(0,0,0,0.3)',
+  },
+  menuPositioner: {
+    alignItems: 'flex-end',
+  },
+  menuItem: {
+    backgroundColor: '#FFFFFF',
+    borderRadius: 12,
+    marginBottom: 8,
+    shadowColor: '#0F172A',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.15,
+    shadowRadius: 12,
+    elevation: 8,
+    minWidth: 160,
+  },
+  menuItemButton: {
+    paddingVertical: 14,
+    paddingHorizontal: 16,
+  },
+  menuItemContent: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  menuItemIcon: {
+    width: 28,
+    height: 28,
+    borderRadius: 14,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginRight: 12,
+  },
+  menuItemText: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#1E293B',
+    flex: 1,
+  },
+  menuButton: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: 'rgba(255,255,255,0.15)',
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderWidth: 1,
+    borderColor: 'rgba(255,255,255,0.2)',
   },
 });

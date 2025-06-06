@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Alert } from 'react-native';
 import { useAppContext } from './context';
 import { FontAwesome } from '@expo/vector-icons';
 import { Trip } from './types';
 import { useRouter } from 'expo-router';
+import SwipeableTripCard from './components/SwipeableTripCard';
 
 // Date-dependent status calculation
 const getDateBasedStatus = (trip: Trip): 'planning' | 'upcoming' | 'active' | 'completed' => {
@@ -92,85 +93,6 @@ const calculateTripLength = (startDate?: string, endDate?: string) => {
   return diffDays;
 };
 
-const TripCard = ({ trip }: { trip: Trip }) => {
-  const { locations } = useAppContext();
-  const router = useRouter();
-  const location = locations.find((l) => l.id === trip.locationId);
-  const tripLength = calculateTripLength(trip.startDate, trip.endDate);
-  const dateBasedStatus = getDateBasedStatus(trip);
-
-  // Get destination name from location, trip.destination, or fallback
-  const destinationName =
-    location?.country ||
-    location?.name ||
-    trip.destination?.country ||
-    trip.destination?.name ||
-    'Unknown destination';
-
-  const handleTripPress = () => {
-    router.push(`/trip/${trip.id}` as any);
-  };
-
-  return (
-    <TouchableOpacity style={styles.tripCard} onPress={handleTripPress}>
-      <View style={styles.tripHeader}>
-        <View style={styles.tripTitleContainer}>
-          <Text style={styles.tripName}>{trip.name}</Text>
-          <Text style={styles.tripDestination}>{destinationName}</Text>
-        </View>
-        <View style={[styles.statusBadge, { backgroundColor: getStatusColor(dateBasedStatus) }]}>
-          <Text style={styles.statusText}>{getStatusDisplayText(dateBasedStatus)}</Text>
-        </View>
-      </View>
-
-      <View style={styles.tripDetails}>
-        <View style={styles.detailRow}>
-          <FontAwesome name="calendar" size={14} color="#8E8E93" />
-          <Text style={styles.detailText}>
-            {formatDate(trip.startDate)} - {formatDate(trip.endDate)}
-            {tripLength && ` (${tripLength} days)`}
-          </Text>
-        </View>
-
-        {trip.travelStyle && (
-          <View style={styles.detailRow}>
-            <FontAwesome name="star" size={14} color={getTravelStyleColor(trip.travelStyle)} />
-            <Text style={styles.detailText}>{trip.travelStyle} Travel</Text>
-          </View>
-        )}
-
-        {trip.dailyBudget && (
-          <View style={styles.detailRow}>
-            <FontAwesome name="money" size={14} color="#8E8E93" />
-            <Text style={styles.detailText}>
-              ${trip.dailyBudget}/day
-              {trip.totalBudget && ` (Total: $${trip.totalBudget.toLocaleString()})`}
-            </Text>
-          </View>
-        )}
-      </View>
-
-      <View style={styles.tripFooter}>
-        <View style={styles.categoryIndicators}>
-          {Object.entries(trip.categories)
-            .slice(0, 3)
-            .map(([category, amount]) => (
-              <View key={category} style={styles.categoryDot}>
-                <Text style={styles.categoryAmount}>${amount}</Text>
-                <Text style={styles.categoryName}>{category}</Text>
-              </View>
-            ))}
-          {Object.keys(trip.categories).length > 3 && (
-            <Text style={styles.moreCategories}>
-              +{Object.keys(trip.categories).length - 3} more
-            </Text>
-          )}
-        </View>
-      </View>
-    </TouchableOpacity>
-  );
-};
-
 type FilterTab = 'upcoming' | 'planning' | 'completed';
 
 const TabSelector = ({
@@ -220,7 +142,7 @@ const TabSelector = ({
 };
 
 export default function TripsScreen() {
-  const { trips } = useAppContext();
+  const { trips, deleteTrip } = useAppContext();
   const router = useRouter();
   const [activeTab, setActiveTab] = useState<FilterTab>('upcoming');
 
@@ -249,6 +171,51 @@ export default function TripsScreen() {
 
   const handleAddNewTrip = () => {
     router.push('/trip/create/trip-name' as any);
+  };
+
+  const handleEditTrip = (trip: Trip) => {
+    // TODO: Navigate to edit trip screen
+    Alert.alert('Edit Trip', 'Edit trip functionality will be implemented soon!');
+  };
+
+  const handleDeleteTrip = (tripId: string) => {
+    const tripToDelete = trips.find((t) => t.id === tripId);
+    if (!tripToDelete) return;
+
+    try {
+      deleteTrip(tripId);
+      Alert.alert('Success', `"${tripToDelete.name}" has been deleted successfully!`);
+    } catch (error) {
+      Alert.alert('Error', 'Failed to delete trip. Please try again.');
+      console.error('Error deleting trip:', error);
+    }
+  };
+
+  const renderTripCard = (trip: Trip, index: number, array: Trip[]) => {
+    const location = undefined; // We'll get this from the context if needed
+    const tripLength = calculateTripLength(trip.startDate, trip.endDate);
+    const dateBasedStatus = getDateBasedStatus(trip);
+
+    // Get destination name from location, trip.destination, or fallback
+    const destinationName =
+      trip.destination?.country || trip.destination?.name || 'Unknown destination';
+
+    return (
+      <SwipeableTripCard
+        key={trip.id}
+        trip={trip}
+        onEdit={handleEditTrip}
+        onDelete={handleDeleteTrip}
+        destinationName={destinationName}
+        tripLength={tripLength}
+        dateBasedStatus={dateBasedStatus}
+        getStatusColor={getStatusColor}
+        getStatusDisplayText={getStatusDisplayText}
+        getTravelStyleColor={getTravelStyleColor}
+        formatDate={formatDate}
+        isLast={index === array.length - 1}
+      />
+    );
   };
 
   return (
@@ -290,9 +257,7 @@ export default function TripsScreen() {
                   </Text>
                 </View>
                 <View style={styles.tripsContainer}>
-                  {activeTrips.map((trip) => (
-                    <TripCard key={trip.id} trip={trip} />
-                  ))}
+                  {activeTrips.map((trip, index) => renderTripCard(trip, index, activeTrips))}
                 </View>
               </View>
             )}
@@ -316,9 +281,7 @@ export default function TripsScreen() {
                   </View>
                 ) : (
                   <View style={styles.tripsContainer}>
-                    {filteredTrips.map((trip) => (
-                      <TripCard key={trip.id} trip={trip} />
-                    ))}
+                    {filteredTrips.map((trip, index) => renderTripCard(trip, index, filteredTrips))}
                   </View>
                 )}
               </>
@@ -459,93 +422,5 @@ const styles = StyleSheet.create({
   tripsContainer: {
     paddingHorizontal: 24,
     paddingBottom: 24,
-  },
-  tripCard: {
-    backgroundColor: '#F2F2F7',
-    borderRadius: 16,
-    padding: 20,
-    marginBottom: 16,
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.1,
-    shadowRadius: 8,
-    elevation: 4,
-  },
-  tripHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'flex-start',
-    marginBottom: 16,
-  },
-  tripTitleContainer: {
-    flex: 1,
-    marginRight: 12,
-  },
-  tripName: {
-    fontSize: 20,
-    fontWeight: '600',
-    color: '#1C1C1E',
-    marginBottom: 4,
-  },
-  tripDestination: {
-    fontSize: 15,
-    color: '#8E8E93',
-  },
-  statusBadge: {
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: 12,
-  },
-  statusText: {
-    color: '#FFFFFF',
-    fontSize: 12,
-    fontWeight: '600',
-    textTransform: 'capitalize',
-  },
-  tripDetails: {
-    marginBottom: 16,
-  },
-  detailRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 8,
-  },
-  detailText: {
-    fontSize: 15,
-    color: '#1C1C1E',
-    marginLeft: 8,
-    flex: 1,
-  },
-  tripFooter: {
-    borderTopWidth: 1,
-    borderTopColor: '#E5E5E5',
-    paddingTop: 16,
-  },
-  categoryIndicators: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    flexWrap: 'wrap',
-  },
-  categoryDot: {
-    marginRight: 16,
-    marginBottom: 4,
-  },
-  categoryAmount: {
-    fontSize: 14,
-    fontWeight: '600',
-    color: '#1C1C1E',
-  },
-  categoryName: {
-    fontSize: 12,
-    color: '#8E8E93',
-    textTransform: 'capitalize',
-  },
-  moreCategories: {
-    fontSize: 12,
-    color: '#8E8E93',
-    fontStyle: 'italic',
   },
 });
