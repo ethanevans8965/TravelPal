@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, TextInput, TouchableOpacity, ScrollView } from 'react-native';
 import { useRouter, useLocalSearchParams } from 'expo-router';
 import { FontAwesome } from '@expo/vector-icons';
-import { calculateDailyBudget, getDefaultCategoryPercentages } from '../utils/countryData';
+import { calculateDailyBudget, getDefaultCategoryPercentages } from '../../utils/countryData';
 
 export default function DailyBudgetScreen() {
   const router = useRouter();

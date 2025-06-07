@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Alert } from 'react-native';
 import { useRouter, useLocalSearchParams } from 'expo-router';
 import { FontAwesome } from '@expo/vector-icons';
-import { CategoryPercentages } from '../utils/countryData';
+import { CategoryPercentages } from '../../utils/countryData';
 
 const categories = [
   { id: 'accommodation', name: 'Accommodation', icon: 'bed' },
@@ -41,13 +41,12 @@ export default function CategoriesScreen() {
   const [percentages, setPercentages] = useState<CategoryPercentages>(defaultPercentages);
 
   const handleNext = () => {
-    router.push({
-      pathname: '/trip/create/budget-planning-review',
-      params: {
-        ...params,
-        categories: JSON.stringify(percentages),
-      },
-    });
+    // Legacy flow - redirect to trips list or show alert
+    Alert.alert(
+      'Legacy Flow',
+      'This is part of the old trip creation flow. Please use the new trip creation from the home screen.',
+      [{ text: 'Go to Trips', onPress: () => router.push('/trips') }]
+    );
   };
 
   const adjustPercentage = (categoryId: string, adjustment: number) => {

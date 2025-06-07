@@ -3,7 +3,7 @@ import { View, Text, StyleSheet, TouchableOpacity, ScrollView, TextInput } from 
 import { useRouter, useLocalSearchParams } from 'expo-router';
 import { FontAwesome } from '@expo/vector-icons';
 import Slider from '@react-native-community/slider';
-import { getDefaultCategoryPercentages, calculateDailyBudget } from '../../utils/countryData';
+import { getDefaultCategoryPercentages, calculateDailyBudget } from '../../../../utils/countryData';
 
 type CategoryData = {
   id: keyof typeof categoryConfig;
