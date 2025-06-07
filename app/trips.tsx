@@ -2,30 +2,10 @@ import React, { useState } from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Alert } from 'react-native';
 import { useAppContext } from './context';
 import { FontAwesome } from '@expo/vector-icons';
-import { Trip } from './types';
+import { Trip, TripStatus } from './types';
 import { useRouter } from 'expo-router';
 import SwipeableTripCard from './components/SwipeableTripCard';
-
-// Date-dependent status calculation
-const getDateBasedStatus = (trip: Trip): 'planning' | 'upcoming' | 'active' | 'completed' => {
-  const now = new Date();
-  const start = trip.startDate ? new Date(trip.startDate) : null;
-  const end = trip.endDate ? new Date(trip.endDate) : null;
-
-  // If no dates are set, it's still in planning
-  if (!start || !end) return 'planning';
-
-  // Set time to start of day for accurate comparison
-  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-  const startDate = new Date(start.getFullYear(), start.getMonth(), start.getDate());
-  const endDate = new Date(end.getFullYear(), end.getMonth(), end.getDate());
-
-  if (today < startDate) return 'upcoming';
-  if (today >= startDate && today <= endDate) return 'active';
-  if (today > endDate) return 'completed';
-
-  return 'planning';
-};
+import { getStatusConfig } from './utils/tripStatus';
 
 const getTravelStyleColor = (travelStyle?: string) => {
   switch (travelStyle?.toLowerCase()) {
@@ -37,40 +17,6 @@ const getTravelStyleColor = (travelStyle?: string) => {
       return '#AF52DE';
     default:
       return '#8E8E93';
-  }
-};
-
-const getStatusColor = (status: string) => {
-  switch (status) {
-    case 'planning':
-      return '#007AFF';
-    case 'upcoming':
-      return '#FF9500';
-    case 'active':
-      return '#34C759';
-    case 'completed':
-      return '#8E8E93';
-    case 'cancelled':
-      return '#FF3B30';
-    default:
-      return '#8E8E93';
-  }
-};
-
-const getStatusDisplayText = (status: string) => {
-  switch (status) {
-    case 'planning':
-      return 'Planning';
-    case 'upcoming':
-      return 'Upcoming';
-    case 'active':
-      return 'Active';
-    case 'completed':
-      return 'Completed';
-    case 'cancelled':
-      return 'Cancelled';
-    default:
-      return 'Unknown';
   }
 };
 
@@ -93,7 +39,8 @@ const calculateTripLength = (startDate?: string, endDate?: string) => {
   return diffDays;
 };
 
-type FilterTab = 'upcoming' | 'planning' | 'completed';
+// Filter tabs based on new status system (excluding cancelled from main tabs)
+type FilterTab = 'draft' | 'planning' | 'ready' | 'active' | 'completed';
 
 const TabSelector = ({
   activeTab,
@@ -105,17 +52,24 @@ const TabSelector = ({
   tripCounts: Record<FilterTab, number>;
 }) => {
   const tabs: { id: FilterTab; label: string; icon: string }[] = [
-    { id: 'upcoming', label: 'Upcoming', icon: 'clock-o' },
-    { id: 'planning', label: 'Planning', icon: 'edit' },
-    { id: 'completed', label: 'Completed', icon: 'check' },
+    { id: 'draft', label: 'Draft', icon: 'edit' },
+    { id: 'planning', label: 'Planning', icon: 'calendar' },
+    { id: 'ready', label: 'Ready', icon: 'check-circle' },
+    { id: 'active', label: 'Active', icon: 'map-marker' },
+    { id: 'completed', label: 'Completed', icon: 'camera' },
   ];
 
   return (
-    <View style={styles.tabRow}>
+    <ScrollView
+      horizontal
+      showsHorizontalScrollIndicator={false}
+      style={styles.tabScrollView}
+      contentContainerStyle={styles.tabScrollContent}
+    >
       {tabs.map((tab) => (
         <TouchableOpacity
           key={tab.id}
-          style={[styles.tab, activeTab === tab.id && styles.activeTab, { flex: 1 }]}
+          style={[styles.tab, activeTab === tab.id && styles.activeTab]}
           onPress={() => onTabChange(tab.id)}
         >
           <FontAwesome
@@ -137,37 +91,41 @@ const TabSelector = ({
           )}
         </TouchableOpacity>
       ))}
-    </View>
+    </ScrollView>
   );
 };
 
 export default function TripsScreen() {
-  const { trips, deleteTrip } = useAppContext();
+  const { trips, deleteTrip, calculateTripStatus, calculateCompletionPercentage } = useAppContext();
   const router = useRouter();
-  const [activeTab, setActiveTab] = useState<FilterTab>('upcoming');
+  const [activeTab, setActiveTab] = useState<FilterTab>('planning');
 
-  // Separate active trips from others
-  const activeTrips = trips.filter((trip) => getDateBasedStatus(trip) === 'active');
-  const otherTrips = trips.filter((trip) => getDateBasedStatus(trip) !== 'active');
+  // Calculate current status for each trip and group them
+  const tripsWithStatus = trips.map((trip) => ({
+    ...trip,
+    currentStatus: calculateTripStatus(trip),
+    completionPercentage: calculateCompletionPercentage(trip),
+  }));
 
-  // Calculate trip counts by status (excluding active trips)
-  const tripCounts = otherTrips.reduce(
+  // Calculate trip counts by status (excluding cancelled)
+  const tripCounts = tripsWithStatus.reduce(
     (counts, trip) => {
-      const status = getDateBasedStatus(trip);
-      if (status !== 'active') {
-        counts[status as FilterTab] += 1;
+      if (trip.currentStatus !== 'cancelled') {
+        counts[trip.currentStatus as FilterTab] += 1;
       }
       return counts;
     },
     {
-      upcoming: 0,
+      draft: 0,
       planning: 0,
+      ready: 0,
+      active: 0,
       completed: 0,
     } as Record<FilterTab, number>
   );
 
-  // Filter trips based on active tab (excluding active trips)
-  const filteredTrips = otherTrips.filter((trip) => getDateBasedStatus(trip) === activeTab);
+  // Filter trips based on active tab
+  const filteredTrips = tripsWithStatus.filter((trip) => trip.currentStatus === activeTab);
 
   const handleAddNewTrip = () => {
     router.push('/trip/create' as any);
@@ -191,14 +149,17 @@ export default function TripsScreen() {
     }
   };
 
-  const renderTripCard = (trip: Trip, index: number, array: Trip[]) => {
+  const renderTripCard = (trip: any, index: number, array: any[]) => {
     const location = undefined; // We'll get this from the context if needed
     const tripLength = calculateTripLength(trip.startDate, trip.endDate);
-    const dateBasedStatus = getDateBasedStatus(trip);
+    const statusConfig = getStatusConfig(trip.currentStatus);
 
     // Get destination name from location, trip.destination, or fallback
-    const destinationName =
-      trip.destination?.country || trip.destination?.name || 'Unknown destination';
+    const destinationName = location?.name || trip.destination?.name || 'Unknown destination';
+
+    // Create helper functions for the old interface
+    const getStatusColor = (status: string) => statusConfig.color;
+    const getStatusDisplayText = (status: string) => statusConfig.label;
 
     return (
       <SwipeableTripCard
@@ -208,7 +169,7 @@ export default function TripsScreen() {
         onDelete={handleDeleteTrip}
         destinationName={destinationName}
         tripLength={tripLength}
-        dateBasedStatus={dateBasedStatus}
+        dateBasedStatus={trip.currentStatus}
         getStatusColor={getStatusColor}
         getStatusDisplayText={getStatusDisplayText}
         getTravelStyleColor={getTravelStyleColor}
@@ -221,72 +182,40 @@ export default function TripsScreen() {
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <View style={styles.headerContent}>
-          <View>
-            <Text style={styles.title}>My Trips</Text>
-            <Text style={styles.subtitle}>
-              {trips.length === 0
-                ? 'Start planning your next adventure!'
-                : `${trips.length} trip${trips.length === 1 ? '' : 's'}`}
-            </Text>
-          </View>
-          <TouchableOpacity style={styles.addButton} onPress={handleAddNewTrip}>
-            <FontAwesome name="plus" size={16} color="#FFFFFF" />
-          </TouchableOpacity>
-        </View>
+        <Text style={styles.title}>My Trips</Text>
+        <Text style={styles.subtitle}>
+          {trips.length} {trips.length === 1 ? 'trip' : 'trips'}
+        </Text>
       </View>
 
-      <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
-        {trips.length === 0 ? (
+      <TouchableOpacity style={styles.addButton} onPress={handleAddNewTrip}>
+        <FontAwesome name="plus" size={20} color="#FFFFFF" />
+      </TouchableOpacity>
+
+      <TabSelector activeTab={activeTab} onTabChange={setActiveTab} tripCounts={tripCounts} />
+
+      <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
+        {filteredTrips.length === 0 ? (
           <View style={styles.emptyState}>
-            <FontAwesome name="plane" size={64} color="#E5E5E5" />
-            <Text style={styles.emptyTitle}>No trips yet</Text>
+            <FontAwesome name="suitcase" size={64} color="#E5E5E5" />
+            <Text style={styles.emptyTitle}>No {activeTab} trips</Text>
             <Text style={styles.emptySubtitle}>
-              Tap the + button to create your first trip and start planning your adventure!
+              {activeTab === 'draft' && 'Start planning your next adventure!'}
+              {activeTab === 'planning' && 'Create a new trip to start planning.'}
+              {activeTab === 'ready' && 'Complete your trip planning to see ready trips here.'}
+              {activeTab === 'active' && 'No trips currently in progress.'}
+              {activeTab === 'completed' && 'Your travel memories will appear here.'}
             </Text>
+            {(activeTab === 'draft' || activeTab === 'planning') && (
+              <TouchableOpacity style={styles.emptyButton} onPress={handleAddNewTrip}>
+                <Text style={styles.emptyButtonText}>Create New Trip</Text>
+              </TouchableOpacity>
+            )}
           </View>
         ) : (
-          <>
-            {/* Active Trips Section */}
-            {activeTrips.length > 0 && (
-              <View style={styles.activeTripsSection}>
-                <View style={styles.sectionHeader}>
-                  <FontAwesome name="plane" size={20} color="#34C759" />
-                  <Text style={styles.sectionTitle}>
-                    Active Trip{activeTrips.length > 1 ? 's' : ''}
-                  </Text>
-                </View>
-                <View style={styles.tripsContainer}>
-                  {activeTrips.map((trip, index) => renderTripCard(trip, index, activeTrips))}
-                </View>
-              </View>
-            )}
-
-            {/* Tabs and Other Trips */}
-            {otherTrips.length > 0 && (
-              <>
-                <TabSelector
-                  activeTab={activeTab}
-                  onTabChange={setActiveTab}
-                  tripCounts={tripCounts}
-                />
-
-                {filteredTrips.length === 0 ? (
-                  <View style={styles.emptyState}>
-                    <FontAwesome name="search" size={64} color="#E5E5E5" />
-                    <Text style={styles.emptyTitle}>No {activeTab} trips</Text>
-                    <Text style={styles.emptySubtitle}>
-                      You don't have any trips in this category yet.
-                    </Text>
-                  </View>
-                ) : (
-                  <View style={styles.tripsContainer}>
-                    {filteredTrips.map((trip, index) => renderTripCard(trip, index, filteredTrips))}
-                  </View>
-                )}
-              </>
-            )}
-          </>
+          <View style={styles.tripsList}>
+            {filteredTrips.map((trip, index, array) => renderTripCard(trip, index, array))}
+          </View>
         )}
       </ScrollView>
     </View>
@@ -296,131 +225,127 @@ export default function TripsScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#FFFFFF',
-  },
-  scrollView: {
-    flex: 1,
+    backgroundColor: '#F8F9FA',
   },
   header: {
-    padding: 24,
-    paddingBottom: 16,
+    padding: 20,
+    paddingTop: 60,
+    backgroundColor: '#FFFFFF',
+    borderBottomWidth: 1,
+    borderBottomColor: '#E5E5E5',
   },
-  headerContent: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'flex-start',
+  title: {
+    fontSize: 32,
+    fontWeight: '700',
+    color: '#333333',
+    marginBottom: 4,
+  },
+  subtitle: {
+    fontSize: 16,
+    color: '#666666',
   },
   addButton: {
-    backgroundColor: '#057B8C',
-    width: 40,
-    height: 40,
-    borderRadius: 20,
+    position: 'absolute',
+    top: 75,
+    right: 20,
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    backgroundColor: '#007AFF',
     justifyContent: 'center',
     alignItems: 'center',
+    zIndex: 1,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 4,
     elevation: 3,
   },
-  title: {
-    fontSize: 32,
-    fontWeight: '700',
-    color: '#1C1C1E',
-    marginBottom: 4,
+  tabScrollView: {
+    maxHeight: 60,
   },
-  subtitle: {
-    fontSize: 17,
-    color: '#8E8E93',
-  },
-  activeTripsSection: {
-    marginBottom: 24,
-  },
-  sectionHeader: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingHorizontal: 24,
-    marginBottom: 16,
-    gap: 8,
-  },
-  sectionTitle: {
-    fontSize: 20,
-    fontWeight: '600',
-    color: '#1C1C1E',
-  },
-  tabRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 16,
-    paddingHorizontal: 12,
-    gap: 8,
+  tabScrollContent: {
+    paddingHorizontal: 20,
+    paddingVertical: 12,
   },
   tab: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'center',
-    paddingVertical: 10,
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    marginRight: 12,
     borderRadius: 20,
-    backgroundColor: '#F2F2F7',
-    marginHorizontal: 0,
-    marginRight: 0,
-    marginLeft: 0,
-    gap: 6,
+    backgroundColor: '#F0F0F0',
+    minWidth: 80,
   },
   activeTab: {
-    backgroundColor: '#057B8C',
+    backgroundColor: '#007AFF',
   },
   tabText: {
     fontSize: 14,
     fontWeight: '600',
     color: '#8E8E93',
+    marginLeft: 6,
   },
   activeTabText: {
     color: '#FFFFFF',
   },
   tabBadge: {
-    backgroundColor: '#FFFFFF',
-    borderRadius: 10,
-    minWidth: 20,
-    height: 20,
-    justifyContent: 'center',
-    alignItems: 'center',
+    marginLeft: 6,
     paddingHorizontal: 6,
+    paddingVertical: 2,
+    borderRadius: 10,
+    backgroundColor: '#FFFFFF',
+    minWidth: 20,
+    alignItems: 'center',
   },
   activeTabBadge: {
-    backgroundColor: 'rgba(255, 255, 255, 0.2)',
+    backgroundColor: 'rgba(255,255,255,0.3)',
   },
   tabBadgeText: {
     fontSize: 12,
     fontWeight: '600',
-    color: '#057B8C',
+    color: '#007AFF',
   },
   activeTabBadgeText: {
     color: '#FFFFFF',
   },
+  content: {
+    flex: 1,
+    padding: 20,
+  },
+  tripsList: {
+    gap: 16,
+  },
   emptyState: {
-    alignItems: 'center',
+    flex: 1,
     justifyContent: 'center',
-    paddingHorizontal: 32,
-    paddingVertical: 64,
-    marginTop: 40,
+    alignItems: 'center',
+    paddingVertical: 60,
   },
   emptyTitle: {
-    fontSize: 24,
+    fontSize: 20,
     fontWeight: '600',
-    color: '#1C1C1E',
+    color: '#333333',
     marginTop: 16,
     marginBottom: 8,
   },
   emptySubtitle: {
-    fontSize: 17,
-    color: '#8E8E93',
+    fontSize: 16,
+    color: '#666666',
     textAlign: 'center',
-    lineHeight: 24,
+    marginBottom: 24,
+    lineHeight: 22,
   },
-  tripsContainer: {
+  emptyButton: {
+    backgroundColor: '#007AFF',
     paddingHorizontal: 24,
-    paddingBottom: 24,
+    paddingVertical: 12,
+    borderRadius: 8,
+  },
+  emptyButtonText: {
+    color: '#FFFFFF',
+    fontSize: 16,
+    fontWeight: '600',
   },
 });

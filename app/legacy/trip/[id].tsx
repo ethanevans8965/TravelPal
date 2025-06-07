@@ -10,11 +10,11 @@ import {
   Animated,
 } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
-import { useAppContext } from '../context';
-import { useExpenseStore } from '../stores/expenseStore';
+import { useAppContext } from '../../context';
+import { useExpenseStore } from '../../stores/expenseStore';
 import { FontAwesome } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
-import SwipeableExpenseCard from '../components/SwipeableExpenseCard';
+import SwipeableExpenseCard from '../../components/SwipeableExpenseCard';
 
 type TripTab = 'overview' | 'budget';
 

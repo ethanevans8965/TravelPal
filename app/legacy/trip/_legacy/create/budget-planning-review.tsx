@@ -2,7 +2,7 @@ import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Alert } from 'react-native';
 import { useRouter, useLocalSearchParams } from 'expo-router';
 import { FontAwesome } from '@expo/vector-icons';
-import { useAppContext } from '../../context';
+import { useAppContext } from '../../../../context';
 import * as Crypto from 'expo-crypto';
 
 const getTravelStyleColor = (travelStyle: string) => {

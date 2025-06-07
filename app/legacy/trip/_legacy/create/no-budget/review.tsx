@@ -2,7 +2,7 @@ import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { useRouter, useLocalSearchParams } from 'expo-router';
 import { FontAwesome } from '@expo/vector-icons';
-import { useAppContext } from '../../../../app/context';
+import { useAppContext } from '../../../../../context';
 
 export default function ReviewTripScreen() {
   const router = useRouter();

@@ -37,6 +37,15 @@ export interface JournalEntry {
   tags?: string[]; // For better organization
 }
 
+// New Smart Auto-Status types
+export type TripStatus = 'draft' | 'planning' | 'ready' | 'active' | 'completed' | 'cancelled';
+
+export interface TripStatusConfig {
+  color: string;
+  icon: string;
+  label: string;
+}
+
 export interface Trip {
   id: string;
   name: string;
@@ -52,9 +61,12 @@ export interface Trip {
   emergencyFundPercentage: number;
   pretrip?: number;
   categories: CategoryPercentages;
-  status: 'planning' | 'active' | 'completed' | 'cancelled';
+  status: TripStatus; // Updated to use new status types
+  manualStatus?: TripStatus; // Optional manual override
   participants?: string[]; // For future social features
   notes?: string;
+  itinerary?: any[]; // For future itinerary items
+  completionPercentage?: number; // Cached completion percentage
 }
 
 export interface AppContextType {
@@ -93,4 +105,8 @@ export interface AppContextType {
   getTripJournalEntries: (tripId: string) => JournalEntry[];
   getLocationExpenses: (locationId: string) => Expense[];
   getLocationJournalEntries: (locationId: string) => JournalEntry[];
+
+  // Trip status utilities
+  calculateTripStatus: (trip: Trip) => TripStatus;
+  calculateCompletionPercentage: (trip: Trip) => number;
 }

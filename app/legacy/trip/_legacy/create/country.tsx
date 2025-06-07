@@ -11,7 +11,7 @@ import {
 } from 'react-native';
 import { useRouter, useLocalSearchParams } from 'expo-router';
 import { FontAwesome } from '@expo/vector-icons';
-import countriesData from '../../../assets/data/all_countries.json';
+import countriesData from '../../../../../assets/data/all_countries.json';
 
 // Get unique list of countries
 const countries = [...new Set(countriesData.map((item) => item.Country))].sort();

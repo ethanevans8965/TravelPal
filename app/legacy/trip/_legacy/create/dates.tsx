@@ -3,7 +3,7 @@ import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Dimensions } from
 import { useRouter, useLocalSearchParams } from 'expo-router';
 import { FontAwesome } from '@expo/vector-icons';
 import CalendarPicker from 'react-native-calendar-picker';
-import { calculateDurationInDays } from '../../utils/dateUtils';
+import { calculateDurationInDays } from '../../../../utils/dateUtils';
 
 export default function DatesScreen() {
   const router = useRouter();

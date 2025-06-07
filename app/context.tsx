@@ -1,10 +1,11 @@
 import React, { createContext, useContext, useState } from 'react';
 import * as Crypto from 'expo-crypto';
-import { AppContextType, Expense, JournalEntry, Trip, Location } from './types';
+import { AppContextType, Expense, JournalEntry, Trip, Location, TripStatus } from './types';
 import { useExpenseStore } from './stores/expenseStore';
 import { useTripStore } from './stores/tripStore';
 import { useLocationStore } from './stores/locationStore';
 import { useUserStore } from './stores/userStore';
+import { calculateTripStatus, calculateCompletionPercentage } from './utils/tripStatus';
 
 const AppContext = createContext<AppContextType | null>(null);
 
@@ -111,6 +112,15 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     return journalEntries.filter((j) => j.locationId === locationId);
   };
 
+  // Trip status utility functions
+  const calculateTripStatusForTrip = (trip: Trip): TripStatus => {
+    return calculateTripStatus(trip);
+  };
+
+  const calculateCompletionPercentageForTrip = (trip: Trip): number => {
+    return calculateCompletionPercentage(trip);
+  };
+
   const value: AppContextType = {
     // Data from Zustand stores (persistent)
     expenses,
@@ -142,6 +152,10 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     getTripJournalEntries,
     getLocationExpenses,
     getLocationJournalEntries,
+
+    // Trip status utilities
+    calculateTripStatus: calculateTripStatusForTrip,
+    calculateCompletionPercentage: calculateCompletionPercentageForTrip,
   };
 
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>;
