@@ -170,7 +170,7 @@ export default function TripsScreen() {
   const filteredTrips = otherTrips.filter((trip) => getDateBasedStatus(trip) === activeTab);
 
   const handleAddNewTrip = () => {
-    router.push('/trip/create/trip-name' as any);
+    router.push('/trip/create' as any);
   };
 
   const handleEditTrip = (trip: Trip) => {

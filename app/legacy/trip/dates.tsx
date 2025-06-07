@@ -53,13 +53,8 @@ export default function DatesScreen() {
       <View style={styles.form}>
         <View style={styles.dateGroup}>
           <Text style={styles.label}>Start Date</Text>
-          <TouchableOpacity
-            style={styles.dateButton}
-            onPress={() => setShowStartPicker(true)}
-          >
-            <Text style={styles.dateText}>
-              {startDate.toLocaleDateString()}
-            </Text>
+          <TouchableOpacity style={styles.dateButton} onPress={() => setShowStartPicker(true)}>
+            <Text style={styles.dateText}>{startDate.toLocaleDateString()}</Text>
             <FontAwesome name="calendar" size={20} color="#666666" />
           </TouchableOpacity>
           {showStartPicker && (
@@ -75,13 +70,8 @@ export default function DatesScreen() {
 
         <View style={styles.dateGroup}>
           <Text style={styles.label}>End Date</Text>
-          <TouchableOpacity
-            style={styles.dateButton}
-            onPress={() => setShowEndPicker(true)}
-          >
-            <Text style={styles.dateText}>
-              {endDate.toLocaleDateString()}
-            </Text>
+          <TouchableOpacity style={styles.dateButton} onPress={() => setShowEndPicker(true)}>
+            <Text style={styles.dateText}>{endDate.toLocaleDateString()}</Text>
             <FontAwesome name="calendar" size={20} color="#666666" />
           </TouchableOpacity>
           {showEndPicker && (
@@ -95,10 +85,7 @@ export default function DatesScreen() {
           )}
         </View>
 
-        <TouchableOpacity
-          style={styles.nextButton}
-          onPress={handleNext}
-        >
+        <TouchableOpacity style={styles.nextButton} onPress={handleNext}>
           <Text style={styles.nextButtonText}>Next</Text>
           <FontAwesome name="arrow-right" size={16} color="#FFFFFF" />
         </TouchableOpacity>
@@ -164,4 +151,4 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     marginRight: 8,
   },
-}); 
+});

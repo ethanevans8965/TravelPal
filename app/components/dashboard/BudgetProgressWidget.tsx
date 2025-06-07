@@ -148,7 +148,7 @@ export default function BudgetProgressWidget({ showCategories = true }: BudgetPr
           </Text>
           <TouchableOpacity
             style={styles.createTripButton}
-            onPress={() => router.push('/trip/create/trip-name' as any)}
+            onPress={() => router.push('/trip/create' as any)}
           >
             <Text style={styles.createTripButtonText}>Create Trip</Text>
           </TouchableOpacity>

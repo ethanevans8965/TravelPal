@@ -264,7 +264,7 @@ export default function Dashboard() {
 
                 <TouchableOpacity
                   style={[styles.quickActionCard, { backgroundColor: '#10B981' }]}
-                  onPress={() => router.push('/trip/create/trip-name' as any)}
+                  onPress={() => router.push('/trip/create' as any)}
                 >
                   <FontAwesome name="plane" size={24} color="#FFFFFF" />
                   <Text style={styles.quickActionText}>New Trip</Text>

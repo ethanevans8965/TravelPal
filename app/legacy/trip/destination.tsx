@@ -49,10 +49,7 @@ export default function DestinationScreen() {
         </View>
 
         <TouchableOpacity
-          style={[
-            styles.nextButton,
-            (!destination || !country) && styles.nextButtonDisabled,
-          ]}
+          style={[styles.nextButton, (!destination || !country) && styles.nextButtonDisabled]}
           onPress={handleNext}
           disabled={!destination || !country}
         >
@@ -119,4 +116,4 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     marginRight: 8,
   },
-}); 
+});

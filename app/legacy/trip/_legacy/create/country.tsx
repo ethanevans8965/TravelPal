@@ -1,11 +1,20 @@
 import React, { useState, useMemo } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, TextInput, FlatList, KeyboardAvoidingView, Platform } from 'react-native';
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  TextInput,
+  FlatList,
+  KeyboardAvoidingView,
+  Platform,
+} from 'react-native';
 import { useRouter, useLocalSearchParams } from 'expo-router';
 import { FontAwesome } from '@expo/vector-icons';
 import countriesData from '../../../assets/data/all_countries.json';
 
 // Get unique list of countries
-const countries = [...new Set(countriesData.map(item => item.Country))].sort();
+const countries = [...new Set(countriesData.map((item) => item.Country))].sort();
 
 export default function CountrySelectionScreen() {
   const router = useRouter();
@@ -14,9 +23,7 @@ export default function CountrySelectionScreen() {
   const [selectedCountry, setSelectedCountry] = useState('');
 
   const filteredCountries = useMemo(() => {
-    return countries.filter(country =>
-      country.toLowerCase().includes(searchQuery.toLowerCase())
-    );
+    return countries.filter((country) => country.toLowerCase().includes(searchQuery.toLowerCase()));
   }, [searchQuery]);
 
   const handleNext = () => {
@@ -33,21 +40,13 @@ export default function CountrySelectionScreen() {
 
   const renderCountryItem = ({ item }: { item: string }) => (
     <TouchableOpacity
-      style={[
-        styles.countryItem,
-        selectedCountry === item && styles.countryItemSelected,
-      ]}
+      style={[styles.countryItem, selectedCountry === item && styles.countryItemSelected]}
       onPress={() => setSelectedCountry(item)}
     >
-      <Text style={[
-        styles.countryText,
-        selectedCountry === item && styles.countryTextSelected,
-      ]}>
+      <Text style={[styles.countryText, selectedCountry === item && styles.countryTextSelected]}>
         {item}
       </Text>
-      {selectedCountry === item && (
-        <FontAwesome name="check" size={16} color="#FFFFFF" />
-      )}
+      {selectedCountry === item && <FontAwesome name="check" size={16} color="#FFFFFF" />}
     </TouchableOpacity>
   );
 
@@ -74,16 +73,13 @@ export default function CountrySelectionScreen() {
         <FlatList
           data={filteredCountries}
           renderItem={renderCountryItem}
-          keyExtractor={item => item}
+          keyExtractor={(item) => item}
           style={styles.countryList}
           showsVerticalScrollIndicator={false}
         />
 
         <TouchableOpacity
-          style={[
-            styles.nextButton,
-            !selectedCountry && styles.nextButtonDisabled,
-          ]}
+          style={[styles.nextButton, !selectedCountry && styles.nextButtonDisabled]}
           onPress={handleNext}
           disabled={!selectedCountry}
         >
@@ -171,4 +167,4 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     marginRight: 8,
   },
-}); 
+});

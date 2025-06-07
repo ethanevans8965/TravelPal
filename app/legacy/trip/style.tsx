@@ -58,10 +58,7 @@ export default function StyleScreen() {
         {travelStyles.map((style) => (
           <TouchableOpacity
             key={style.id}
-            style={[
-              styles.option,
-              selectedStyle === style.id && styles.optionSelected,
-            ]}
+            style={[styles.option, selectedStyle === style.id && styles.optionSelected]}
             onPress={() => setSelectedStyle(style.id)}
           >
             <View style={styles.optionIcon}>
@@ -79,10 +76,7 @@ export default function StyleScreen() {
       </View>
 
       <TouchableOpacity
-        style={[
-          styles.nextButton,
-          !selectedStyle && styles.nextButtonDisabled,
-        ]}
+        style={[styles.nextButton, !selectedStyle && styles.nextButtonDisabled]}
         onPress={handleNext}
         disabled={!selectedStyle}
       >
@@ -166,4 +160,4 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     marginRight: 8,
   },
-}); 
+});

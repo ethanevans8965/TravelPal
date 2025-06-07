@@ -26,7 +26,9 @@ export default function BudgetScreen() {
   };
 
   const tripDuration = calculateTripDuration();
-  const totalBudget = dailyBudget ? parseFloat(dailyBudget) * tripDuration * parseInt(numTravelers) : 0;
+  const totalBudget = dailyBudget
+    ? parseFloat(dailyBudget) * tripDuration * parseInt(numTravelers)
+    : 0;
   const emergencyFund = totalBudget * (parseFloat(emergencyPercentage) / 100);
   const grandTotal = totalBudget + parseFloat(preTripExpenses) + emergencyFund;
 
@@ -117,10 +119,7 @@ export default function BudgetScreen() {
         </View>
 
         <TouchableOpacity
-          style={[
-            styles.nextButton,
-            (!dailyBudget || !numTravelers) && styles.nextButtonDisabled,
-          ]}
+          style={[styles.nextButton, (!dailyBudget || !numTravelers) && styles.nextButtonDisabled]}
           onPress={handleNext}
           disabled={!dailyBudget || !numTravelers}
         >
@@ -225,4 +224,4 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     marginRight: 8,
   },
-}); 
+});

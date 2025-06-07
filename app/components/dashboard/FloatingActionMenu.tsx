@@ -41,7 +41,7 @@ export default function FloatingActionMenu({ style }: FloatingActionMenuProps) {
       label: 'Plan Trip',
       icon: 'plane',
       color: '#10B981',
-      route: '/trip/create/trip-name',
+      route: '/trip/create',
     },
     {
       id: 'add-location',

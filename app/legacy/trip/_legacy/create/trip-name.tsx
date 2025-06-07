@@ -1,5 +1,13 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, TextInput, TouchableOpacity, KeyboardAvoidingView, Platform } from 'react-native';
+import {
+  View,
+  Text,
+  StyleSheet,
+  TextInput,
+  TouchableOpacity,
+  KeyboardAvoidingView,
+  Platform,
+} from 'react-native';
 import { useRouter } from 'expo-router';
 import { FontAwesome } from '@expo/vector-icons';
 
@@ -19,7 +27,7 @@ export default function TripNameScreen() {
   };
 
   return (
-    <KeyboardAvoidingView 
+    <KeyboardAvoidingView
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       style={styles.container}
     >
@@ -42,10 +50,7 @@ export default function TripNameScreen() {
           </View>
 
           <TouchableOpacity
-            style={[
-              styles.nextButton,
-              !tripName.trim() && styles.nextButtonDisabled,
-            ]}
+            style={[styles.nextButton, !tripName.trim() && styles.nextButtonDisabled]}
             onPress={handleNext}
             disabled={!tripName.trim()}
           >
@@ -117,4 +122,4 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     marginRight: 8,
   },
-}); 
+});

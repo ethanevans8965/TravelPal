@@ -227,7 +227,7 @@ const NavigationBar: React.FC<NavigationBarProps> = ({
 
           <TouchableOpacity
             style={[styles.menuItem, { backgroundColor: '#10B981' }]}
-            onPress={() => handleMenuAction(() => router.push('/trip/create/trip-name'))}
+            onPress={() => handleMenuAction(() => router.push('/trip/create'))}
             activeOpacity={0.8}
           >
             <LinearGradient

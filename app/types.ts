@@ -66,7 +66,7 @@ export interface AppContextType {
   baseCurrency: string;
 
   // Trip operations
-  addTrip: (trip: Omit<Trip, 'id'>) => void;
+  addTrip: (trip: Omit<Trip, 'id'>) => Trip;
   updateTrip: (trip: Trip) => void;
   deleteTrip: (tripId: string) => void;
 

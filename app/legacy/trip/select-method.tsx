@@ -14,10 +14,7 @@ export default function SelectMethodScreen() {
       <Text style={styles.title}>Create New Trip</Text>
       <Text style={styles.subtitle}>Let's start planning your adventure</Text>
 
-      <TouchableOpacity
-        style={styles.newTripButton}
-        onPress={handleNewTrip}
-      >
+      <TouchableOpacity style={styles.newTripButton} onPress={handleNewTrip}>
         <FontAwesome name="plus" size={24} color="#FFFFFF" />
         <Text style={styles.newTripButtonText}>New Trip</Text>
       </TouchableOpacity>
@@ -57,4 +54,4 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     marginLeft: 8,
   },
-}); 
+});

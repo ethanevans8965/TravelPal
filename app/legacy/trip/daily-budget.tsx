@@ -30,18 +30,21 @@ export default function DailyBudgetScreen() {
 
   useEffect(() => {
     if (country && travelStyle) {
-      const dailyBudget = calculateDailyBudget(country, travelStyle as 'Budget' | 'Mid-range' | 'Luxury');
+      const dailyBudget = calculateDailyBudget(
+        country,
+        travelStyle as 'Budget' | 'Mid-range' | 'Luxury'
+      );
       setEstimatedDailyBudget(dailyBudget);
-      
+
       // Calculate total budget
       const numTravelersValue = parseInt(numTravelers) || 1;
       const preTripExpensesValue = parseFloat(preTripExpenses) || 0;
       const emergencyPercentageValue = parseFloat(emergencyPercentage) || 10;
-      
+
       const dailyExpenses = dailyBudget * tripDuration * numTravelersValue;
       const emergencyFund = dailyExpenses * (emergencyPercentageValue / 100);
       const total = dailyExpenses + preTripExpensesValue + emergencyFund;
-      
+
       setTotalBudget(total);
     }
   }, [country, travelStyle, numTravelers, preTripExpenses, emergencyPercentage, tripDuration]);
@@ -141,7 +144,8 @@ export default function DailyBudgetScreen() {
         <View style={styles.summaryRow}>
           <Text style={styles.summaryLabel}>Daily Expenses:</Text>
           <Text style={styles.summaryValue}>
-            ${(estimatedDailyBudget * parseInt(numTravelers || '1')).toFixed(2)} × {tripDuration} days
+            ${(estimatedDailyBudget * parseInt(numTravelers || '1')).toFixed(2)} × {tripDuration}{' '}
+            days
           </Text>
         </View>
         <View style={styles.summaryRow}>
@@ -151,7 +155,13 @@ export default function DailyBudgetScreen() {
         <View style={styles.summaryRow}>
           <Text style={styles.summaryLabel}>Emergency Fund:</Text>
           <Text style={styles.summaryValue}>
-            ${((estimatedDailyBudget * tripDuration * parseInt(numTravelers || '1')) * (parseFloat(emergencyPercentage || '10') / 100)).toFixed(2)}
+            $
+            {(
+              estimatedDailyBudget *
+              tripDuration *
+              parseInt(numTravelers || '1') *
+              (parseFloat(emergencyPercentage || '10') / 100)
+            ).toFixed(2)}
           </Text>
         </View>
         <View style={[styles.summaryRow, styles.totalRow]}>
@@ -326,4 +336,4 @@ const styles = StyleSheet.create({
     color: '#FFFFFF',
     marginRight: 8,
   },
-}); 
+});

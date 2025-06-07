@@ -15,10 +15,7 @@ export default function NewTripScreen() {
       <Text style={styles.title}>Create New Trip</Text>
       <Text style={styles.subtitle}>Let's plan your next adventure</Text>
 
-      <TouchableOpacity
-        style={styles.startButton}
-        onPress={startTripCreation}
-      >
+      <TouchableOpacity style={styles.startButton} onPress={startTripCreation}>
         <FontAwesome name="plane" size={24} color="#FFFFFF" />
         <Text style={styles.startButtonText}>Start Planning</Text>
       </TouchableOpacity>
@@ -69,4 +66,4 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     marginLeft: 12,
   },
-}); 
+});

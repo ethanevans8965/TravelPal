@@ -11,7 +11,7 @@ export default function RootLayout() {
   const router = useRouter();
 
   const handleNewTripPress = () => {
-    router.push('/trip/create/trip-name' as any);
+    router.push('/trip/create' as any);
   };
 
   // Always show the FAB and keep it active
