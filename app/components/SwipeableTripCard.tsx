@@ -105,7 +105,7 @@ export default function SwipeableTripCard({
   const handleTripPress = () => {
     // Only navigate if the card isn't swiped
     if (lastOffset.current === 0) {
-      router.push(`/trip/${trip.id}` as any);
+      router.push(`/trip/${trip.id}/dashboard` as any);
     } else {
       // Reset position if swiped
       Animated.timing(translateX, {
