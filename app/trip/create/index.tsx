@@ -1,50 +1,102 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, ScrollView, KeyboardAvoidingView, Platform } from 'react-native';
+import {
+  View,
+  Text,
+  StyleSheet,
+  ScrollView,
+  KeyboardAvoidingView,
+  Platform,
+  TouchableOpacity,
+} from 'react-native';
 import { useRouter } from 'expo-router';
 import { useAppContext } from '../../context';
 import Button from '../../components/ui/Button';
 import Input from '../../components/ui/Input';
 import Card from '../../components/ui/Card';
+import MultiCountryModal from '../../components/MultiCountryModal';
+import DateSelectionModal, { DateMode, DateSelection } from '../../components/DateSelectionModal';
 
 export default function CreateTripScreen() {
   const router = useRouter();
   const { addTrip, addLocation } = useAppContext();
   const [tripName, setTripName] = useState('');
-  const [destination, setDestination] = useState('');
-  const [error, setError] = useState('');
+  const [countries, setCountries] = useState<string[]>([]);
+  const [nameError, setNameError] = useState('');
+  const [countryError, setCountryError] = useState('');
+  const [countryModalVisible, setCountryModalVisible] = useState(false);
+  const [dateSelection, setDateSelection] = useState<DateSelection>({
+    mode: 'no-dates',
+  });
+  const [dateModalVisible, setDateModalVisible] = useState(false);
+
+  const getDateDisplayText = () => {
+    if (dateSelection.mode === 'no-dates') {
+      return 'Flexible dates';
+    }
+    if (dateSelection.mode === 'start-only') {
+      return dateSelection.startDate
+        ? `Departing ${new Date(dateSelection.startDate).toLocaleDateString('en-US', {
+            month: 'short',
+            day: 'numeric',
+            year: 'numeric',
+          })}`
+        : 'Open-ended trip';
+    }
+    if (dateSelection.mode === 'both') {
+      if (dateSelection.startDate && dateSelection.endDate) {
+        const start = new Date(dateSelection.startDate);
+        const end = new Date(dateSelection.endDate);
+        const days = Math.ceil((end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24));
+        return `${start.toLocaleDateString('en-US', {
+          month: 'short',
+          day: 'numeric',
+        })} - ${end.toLocaleDateString('en-US', {
+          month: 'short',
+          day: 'numeric',
+          year: 'numeric',
+        })} (${days} days)`;
+      }
+      return 'Fixed dates';
+    }
+    return 'Select dates...';
+  };
 
   const handleCreateTrip = () => {
     if (!tripName.trim()) {
-      setError('Trip name is required');
+      setNameError('Trip name is required');
+      return;
+    }
+
+    if (countries.length === 0) {
+      setCountryError('Please select at least one country');
       return;
     }
 
     try {
-      // Create location if destination is provided
-      let locationData = null;
-      if (destination.trim()) {
-        locationData = {
-          name: destination.trim(),
-          country: destination.trim(),
-          timezone: 'UTC',
-        };
-        addLocation(locationData);
-      }
+      // Use first country as primary location for now
+      const primaryCountry = countries[0];
+
+      const locationData = {
+        name: primaryCountry,
+        country: primaryCountry,
+        timezone: 'UTC',
+      };
+      addLocation(locationData);
 
       // Create trip with minimal required data
       const tripData = {
         name: tripName.trim(),
-        locationId: locationData ? 'temp-location-id' : 'temp-location-id', // Required field
-        destination: locationData
-          ? {
-              id: 'temp-location-id',
-              name: destination.trim(),
-              country: destination.trim(),
-              timezone: 'UTC',
-            }
-          : undefined,
-        startDate: undefined,
-        endDate: undefined,
+        locationId: 'temp-location-id', // Placeholder until actual location ID system
+        destination: {
+          id: 'temp-location-id',
+          name: primaryCountry,
+          country: primaryCountry,
+          timezone: 'UTC',
+        },
+        countries: countries,
+        dateMode: dateSelection.mode,
+        startDate: dateSelection.startDate,
+        endDate: dateSelection.endDate,
         budgetMethod: 'no-budget' as const,
         emergencyFundPercentage: 0,
         categories: {
@@ -64,7 +116,7 @@ export default function CreateTripScreen() {
       router.push(`/trip/${newTrip.id}/dashboard`);
     } catch (error) {
       console.error('Error creating trip:', error);
-      setError('Failed to create trip. Please try again.');
+      setNameError('Failed to create trip. Please try again.');
     }
   };
 
@@ -88,22 +140,38 @@ export default function CreateTripScreen() {
             value={tripName}
             onChangeText={(text) => {
               setTripName(text);
-              if (error) setError('');
+              if (nameError) setNameError('');
             }}
-            error={error}
+            error={nameError}
             leftIcon="map"
             maxLength={50}
             autoFocus
           />
 
-          <Input
-            label="Destination (Optional)"
-            placeholder="e.g., France, Japan"
-            value={destination}
-            onChangeText={setDestination}
-            leftIcon="globe"
-            helpText="You can add or change this later"
-          />
+          {/* Countries Selector */}
+          <TouchableOpacity onPress={() => setCountryModalVisible(true)}>
+            <Input
+              label="Countries Visited"
+              placeholder="Select countries..."
+              value={countries.join(', ')}
+              editable={false}
+              leftIcon="globe"
+              helpText={countryError || 'Select one or more countries'}
+              error={countryError}
+            />
+          </TouchableOpacity>
+
+          {/* Date Selection */}
+          <TouchableOpacity onPress={() => setDateModalVisible(true)}>
+            <Input
+              label="Travel Dates"
+              placeholder="Select dates..."
+              value={getDateDisplayText()}
+              editable={false}
+              leftIcon="calendar"
+              helpText="Choose your travel timeline"
+            />
+          </TouchableOpacity>
         </Card>
 
         <View style={styles.infoCard}>
@@ -126,10 +194,29 @@ export default function CreateTripScreen() {
             onPress={handleCreateTrip}
             icon="arrow-right"
             fullWidth
-            disabled={!tripName.trim()}
+            disabled={!tripName.trim() || countries.length === 0}
           />
         </View>
       </ScrollView>
+
+      {/* Country Modal */}
+      <MultiCountryModal
+        visible={countryModalVisible}
+        selected={countries}
+        onClose={() => setCountryModalVisible(false)}
+        onSave={(selected) => {
+          setCountries(selected);
+          if (selected.length > 0 && countryError) setCountryError('');
+        }}
+      />
+
+      {/* Date Modal */}
+      <DateSelectionModal
+        visible={dateModalVisible}
+        selection={dateSelection}
+        onClose={() => setDateModalVisible(false)}
+        onSave={(selection) => setDateSelection(selection)}
+      />
     </KeyboardAvoidingView>
   );
 }

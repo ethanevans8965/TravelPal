@@ -66,7 +66,12 @@ export interface Trip {
   participants?: string[]; // For future social features
   notes?: string;
   itinerary?: any[]; // For future itinerary items
+  /** List of countries visited in this trip */
+  countries?: string[];
+  /** Date selection mode: both dates, start only, or flexible */
+  dateMode?: 'both' | 'start-only' | 'no-dates';
   completionPercentage?: number; // Cached completion percentage
+  onboardingCompleted?: boolean; // Track if user has completed onboarding for this trip
 }
 
 export interface AppContextType {

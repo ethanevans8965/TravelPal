@@ -15,6 +15,9 @@ interface TripState {
   updateTrip: (trip: Trip) => void;
   deleteTrip: (tripId: string) => void;
 
+  // Onboarding operations
+  markOnboardingComplete: (tripId: string) => void;
+
   // Utility functions
   getTripById: (tripId: string) => Trip | undefined;
   getTripsByStatus: (status: Trip['status']) => Trip[];
@@ -50,6 +53,13 @@ export const useTripStore = create<TripState>()(
       updateTrip: (updatedTrip) =>
         set((state) => ({
           trips: state.trips.map((trip) => (trip.id === updatedTrip.id ? updatedTrip : trip)),
+        })),
+
+      markOnboardingComplete: (tripId) =>
+        set((state) => ({
+          trips: state.trips.map((trip) =>
+            trip.id === tripId ? { ...trip, onboardingCompleted: true } : trip
+          ),
         })),
 
       deleteTrip: (tripId) => {

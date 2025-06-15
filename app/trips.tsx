@@ -150,12 +150,11 @@ export default function TripsScreen() {
   };
 
   const renderTripCard = (trip: any, index: number, array: any[]) => {
-    const location = undefined; // We'll get this from the context if needed
     const tripLength = calculateTripLength(trip.startDate, trip.endDate);
     const statusConfig = getStatusConfig(trip.currentStatus);
 
-    // Get destination name from location, trip.destination, or fallback
-    const destinationName = location?.name || trip.destination?.name || 'Unknown destination';
+    // Get destination name from trip.destination or fallback
+    const destinationName = trip.destination?.name || 'Unknown destination';
 
     // Create helper functions for the old interface
     const getStatusColor = (status: string) => statusConfig.color;

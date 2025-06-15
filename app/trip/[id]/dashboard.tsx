@@ -7,312 +7,265 @@ import {
   TouchableOpacity,
   Alert,
   Dimensions,
+  ImageBackground,
 } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useAppContext } from '../../context';
 import { FontAwesome } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import Button from '../../components/ui/Button';
-
-type ModuleStatus = 'empty' | 'partial' | 'complete';
-
-interface DashboardModule {
-  id: string;
-  title: string;
-  subtitle: string;
-  icon: string;
-  gradient: [string, string];
-  status: ModuleStatus;
-  description: string;
-  onPress: () => void;
-}
+import DestinationModal from '../../components/dashboard/DestinationModal';
 
 const { width: screenWidth } = Dimensions.get('window');
 
 export default function TripDashboardScreen() {
   const router = useRouter();
   const { id } = useLocalSearchParams();
-  const { trips, updateTrip } = useAppContext();
+  const { trips, updateTrip, getTripExpenses } = useAppContext();
+  const [destinationModalVisible, setDestinationModalVisible] = useState(false);
 
   const trip = trips.find((t) => t.id === id);
 
   if (!trip) {
     return (
-      <LinearGradient colors={['#667eea', '#764ba2']} style={styles.container}>
+      <View style={styles.container}>
         <View style={styles.errorContainer}>
           <FontAwesome name="exclamation-triangle" size={48} color="#FFFFFF" />
           <Text style={styles.errorTitle}>Trip Not Found</Text>
           <Text style={styles.errorText}>The trip you're looking for doesn't exist.</Text>
           <Button title="Go Back" onPress={() => router.back()} variant="secondary" />
         </View>
-      </LinearGradient>
+      </View>
     );
   }
 
-  // Calculate status for each module
-  const getDestinationStatus = (): ModuleStatus => {
-    if (trip!.destination?.name) return 'complete';
-    return 'empty';
+  const expenses = getTripExpenses(trip.id);
+  const totalSpent = expenses.reduce((sum, expense) => sum + expense.amount, 0);
+  const budgetLeft = (trip.totalBudget || 0) - totalSpent;
+  const budgetUsagePercentage = trip.totalBudget ? (totalSpent / trip.totalBudget) * 100 : 0;
+
+  const formatDate = (dateString?: string) => {
+    if (!dateString) return '';
+    const date = new Date(dateString);
+    return date.toLocaleDateString('en-US', {
+      day: 'numeric',
+      month: 'short',
+    });
   };
 
-  const getDatesStatus = (): ModuleStatus => {
-    if (trip!.startDate && trip!.endDate) return 'complete';
-    if (trip!.startDate || trip!.endDate) return 'partial';
-    return 'empty';
+  const getDateRangeText = () => {
+    if (trip.startDate && trip.endDate) {
+      return `${formatDate(trip.startDate)} – ${formatDate(trip.endDate)}`;
+    }
+    if (trip.startDate) {
+      return `From ${formatDate(trip.startDate)}`;
+    }
+    if (trip.endDate) {
+      return `Until ${formatDate(trip.endDate)}`;
+    }
+    return 'Flexible dates';
   };
 
-  const getBudgetStatus = (): ModuleStatus => {
-    if (trip!.budgetMethod === 'no-budget') return 'empty';
-    if (trip!.totalBudget || trip!.dailyBudget) return 'complete';
-    return 'empty';
+  const getCountriesText = () => {
+    if (trip.countries && trip.countries.length > 0) {
+      return trip.countries.join(' • ');
+    }
+    return trip.destination?.country || 'Add destinations';
   };
 
-  const getItineraryStatus = (): ModuleStatus => {
-    return 'empty';
-  };
+  const handleDestinationSave = async (destination: { name: string; country: string }) => {
+    try {
+      const updatedTrip = {
+        ...trip,
+        destination: {
+          id: 'destination-' + Date.now(),
+          name: destination.name,
+          country: destination.country,
+          timezone: 'UTC',
+        },
+        locationId: 'destination-' + Date.now(),
+      };
 
-  function getDatesDescription(): string {
-    if (trip!.startDate && trip!.endDate) {
-      const start = new Date(trip!.startDate);
-      const end = new Date(trip!.endDate);
-      const days = Math.ceil((end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24));
-      return `${days} day adventure`;
-    }
-    if (trip!.startDate) {
-      return `Departure set`;
-    }
-    if (trip!.endDate) {
-      return `Return set`;
-    }
-    return 'When are you traveling?';
-  }
-
-  function getBudgetDescription(): string {
-    if (trip!.budgetMethod === 'no-budget') {
-      return 'Track as you go';
-    }
-    if (trip!.totalBudget) {
-      return `$${trip!.totalBudget.toLocaleString()} budget`;
-    }
-    if (trip!.dailyBudget) {
-      return `$${trip!.dailyBudget.toLocaleString()}/day`;
-    }
-    return 'How much to spend?';
-  }
-
-  // Calculate overall progress
-  const getOverallProgress = () => {
-    const statuses = [
-      getDestinationStatus(),
-      getDatesStatus(),
-      getBudgetStatus(),
-      getItineraryStatus(),
-    ];
-
-    const completed = statuses.filter((status) => status === 'complete').length;
-    const partial = statuses.filter((status) => status === 'partial').length;
-
-    return {
-      completed,
-      partial,
-      total: statuses.length,
-      percentage: Math.round(((completed * 1 + partial * 0.5) / statuses.length) * 100),
-    };
-  };
-
-  // Module configurations with travel-themed gradients
-  const modules: DashboardModule[] = [
-    {
-      id: 'destination',
-      title: 'Destinations',
-      subtitle: 'Where to?',
-      icon: 'map-marker',
-      gradient: ['#ff6b6b', '#ee5a52'],
-      status: getDestinationStatus(),
-      description: trip!.destination?.name || 'Choose your destination',
-      onPress: () => {
-        Alert.alert('Coming Soon', 'Destination editing will be available soon!');
-      },
-    },
-    {
-      id: 'dates',
-      title: 'Travel Dates',
-      subtitle: 'When?',
-      icon: 'calendar',
-      gradient: ['#4ecdc4', '#44a08d'],
-      status: getDatesStatus(),
-      description: getDatesDescription(),
-      onPress: () => {
-        Alert.alert('Coming Soon', 'Date editing will be available soon!');
-      },
-    },
-    {
-      id: 'budget',
-      title: 'Budget',
-      subtitle: 'How much?',
-      icon: 'dollar',
-      gradient: ['#45b7d1', '#96c93d'],
-      status: getBudgetStatus(),
-      description: getBudgetDescription(),
-      onPress: () => {
-        Alert.alert('Coming Soon', 'Budget editing will be available soon!');
-      },
-    },
-    {
-      id: 'itinerary',
-      title: 'Itinerary',
-      subtitle: 'What to do?',
-      icon: 'list',
-      gradient: ['#a8edea', '#fed6e3'],
-      status: getItineraryStatus(),
-      description: 'Plan your adventures',
-      onPress: () => {
-        Alert.alert('Coming Soon', 'Itinerary planning will be available soon!');
-      },
-    },
-  ];
-
-  const progress = getOverallProgress();
-
-  const getStatusIcon = (status: ModuleStatus) => {
-    switch (status) {
-      case 'complete':
-        return { name: 'check-circle', color: '#4CAF50' };
-      case 'partial':
-        return { name: 'clock-o', color: '#FF9500' };
-      default:
-        return { name: 'circle-o', color: '#E0E0E0' };
+      updateTrip(updatedTrip);
+      setDestinationModalVisible(false);
+    } catch (error) {
+      Alert.alert('Error', 'Failed to update destination. Please try again.');
     }
   };
+
+  // Get actual itinerary data or show empty state
+  const getItineraryItems = () => {
+    if (trip.itinerary && trip.itinerary.length > 0) {
+      return trip.itinerary;
+    }
+    return [];
+  };
+
+  const itineraryItems = getItineraryItems();
 
   return (
     <View style={styles.container}>
-      {/* Hero Header with Gradient */}
-      <LinearGradient
-        colors={['#667eea', '#764ba2']}
-        style={styles.heroSection}
-        start={{ x: 0, y: 0 }}
-        end={{ x: 1, y: 1 }}
-      >
-        <View style={styles.heroContent}>
-          <View style={styles.headerTop}>
-            <View style={styles.tripInfo}>
-              <Text style={styles.tripName}>{trip!.name}</Text>
-              <Text style={styles.tripSubtitle}>
-                {trip!.destination?.name || 'Destination awaits'}
-              </Text>
+      {/* Hero Section */}
+      <View style={styles.heroContainer}>
+        <ImageBackground
+          source={{
+            uri: 'https://images.unsplash.com/photo-1528909514045-2fa4ac7a08ba?auto=format&fit=crop&w=960&q=80',
+          }}
+          style={styles.heroImage}
+          resizeMode="cover"
+        >
+          <LinearGradient
+            colors={['transparent', 'rgba(23,23,23,0.3)', 'rgba(23,23,23,0.8)']}
+            style={styles.heroGradient}
+          >
+            {/* Navigation Header */}
+            <View style={styles.heroHeader}>
+              <TouchableOpacity style={styles.heroButton} onPress={() => router.push('/trips')}>
+                <FontAwesome name="arrow-left" size={20} color="#FFFFFF" />
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={styles.heroButton}
+                onPress={() => Alert.alert('Coming Soon', 'Favorites feature coming soon!')}
+              >
+                <FontAwesome name="heart-o" size={20} color="#FFFFFF" />
+              </TouchableOpacity>
             </View>
-            <TouchableOpacity
-              style={styles.menuButton}
-              onPress={() => {
-                Alert.alert('Trip Options', 'Trip settings will be available soon!');
-              }}
-            >
-              <FontAwesome name="ellipsis-h" size={20} color="#FFFFFF" />
-            </TouchableOpacity>
-          </View>
 
-          {/* Progress Section */}
-          <View style={styles.progressSection}>
-            <View style={styles.progressRing}>
-              <View style={styles.progressRingInner}>
-                <Text style={styles.progressPercentage}>{progress.percentage}%</Text>
-                <Text style={styles.progressLabel}>Ready</Text>
+            {/* Trip Info */}
+            <View style={styles.heroContent}>
+              <Text style={styles.heroTitle}>{trip.name}</Text>
+              <View style={styles.heroSubtitle}>
+                <FontAwesome name="map-pin" size={16} color="rgba(255,255,255,0.8)" />
+                <Text style={styles.heroSubtitleText}>{getCountriesText()}</Text>
               </View>
             </View>
-            <View style={styles.progressInfo}>
-              <Text style={styles.progressText}>
-                {progress.completed} of {progress.total} sections completed
-              </Text>
-              <Text style={styles.progressSubtext}>
-                {progress.percentage === 100 ? "You're all set!" : "Let's keep planning!"}
+          </LinearGradient>
+        </ImageBackground>
+      </View>
+
+      {/* Content */}
+      <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
+        {/* Quick Stats */}
+        <View style={styles.statsContainer}>
+          <View style={styles.statCard}>
+            <View style={styles.statHeader}>
+              <FontAwesome name="calendar" size={12} color="rgba(255,255,255,0.6)" />
+              <Text style={styles.statLabel}>Dates</Text>
+            </View>
+            <Text style={styles.statValue}>{getDateRangeText()}</Text>
+          </View>
+
+          <TouchableOpacity
+            style={styles.statCard}
+            onPress={() => setDestinationModalVisible(true)}
+            activeOpacity={0.7}
+          >
+            <View style={styles.statHeader}>
+              <FontAwesome name="globe" size={12} color="rgba(255,255,255,0.6)" />
+              <Text style={styles.statLabel}>Countries</Text>
+            </View>
+            <Text style={styles.statValue}>{trip.countries?.length || 0}</Text>
+          </TouchableOpacity>
+
+          <View style={styles.statCard}>
+            <View style={styles.statHeader}>
+              <FontAwesome name="credit-card" size={12} color="rgba(255,255,255,0.6)" />
+              <Text style={styles.statLabel}>Budget</Text>
+            </View>
+            <Text style={styles.statValue}>
+              {trip.totalBudget ? `$${trip.totalBudget.toLocaleString()}` : 'No budget'}
+            </Text>
+          </View>
+        </View>
+
+        {/* Budget Progress */}
+        {trip.totalBudget && (
+          <View style={styles.section}>
+            <Text style={styles.sectionTitle}>Budget Usage</Text>
+            <View style={styles.progressContainer}>
+              <View style={styles.progressBar}>
+                <View
+                  style={[
+                    styles.progressFill,
+                    { width: `${Math.min(budgetUsagePercentage, 100)}%` },
+                  ]}
+                />
+              </View>
+              <View style={styles.progressLabels}>
+                <Text style={styles.progressLabel}>${totalSpent.toLocaleString()} spent</Text>
+                <Text style={styles.progressLabel}>${budgetLeft.toLocaleString()} left</Text>
+              </View>
+            </View>
+          </View>
+        )}
+
+        {/* Expense Breakdown */}
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>Expense Breakdown</Text>
+          <View style={styles.chartContainer}>
+            <View style={styles.chartPlaceholder}>
+              <FontAwesome name="pie-chart" size={48} color="rgba(255,255,255,0.3)" />
+              <Text style={styles.chartPlaceholderText}>
+                {expenses.length > 0 ? 'Chart coming soon' : 'No expenses yet'}
               </Text>
             </View>
           </View>
         </View>
-      </LinearGradient>
 
-      <ScrollView
-        style={styles.scrollView}
-        showsVerticalScrollIndicator={false}
-        contentContainerStyle={styles.scrollContent}
-      >
-        {/* Planning Modules */}
-        <View style={styles.modulesSection}>
-          <Text style={styles.sectionTitle}>Plan Your Trip</Text>
-          <View style={styles.modulesContainer}>
-            {modules.map((module, index) => {
-              const statusIcon = getStatusIcon(module.status);
-
-              return (
-                <TouchableOpacity
-                  key={module.id}
-                  style={styles.moduleCard}
-                  onPress={module.onPress}
-                  activeOpacity={0.8}
-                >
-                  <LinearGradient
-                    colors={module.gradient}
-                    style={styles.moduleGradient}
-                    start={{ x: 0, y: 0 }}
-                    end={{ x: 1, y: 1 }}
+        {/* Upcoming Itinerary */}
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>Upcoming Itinerary</Text>
+          <View style={styles.itineraryContainer}>
+            {itineraryItems.length > 0 ? (
+              itineraryItems.map((item, index) => (
+                <View key={index} style={styles.itineraryItem}>
+                  <View style={styles.itineraryIcon}>
+                    <FontAwesome name={item.icon as any} size={16} color="#3B82F6" />
+                  </View>
+                  <View
+                    style={[
+                      styles.itineraryContent,
+                      index < itineraryItems.length - 1 && styles.itineraryContentBorder,
+                    ]}
                   >
-                    <View style={styles.moduleHeader}>
-                      <View style={styles.moduleIconContainer}>
-                        <FontAwesome name={module.icon as any} size={24} color="#FFFFFF" />
-                      </View>
-                      <View style={styles.moduleStatus}>
-                        <FontAwesome
-                          name={statusIcon.name as any}
-                          size={16}
-                          color={statusIcon.color}
-                        />
-                      </View>
+                    <View style={styles.itineraryHeader}>
+                      <Text style={styles.itineraryDate}>{item.date}</Text>
+                      <Text style={styles.itineraryTitle}>{item.title}</Text>
                     </View>
-
-                    <View style={styles.moduleContent}>
-                      <Text style={styles.moduleTitle}>{module.title}</Text>
-                      <Text style={styles.moduleSubtitle}>{module.subtitle}</Text>
-                      <Text style={styles.moduleDescription}>{module.description}</Text>
-                    </View>
-                  </LinearGradient>
-                </TouchableOpacity>
-              );
-            })}
+                    <Text style={styles.itinerarySubtitle}>{item.subtitle}</Text>
+                  </View>
+                </View>
+              ))
+            ) : (
+              <View style={styles.emptyState}>
+                <FontAwesome name="calendar-o" size={48} color="rgba(255,255,255,0.3)" />
+                <Text style={styles.emptyStateText}>No itinerary items yet</Text>
+                <Text style={styles.emptyStateSubtext}>Add activities and events to your trip</Text>
+              </View>
+            )}
           </View>
         </View>
 
-        {/* Quick Actions */}
-        <View style={styles.quickActionsSection}>
-          <Text style={styles.sectionTitle}>Quick Actions</Text>
-          <View style={styles.quickActionsGrid}>
-            <TouchableOpacity
-              style={styles.quickActionCard}
-              onPress={() => router.push(`/expenses/add/expense-details?tripId=${trip!.id}`)}
-              activeOpacity={0.8}
-            >
-              <LinearGradient colors={['#ff7b7b', '#ff6b6b']} style={styles.quickActionGradient}>
-                <FontAwesome name="plus" size={20} color="#FFFFFF" />
-                <Text style={styles.quickActionText}>Add Expense</Text>
-              </LinearGradient>
-            </TouchableOpacity>
+        {/* Add Expense Button */}
+        <TouchableOpacity
+          style={styles.addExpenseButton}
+          onPress={() => router.push(`/expenses/add/expense-details?tripId=${trip.id}`)}
+          activeOpacity={0.8}
+        >
+          <FontAwesome name="plus-circle" size={20} color="#FFFFFF" />
+          <Text style={styles.addExpenseText}>Add Expense</Text>
+        </TouchableOpacity>
 
-            <TouchableOpacity
-              style={styles.quickActionCard}
-              onPress={() => Alert.alert('Coming Soon', 'Journal entry will be available soon!')}
-              activeOpacity={0.8}
-            >
-              <LinearGradient colors={['#667eea', '#764ba2']} style={styles.quickActionGradient}>
-                <FontAwesome name="edit" size={20} color="#FFFFFF" />
-                <Text style={styles.quickActionText}>Add Note</Text>
-              </LinearGradient>
-            </TouchableOpacity>
-          </View>
-        </View>
-
-        {/* Bottom Spacing */}
         <View style={styles.bottomSpacing} />
       </ScrollView>
+
+      {/* Destination Modal */}
+      <DestinationModal
+        visible={destinationModalVisible}
+        trip={trip}
+        onClose={() => setDestinationModalVisible(false)}
+        onSave={handleDestinationSave}
+      />
     </View>
   );
 }
@@ -320,208 +273,217 @@ export default function TripDashboardScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F5F7FA',
+    backgroundColor: '#171717', // neutral-900
   },
-  heroSection: {
-    paddingTop: 50,
-    paddingBottom: 20,
-    paddingHorizontal: 20,
+
+  // Hero Section
+  heroContainer: {
+    height: 220, // Increased from 208 to give more space
   },
-  heroContent: {
+  heroImage: {
     flex: 1,
   },
-  headerTop: {
-    flexDirection: 'row',
-    alignItems: 'flex-start',
+  heroGradient: {
+    flex: 1,
     justifyContent: 'space-between',
-    marginBottom: 20,
   },
-  tripInfo: {
-    flex: 1,
+  heroHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingTop: 50,
+    paddingHorizontal: 16,
   },
-  tripName: {
-    fontSize: 28,
-    fontWeight: '800',
-    color: '#FFFFFF',
-    marginBottom: 4,
-    textShadowColor: 'rgba(0,0,0,0.3)',
-    textShadowOffset: { width: 0, height: 2 },
-    textShadowRadius: 4,
-  },
-  tripSubtitle: {
-    fontSize: 16,
-    color: 'rgba(255,255,255,0.9)',
-    fontWeight: '500',
-  },
-  menuButton: {
+  heroButton: {
     width: 40,
     height: 40,
     borderRadius: 20,
-    backgroundColor: 'rgba(255,255,255,0.2)',
+    backgroundColor: 'rgba(38,38,38,0.6)', // neutral-800/60
     justifyContent: 'center',
     alignItems: 'center',
   },
-  progressSection: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginTop: 10,
+  heroContent: {
+    paddingHorizontal: 16,
+    paddingBottom: 20, // Increased from 16 to 20
   },
-  progressRing: {
-    width: 70,
-    height: 70,
-    borderRadius: 35,
-    backgroundColor: 'rgba(255,255,255,0.2)',
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginRight: 16,
-  },
-  progressRingInner: {
-    width: 56,
-    height: 56,
-    borderRadius: 28,
-    backgroundColor: 'rgba(255,255,255,0.95)',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  progressPercentage: {
-    fontSize: 16,
-    fontWeight: '800',
-    color: '#667eea',
-  },
-  progressLabel: {
-    fontSize: 10,
-    fontWeight: '600',
-    color: '#667eea',
-    marginTop: 1,
-  },
-  progressInfo: {
-    flex: 1,
-  },
-  progressText: {
-    fontSize: 14,
+  heroTitle: {
+    fontSize: 30,
     fontWeight: '600',
     color: '#FFFFFF',
-    marginBottom: 2,
+    marginBottom: 12, // Increased from 8 to 12
+    letterSpacing: -0.5,
   },
-  progressSubtext: {
-    fontSize: 12,
+  heroSubtitle: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  heroSubtitleText: {
+    fontSize: 14,
     color: 'rgba(255,255,255,0.8)',
-    fontWeight: '500',
+    marginLeft: 6,
+    lineHeight: 18, // Added line height for better text spacing
   },
-  scrollView: {
+
+  // Content
+  content: {
     flex: 1,
-  },
-  scrollContent: {
-    paddingBottom: 40,
-  },
-  modulesSection: {
+    marginTop: -24,
+    borderTopLeftRadius: 24,
+    borderTopRightRadius: 24,
+    backgroundColor: '#171717',
     paddingHorizontal: 20,
     paddingTop: 24,
   },
-  sectionTitle: {
-    fontSize: 22,
-    fontWeight: '700',
-    color: '#2D3748',
-    marginBottom: 16,
-  },
-  modulesContainer: {
+
+  // Quick Stats
+  statsContainer: {
     flexDirection: 'row',
-    flexWrap: 'wrap',
-    justifyContent: 'space-between',
+    gap: 12,
+    marginBottom: 24,
   },
-  moduleCard: {
-    width: (screenWidth - 52) / 2, // Account for padding and gap
-    height: 160,
-    marginBottom: 16,
-    borderRadius: 16,
-    overflow: 'hidden',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.1,
-    shadowRadius: 12,
-    elevation: 4,
-  },
-  moduleGradient: {
+  statCard: {
     flex: 1,
-    padding: 16,
-    justifyContent: 'space-between',
+    backgroundColor: 'rgba(38,38,38,0.7)', // neutral-800/70
+    borderWidth: 1,
+    borderColor: '#404040', // neutral-700
+    borderRadius: 8,
+    padding: 12,
   },
-  moduleHeader: {
+  statHeader: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
     alignItems: 'center',
-  },
-  moduleIconContainer: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    backgroundColor: 'rgba(255,255,255,0.25)',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  moduleStatus: {
-    width: 28,
-    height: 28,
-    borderRadius: 14,
-    backgroundColor: 'rgba(255,255,255,0.95)',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  moduleContent: {
-    marginTop: 8,
-  },
-  moduleTitle: {
-    fontSize: 16,
-    fontWeight: '700',
-    color: '#FFFFFF',
-    marginBottom: 2,
-    textShadowColor: 'rgba(0,0,0,0.3)',
-    textShadowOffset: { width: 0, height: 1 },
-    textShadowRadius: 2,
-  },
-  moduleSubtitle: {
-    fontSize: 12,
-    color: 'rgba(255,255,255,0.9)',
-    fontWeight: '600',
     marginBottom: 4,
   },
-  moduleDescription: {
-    fontSize: 11,
-    color: 'rgba(255,255,255,0.8)',
-    fontWeight: '500',
-    lineHeight: 14,
+  statLabel: {
+    fontSize: 12,
+    color: 'rgba(255,255,255,0.6)',
+    marginLeft: 4,
   },
-  quickActionsSection: {
-    paddingHorizontal: 20,
-    marginTop: 24,
-  },
-  quickActionsGrid: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-  },
-  quickActionCard: {
-    width: (screenWidth - 52) / 2,
-    height: 70,
-    borderRadius: 12,
-    overflow: 'hidden',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 6,
-    elevation: 2,
-  },
-  quickActionGradient: {
-    flex: 1,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: 8,
-  },
-  quickActionText: {
+  statValue: {
     fontSize: 14,
     fontWeight: '600',
     color: '#FFFFFF',
   },
+
+  // Sections
+  section: {
+    marginBottom: 24,
+  },
+  sectionTitle: {
+    fontSize: 18,
+    fontWeight: '600',
+    color: '#FFFFFF',
+    marginBottom: 8,
+    letterSpacing: -0.3,
+  },
+
+  // Budget Progress
+  progressContainer: {
+    marginTop: 8,
+  },
+  progressBar: {
+    width: '100%',
+    height: 8,
+    backgroundColor: '#262626', // neutral-800
+    borderRadius: 4,
+    overflow: 'hidden',
+  },
+  progressFill: {
+    height: '100%',
+    backgroundColor: '#3B82F6', // blue-600
+  },
+  progressLabels: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginTop: 4,
+  },
+  progressLabel: {
+    fontSize: 12,
+    color: 'rgba(255,255,255,0.6)',
+  },
+
+  // Chart
+  chartContainer: {
+    backgroundColor: 'rgba(38,38,38,0.7)',
+    borderWidth: 1,
+    borderColor: '#404040',
+    borderRadius: 8,
+    padding: 16,
+  },
+  chartPlaceholder: {
+    height: 160,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  chartPlaceholderText: {
+    fontSize: 14,
+    color: 'rgba(255,255,255,0.6)',
+    marginTop: 12,
+  },
+
+  // Itinerary
+  itineraryContainer: {
+    marginTop: 8,
+  },
+  itineraryItem: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    marginBottom: 12,
+  },
+  itineraryIcon: {
+    width: 40,
+    height: 40,
+    borderRadius: 8,
+    backgroundColor: '#262626',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: 12,
+  },
+  itineraryContent: {
+    flex: 1,
+    paddingBottom: 12,
+  },
+  itineraryContentBorder: {
+    borderBottomWidth: 1,
+    borderBottomColor: '#262626',
+  },
+  itineraryHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 4,
+  },
+  itineraryDate: {
+    fontSize: 14,
+    color: 'rgba(255,255,255,0.8)',
+  },
+  itineraryTitle: {
+    fontSize: 14,
+    fontWeight: '500',
+    color: '#FFFFFF',
+  },
+  itinerarySubtitle: {
+    fontSize: 12,
+    color: 'rgba(255,255,255,0.6)',
+  },
+
+  // Add Expense Button
+  addExpenseButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#3B82F6',
+    paddingVertical: 12,
+    borderRadius: 8,
+    marginTop: 8,
+  },
+  addExpenseText: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#FFFFFF',
+    marginLeft: 8,
+  },
+
+  // Error State
   errorContainer: {
     flex: 1,
     justifyContent: 'center',
@@ -541,7 +503,29 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginBottom: 24,
   },
+
+  // Bottom Spacing
   bottomSpacing: {
     height: 40,
+  },
+
+  // Empty State
+  emptyState: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingVertical: 40,
+  },
+  emptyStateText: {
+    fontSize: 16,
+    fontWeight: '500',
+    color: 'rgba(255,255,255,0.8)',
+    marginTop: 12,
+    textAlign: 'center',
+  },
+  emptyStateSubtext: {
+    fontSize: 14,
+    color: 'rgba(255,255,255,0.6)',
+    marginTop: 4,
+    textAlign: 'center',
   },
 });
