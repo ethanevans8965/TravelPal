@@ -46,6 +46,15 @@ export interface TripStatusConfig {
   label: string;
 }
 
+export interface Segment {
+  id: string;
+  tripId: string;
+  country: string;
+  startDate: string;
+  endDate: string;
+  budget: number;
+}
+
 export interface Trip {
   id: string;
   name: string;
