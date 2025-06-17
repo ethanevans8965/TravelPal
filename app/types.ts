@@ -46,7 +46,7 @@ export interface TripStatusConfig {
   label: string;
 }
 
-export interface Segment {
+export interface Leg {
   id: string;
   tripId: string;
   country: string;
@@ -77,8 +77,8 @@ export interface Trip {
   itinerary?: any[]; // For future itinerary items
   /** List of countries visited in this trip */
   countries?: string[];
-  /** Trip segments for multi-country trips */
-  segments?: Segment[];
+  /** Trip legs for multi-country trips */
+  legs?: Leg[];
   /** Date selection mode: both dates, start only, or flexible */
   dateMode?: 'both' | 'start-only' | 'no-dates';
   completionPercentage?: number; // Cached completion percentage

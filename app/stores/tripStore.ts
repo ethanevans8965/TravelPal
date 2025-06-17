@@ -2,12 +2,12 @@ import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as Crypto from 'expo-crypto';
-import { Trip, Segment } from '../types';
+import { Trip, Leg } from '../types';
 import { useExpenseStore } from './expenseStore';
 
 interface TripState {
   trips: Trip[];
-  segments: Segment[];
+  legs: Leg[];
   isLoading: boolean;
   error: string | null;
 
@@ -16,11 +16,11 @@ interface TripState {
   updateTrip: (trip: Trip) => void;
   deleteTrip: (tripId: string) => void;
 
-  // Segment CRUD operations
-  addSegment: (segmentData: Omit<Segment, 'id'>) => Segment;
-  updateSegment: (segment: Segment) => void;
-  deleteSegment: (segmentId: string) => void;
-  getSegmentsByTrip: (tripId: string) => Segment[];
+  // Leg CRUD operations
+  addLeg: (legData: Omit<Leg, 'id'>) => Leg;
+  updateLeg: (leg: Leg) => void;
+  deleteLeg: (legId: string) => void;
+  getLegsByTrip: (tripId: string) => Leg[];
 
   // Onboarding operations
   markOnboardingComplete: (tripId: string) => void;
@@ -45,7 +45,7 @@ export const useTripStore = create<TripState>()(
   persist(
     (set, get) => ({
       trips: [],
-      segments: [],
+      legs: [],
       isLoading: false,
       error: null,
 
@@ -55,9 +55,9 @@ export const useTripStore = create<TripState>()(
           id: Crypto.randomUUID(),
         };
 
-        // Create default segment for the trip
+        // Create default leg for the trip
         if (newTrip.startDate && newTrip.endDate) {
-          const defaultSegment: Segment = {
+          const defaultLeg: Leg = {
             id: Crypto.randomUUID(),
             tripId: newTrip.id,
             country: newTrip.countries?.[0] || 'Unknown',
@@ -68,7 +68,7 @@ export const useTripStore = create<TripState>()(
 
           set((state) => ({
             trips: [...state.trips, newTrip],
-            segments: [...state.segments, defaultSegment],
+            legs: [...state.legs, defaultLeg],
           }));
         } else {
           set((state) => ({ trips: [...state.trips, newTrip] }));
@@ -94,9 +94,9 @@ export const useTripStore = create<TripState>()(
         get().deleteExpensesByTripId(tripId);
         get().deleteJournalEntriesByTripId(tripId);
 
-        // Delete associated segments
-        const segmentsToDelete = get().segments.filter((segment) => segment.tripId === tripId);
-        segmentsToDelete.forEach((segment) => get().deleteSegment(segment.id));
+        // Delete associated legs
+        const legsToDelete = get().legs.filter((leg) => leg.tripId === tripId);
+        legsToDelete.forEach((leg) => get().deleteLeg(leg.id));
 
         // Then delete the trip itself
         set((state) => ({
@@ -173,31 +173,29 @@ export const useTripStore = create<TripState>()(
         console.log('deleteJournalEntriesByTripId called for tripId:', tripId);
       },
 
-      // Segment CRUD operations
-      addSegment: (segmentData) => {
-        const newSegment: Segment = {
-          ...segmentData,
+      // Leg CRUD operations
+      addLeg: (legData) => {
+        const newLeg: Leg = {
+          ...legData,
           id: Crypto.randomUUID(),
         };
-        set((state) => ({ segments: [...state.segments, newSegment] }));
-        return newSegment;
+        set((state) => ({ legs: [...state.legs, newLeg] }));
+        return newLeg;
       },
 
-      updateSegment: (updatedSegment) =>
+      updateLeg: (updatedLeg) =>
         set((state) => ({
-          segments: state.segments.map((segment) =>
-            segment.id === updatedSegment.id ? updatedSegment : segment
-          ),
+          legs: state.legs.map((leg) => (leg.id === updatedLeg.id ? updatedLeg : leg)),
         })),
 
-      deleteSegment: (segmentId) => {
+      deleteLeg: (legId) => {
         set((state) => ({
-          segments: state.segments.filter((segment) => segment.id !== segmentId),
+          legs: state.legs.filter((leg) => leg.id !== legId),
         }));
       },
 
-      getSegmentsByTrip: (tripId) => {
-        return get().segments.filter((segment) => segment.tripId === tripId);
+      getLegsByTrip: (tripId) => {
+        return get().legs.filter((leg) => leg.tripId === tripId);
       },
     }),
     {
