@@ -2,11 +2,12 @@ import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as Crypto from 'expo-crypto';
-import { Trip } from '../types';
+import { Trip, Segment } from '../types';
 import { useExpenseStore } from './expenseStore';
 
 interface TripState {
   trips: Trip[];
+  segments: Segment[];
   isLoading: boolean;
   error: string | null;
 
@@ -14,6 +15,12 @@ interface TripState {
   addTrip: (tripData: Omit<Trip, 'id'>) => Trip;
   updateTrip: (trip: Trip) => void;
   deleteTrip: (tripId: string) => void;
+
+  // Segment CRUD operations
+  addSegment: (segmentData: Omit<Segment, 'id'>) => Segment;
+  updateSegment: (segment: Segment) => void;
+  deleteSegment: (segmentId: string) => void;
+  getSegmentsByTrip: (tripId: string) => Segment[];
 
   // Onboarding operations
   markOnboardingComplete: (tripId: string) => void;
@@ -38,6 +45,7 @@ export const useTripStore = create<TripState>()(
   persist(
     (set, get) => ({
       trips: [],
+      segments: [],
       isLoading: false,
       error: null,
 
@@ -140,6 +148,33 @@ export const useTripStore = create<TripState>()(
       deleteJournalEntriesByTripId: (tripId) => {
         // TODO: Implement when journal store is created
         console.log('deleteJournalEntriesByTripId called for tripId:', tripId);
+      },
+
+      // Segment CRUD operations
+      addSegment: (segmentData) => {
+        const newSegment: Segment = {
+          ...segmentData,
+          id: Crypto.randomUUID(),
+        };
+        set((state) => ({ segments: [...state.segments, newSegment] }));
+        return newSegment;
+      },
+
+      updateSegment: (updatedSegment) =>
+        set((state) => ({
+          segments: state.segments.map((segment) =>
+            segment.id === updatedSegment.id ? updatedSegment : segment
+          ),
+        })),
+
+      deleteSegment: (segmentId) => {
+        set((state) => ({
+          segments: state.segments.filter((segment) => segment.id !== segmentId),
+        }));
+      },
+
+      getSegmentsByTrip: (tripId) => {
+        return get().segments.filter((segment) => segment.tripId === tripId);
       },
     }),
     {
