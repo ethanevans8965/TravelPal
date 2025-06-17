@@ -54,7 +54,26 @@ export const useTripStore = create<TripState>()(
           ...tripData,
           id: Crypto.randomUUID(),
         };
-        set((state) => ({ trips: [...state.trips, newTrip] }));
+
+        // Create default segment for the trip
+        if (newTrip.startDate && newTrip.endDate) {
+          const defaultSegment: Segment = {
+            id: Crypto.randomUUID(),
+            tripId: newTrip.id,
+            country: newTrip.countries?.[0] || 'Unknown',
+            startDate: newTrip.startDate,
+            endDate: newTrip.endDate,
+            budget: newTrip.totalBudget || 0,
+          };
+
+          set((state) => ({
+            trips: [...state.trips, newTrip],
+            segments: [...state.segments, defaultSegment],
+          }));
+        } else {
+          set((state) => ({ trips: [...state.trips, newTrip] }));
+        }
+
         return newTrip;
       },
 
@@ -74,6 +93,10 @@ export const useTripStore = create<TripState>()(
         // First, delete associated data from other stores
         get().deleteExpensesByTripId(tripId);
         get().deleteJournalEntriesByTripId(tripId);
+
+        // Delete associated segments
+        const segmentsToDelete = get().segments.filter((segment) => segment.tripId === tripId);
+        segmentsToDelete.forEach((segment) => get().deleteSegment(segment.id));
 
         // Then delete the trip itself
         set((state) => ({
