@@ -1,5 +1,15 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Modal, FlatList, TextInput } from 'react-native';
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  Modal,
+  FlatList,
+  TextInput,
+  TouchableWithoutFeedback,
+  Platform,
+} from 'react-native';
 import { FontAwesome } from '@expo/vector-icons';
 import { getCountryNames } from '../utils/countryData';
 
@@ -21,6 +31,10 @@ const DarkCountryPicker: React.FC<DarkCountryPickerProps> = ({
       ? countries.filter((country) => country.toLowerCase().includes(searchText.toLowerCase()))
       : countries;
 
+  const handleOverlayPress = () => {
+    setModalVisible(false);
+  };
+
   return (
     <View style={styles.container}>
       <TouchableOpacity style={styles.pickerButton} onPress={() => setModalVisible(true)}>
@@ -32,64 +46,69 @@ const DarkCountryPicker: React.FC<DarkCountryPickerProps> = ({
         animationType="slide"
         transparent={true}
         visible={modalVisible}
-        onRequestClose={() => setModalVisible(false)}
+        onRequestClose={handleOverlayPress}
+        presentationStyle={Platform.OS === 'ios' ? 'pageSheet' : 'overFullScreen'}
       >
-        <View style={styles.modalOverlay}>
-          <View style={styles.modalContainer}>
-            <View style={styles.modalHeader}>
-              <Text style={styles.modalTitle}>Select a Country</Text>
-              <TouchableOpacity onPress={() => setModalVisible(false)}>
-                <FontAwesome name="times" size={20} color="#FFFFFF" />
-              </TouchableOpacity>
-            </View>
+        <TouchableWithoutFeedback onPress={handleOverlayPress}>
+          <View style={styles.modalOverlay}>
+            <TouchableWithoutFeedback>
+              <View style={styles.modalContainer}>
+                <View style={styles.modalHeader}>
+                  <Text style={styles.modalTitle}>Select a Country</Text>
+                  <TouchableOpacity onPress={handleOverlayPress}>
+                    <FontAwesome name="times" size={20} color="#FFFFFF" />
+                  </TouchableOpacity>
+                </View>
 
-            <View style={styles.searchContainer}>
-              <FontAwesome name="search" size={16} color="#CCCCCC" style={styles.searchIcon} />
-              <TextInput
-                style={styles.searchInput}
-                placeholder="Search countries..."
-                placeholderTextColor="#666"
-                value={searchText}
-                onChangeText={setSearchText}
-                autoCapitalize="none"
-              />
-              {searchText.length > 0 && (
-                <TouchableOpacity onPress={() => setSearchText('')}>
-                  <FontAwesome name="times-circle" size={16} color="#CCCCCC" />
-                </TouchableOpacity>
-              )}
-            </View>
-
-            <FlatList
-              data={filteredCountries}
-              keyExtractor={(item) => item}
-              renderItem={({ item }) => (
-                <TouchableOpacity
-                  style={[
-                    styles.countryItem,
-                    selectedCountry === item && styles.selectedCountryItem,
-                  ]}
-                  onPress={() => {
-                    onSelectCountry(item);
-                    setModalVisible(false);
-                  }}
-                >
-                  <Text
-                    style={[
-                      styles.countryName,
-                      selectedCountry === item && styles.selectedCountryName,
-                    ]}
-                  >
-                    {item}
-                  </Text>
-                  {selectedCountry === item && (
-                    <FontAwesome name="check" size={16} color="#007AFF" />
+                <View style={styles.searchContainer}>
+                  <FontAwesome name="search" size={16} color="#CCCCCC" style={styles.searchIcon} />
+                  <TextInput
+                    style={styles.searchInput}
+                    placeholder="Search countries..."
+                    placeholderTextColor="#666"
+                    value={searchText}
+                    onChangeText={setSearchText}
+                    autoCapitalize="none"
+                  />
+                  {searchText.length > 0 && (
+                    <TouchableOpacity onPress={() => setSearchText('')}>
+                      <FontAwesome name="times-circle" size={16} color="#CCCCCC" />
+                    </TouchableOpacity>
                   )}
-                </TouchableOpacity>
-              )}
-            />
+                </View>
+
+                <FlatList
+                  data={filteredCountries}
+                  keyExtractor={(item) => item}
+                  renderItem={({ item }) => (
+                    <TouchableOpacity
+                      style={[
+                        styles.countryItem,
+                        selectedCountry === item && styles.selectedCountryItem,
+                      ]}
+                      onPress={() => {
+                        onSelectCountry(item);
+                        setModalVisible(false);
+                      }}
+                    >
+                      <Text
+                        style={[
+                          styles.countryName,
+                          selectedCountry === item && styles.selectedCountryName,
+                        ]}
+                      >
+                        {item}
+                      </Text>
+                      {selectedCountry === item && (
+                        <FontAwesome name="check" size={16} color="#007AFF" />
+                      )}
+                    </TouchableOpacity>
+                  )}
+                />
+              </View>
+            </TouchableWithoutFeedback>
           </View>
-        </View>
+        </TouchableWithoutFeedback>
       </Modal>
     </View>
   );

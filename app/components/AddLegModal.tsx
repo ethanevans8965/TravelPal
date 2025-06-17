@@ -12,6 +12,7 @@ import {
 } from 'react-native';
 import { FontAwesome } from '@expo/vector-icons';
 import { Leg } from '../types';
+import { useTripStore } from '../stores/tripStore';
 import DarkCountryPicker from './DarkCountryPicker';
 import DarkDateSelector from './DarkDateSelector';
 
@@ -26,6 +27,8 @@ export default function AddLegModal({ visible, tripId, onClose, onSave }: AddLeg
   const [country, setCountry] = useState('');
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
+
+  const { getLegsByTrip } = useTripStore();
 
   // Popular countries for quick selection
   const popularCountries = [
@@ -52,10 +55,80 @@ export default function AddLegModal({ visible, tripId, onClose, onSave }: AddLeg
     onClose();
   };
 
+  // Validation functions
+  const validateDuplicateCountry = (selectedCountry: string): string | null => {
+    const existingLegs = getLegsByTrip(tripId);
+    const duplicateCountry = existingLegs.find(
+      (leg) => leg.country.toLowerCase() === selectedCountry.toLowerCase()
+    );
+
+    if (duplicateCountry) {
+      return `${selectedCountry} is already added to this trip. Each country can only be visited once per trip.`;
+    }
+    return null;
+  };
+
+  const validateDateOverlap = (newStartDate: string, newEndDate: string): string | null => {
+    if (!newStartDate || !newEndDate) return null; // Skip validation if dates are optional
+
+    const existingLegs = getLegsByTrip(tripId).filter((leg) => leg.startDate && leg.endDate);
+    const newStart = new Date(newStartDate);
+    const newEnd = new Date(newEndDate);
+
+    for (const leg of existingLegs) {
+      const legStart = new Date(leg.startDate);
+      const legEnd = new Date(leg.endDate);
+
+      // Check for overlap: newStart < legEnd && newEnd > legStart
+      if (newStart < legEnd && newEnd > legStart) {
+        return `Date range overlaps with your ${leg.country} leg (${formatDateRange(leg.startDate, leg.endDate)}). Please choose different dates.`;
+      }
+    }
+    return null;
+  };
+
+  const formatDateRange = (start: string, end: string): string => {
+    const startDate = new Date(start);
+    const endDate = new Date(end);
+    const options: Intl.DateTimeFormatOptions = { month: 'short', day: 'numeric' };
+
+    return `${startDate.toLocaleDateString('en-US', options)} - ${endDate.toLocaleDateString('en-US', options)}`;
+  };
+
+  const validateLegOrder = (newStartDate: string): string | null => {
+    if (!newStartDate) return null; // Skip if date is optional
+
+    const existingLegs = getLegsByTrip(tripId)
+      .filter((leg) => leg.startDate)
+      .sort((a, b) => new Date(a.startDate).getTime() - new Date(b.startDate).getTime());
+
+    if (existingLegs.length === 0) return null;
+
+    const newStart = new Date(newStartDate);
+    const lastLeg = existingLegs[existingLegs.length - 1];
+    const lastEnd = new Date(lastLeg.endDate || lastLeg.startDate);
+
+    // Suggest adding after the last leg
+    if (newStart <= lastEnd) {
+      const suggestedDate = new Date(lastEnd);
+      suggestedDate.setDate(suggestedDate.getDate() + 1);
+      return `For better organization, consider starting this leg after your ${lastLeg.country} leg ends (${suggestedDate.toLocaleDateString()}).`;
+    }
+
+    return null;
+  };
+
   const handleSave = () => {
     // Basic validation
     if (!country.trim()) {
-      Alert.alert('Error', 'Please select a country');
+      Alert.alert('Missing Country', 'Please select a country for this leg.');
+      return;
+    }
+
+    // Duplicate country validation
+    const duplicateError = validateDuplicateCountry(country.trim());
+    if (duplicateError) {
+      Alert.alert('Duplicate Country', duplicateError);
       return;
     }
 
@@ -64,11 +137,34 @@ export default function AddLegModal({ visible, tripId, onClose, onSave }: AddLeg
       const start = new Date(startDate);
       const end = new Date(endDate);
       if (start >= end) {
-        Alert.alert('Error', 'End date must be after start date');
+        Alert.alert('Invalid Dates', 'End date must be after start date.');
+        return;
+      }
+
+      // Date overlap validation
+      const overlapError = validateDateOverlap(startDate, endDate);
+      if (overlapError) {
+        Alert.alert('Date Conflict', overlapError);
         return;
       }
     }
 
+    // Chronological order suggestion (warning, not blocking)
+    if (startDate) {
+      const orderWarning = validateLegOrder(startDate);
+      if (orderWarning) {
+        Alert.alert('Leg Order Suggestion', orderWarning, [
+          { text: 'Continue Anyway', onPress: () => saveLeg() },
+          { text: 'Let Me Adjust', style: 'cancel' },
+        ]);
+        return;
+      }
+    }
+
+    saveLeg();
+  };
+
+  const saveLeg = () => {
     const legData: Omit<Leg, 'id'> = {
       tripId,
       country: country.trim(),
