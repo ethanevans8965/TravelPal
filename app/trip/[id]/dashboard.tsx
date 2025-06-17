@@ -12,11 +12,13 @@ import {
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useAppContext } from '../../context';
 import { useTripStore } from '../../stores/tripStore';
+import { Leg } from '../../types';
 import { FontAwesome } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import Button from '../../components/ui/Button';
 import DestinationModal from '../../components/dashboard/DestinationModal';
 import LegTimeline from '../../components/LegTimeline';
+import AddLegModal from '../../components/AddLegModal';
 
 const { width: screenWidth } = Dimensions.get('window');
 
@@ -24,8 +26,9 @@ export default function TripDashboardScreen() {
   const router = useRouter();
   const { id } = useLocalSearchParams();
   const { trips, updateTrip, getTripExpenses } = useAppContext();
-  const { getLegsByTrip } = useTripStore();
+  const { getLegsByTrip, addLeg } = useTripStore();
   const [destinationModalVisible, setDestinationModalVisible] = useState(false);
+  const [addLegModalVisible, setAddLegModalVisible] = useState(false);
   const [selectedLegId, setSelectedLegId] = useState<string | undefined>();
 
   const trip = trips.find((t) => t.id === id);
@@ -103,7 +106,17 @@ export default function TripDashboardScreen() {
   };
 
   const handleAddLeg = () => {
-    Alert.alert('Coming Soon', 'Add leg functionality coming soon!');
+    setAddLegModalVisible(true);
+  };
+
+  const handleAddLegSave = (legData: Omit<Leg, 'id'>) => {
+    try {
+      addLeg(legData);
+      setAddLegModalVisible(false);
+      Alert.alert('Success', 'Leg added successfully!');
+    } catch (error) {
+      Alert.alert('Error', 'Failed to add leg. Please try again.');
+    }
   };
 
   // Get actual itinerary data or show empty state
@@ -288,6 +301,14 @@ export default function TripDashboardScreen() {
         trip={trip}
         onClose={() => setDestinationModalVisible(false)}
         onSave={handleDestinationSave}
+      />
+
+      {/* Add Leg Modal */}
+      <AddLegModal
+        visible={addLegModalVisible}
+        tripId={trip.id}
+        onClose={() => setAddLegModalVisible(false)}
+        onSave={handleAddLegSave}
       />
     </View>
   );
