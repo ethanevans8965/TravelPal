@@ -62,6 +62,24 @@ export default function TripDashboardScreen() {
   };
 
   const getDateRangeText = () => {
+    // Use legs data if available, fallback to trip dates
+    if (tripLegs.length > 0) {
+      const legsWithDates = tripLegs.filter((leg) => leg.startDate && leg.endDate);
+      if (legsWithDates.length > 0) {
+        const sortedLegs = legsWithDates.sort(
+          (a, b) => new Date(a.startDate).getTime() - new Date(b.startDate).getTime()
+        );
+        const earliestStart = sortedLegs[0].startDate;
+        const latestEnd = sortedLegs.reduce(
+          (latest, leg) => (new Date(leg.endDate) > new Date(latest) ? leg.endDate : latest),
+          sortedLegs[0].endDate
+        );
+
+        return `${formatDate(earliestStart)} – ${formatDate(latestEnd)}`;
+      }
+    }
+
+    // Fallback to original trip dates
     if (trip.startDate && trip.endDate) {
       return `${formatDate(trip.startDate)} – ${formatDate(trip.endDate)}`;
     }
@@ -75,10 +93,29 @@ export default function TripDashboardScreen() {
   };
 
   const getCountriesText = () => {
+    // Use legs data if available
+    if (tripLegs.length > 0) {
+      const countries = tripLegs.map((leg) => leg.country);
+      const uniqueCountries = Array.from(new Set(countries)); // Remove duplicates but preserve order of first occurrence
+
+      if (uniqueCountries.length <= 3) {
+        return uniqueCountries.join(' • ');
+      } else {
+        return `${uniqueCountries.slice(0, 2).join(' • ')} • +${uniqueCountries.length - 2} more`;
+      }
+    }
+
+    // Fallback to original trip data
     if (trip.countries && trip.countries.length > 0) {
       return trip.countries.join(' • ');
     }
     return trip.destination?.country || 'Add destinations';
+  };
+
+  const getLegCountText = () => {
+    if (tripLegs.length === 0) return '';
+    if (tripLegs.length === 1) return '1 leg';
+    return `${tripLegs.length} legs`;
   };
 
   const handleDestinationSave = async (destination: { name: string; country: string }) => {
@@ -162,7 +199,10 @@ export default function TripDashboardScreen() {
               <Text style={styles.heroTitle}>{trip.name}</Text>
               <View style={styles.heroSubtitle}>
                 <FontAwesome name="map-pin" size={16} color="rgba(255,255,255,0.8)" />
-                <Text style={styles.heroSubtitleText}>{getCountriesText()}</Text>
+                <Text style={styles.heroSubtitleText}>
+                  {getCountriesText()}
+                  {tripLegs.length > 0 && ` • ${getLegCountText()}`}
+                </Text>
               </View>
             </View>
           </LinearGradient>
@@ -198,9 +238,9 @@ export default function TripDashboardScreen() {
           >
             <View style={styles.statHeader}>
               <FontAwesome name="globe" size={12} color="rgba(255,255,255,0.6)" />
-              <Text style={styles.statLabel}>Countries</Text>
+              <Text style={styles.statLabel}>Legs</Text>
             </View>
-            <Text style={styles.statValue}>{trip.countries?.length || 0}</Text>
+            <Text style={styles.statValue}>{getLegCountText()}</Text>
           </TouchableOpacity>
 
           <View style={styles.statCard}>
