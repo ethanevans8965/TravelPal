@@ -11,10 +11,12 @@ import {
 } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useAppContext } from '../../context';
+import { useTripStore } from '../../stores/tripStore';
 import { FontAwesome } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import Button from '../../components/ui/Button';
 import DestinationModal from '../../components/dashboard/DestinationModal';
+import LegTimeline from '../../components/LegTimeline';
 
 const { width: screenWidth } = Dimensions.get('window');
 
@@ -22,9 +24,12 @@ export default function TripDashboardScreen() {
   const router = useRouter();
   const { id } = useLocalSearchParams();
   const { trips, updateTrip, getTripExpenses } = useAppContext();
+  const { getLegsByTrip } = useTripStore();
   const [destinationModalVisible, setDestinationModalVisible] = useState(false);
+  const [selectedLegId, setSelectedLegId] = useState<string | undefined>();
 
   const trip = trips.find((t) => t.id === id);
+  const tripLegs = trip ? getLegsByTrip(trip.id) : [];
 
   if (!trip) {
     return (
@@ -93,6 +98,14 @@ export default function TripDashboardScreen() {
     }
   };
 
+  const handleLegSelect = (legId: string) => {
+    setSelectedLegId(selectedLegId === legId ? undefined : legId);
+  };
+
+  const handleAddLeg = () => {
+    Alert.alert('Coming Soon', 'Add leg functionality coming soon!');
+  };
+
   // Get actual itinerary data or show empty state
   const getItineraryItems = () => {
     if (trip.itinerary && trip.itinerary.length > 0) {
@@ -142,6 +155,16 @@ export default function TripDashboardScreen() {
           </LinearGradient>
         </ImageBackground>
       </View>
+
+      {/* Leg Timeline */}
+      {tripLegs.length > 0 && (
+        <LegTimeline
+          legs={tripLegs}
+          selectedLegId={selectedLegId}
+          onLegSelect={handleLegSelect}
+          onAddLeg={handleAddLeg}
+        />
+      )}
 
       {/* Content */}
       <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
