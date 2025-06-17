@@ -77,6 +77,8 @@ export interface Trip {
   itinerary?: any[]; // For future itinerary items
   /** List of countries visited in this trip */
   countries?: string[];
+  /** Trip segments for multi-country trips */
+  segments?: Segment[];
   /** Date selection mode: both dates, start only, or flexible */
   dateMode?: 'both' | 'start-only' | 'no-dates';
   completionPercentage?: number; // Cached completion percentage
