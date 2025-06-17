@@ -56,18 +56,6 @@ export default function AddLegModal({ visible, tripId, onClose, onSave }: AddLeg
   };
 
   // Validation functions
-  const validateDuplicateCountry = (selectedCountry: string): string | null => {
-    const existingLegs = getLegsByTrip(tripId);
-    const duplicateCountry = existingLegs.find(
-      (leg) => leg.country.toLowerCase() === selectedCountry.toLowerCase()
-    );
-
-    if (duplicateCountry) {
-      return `${selectedCountry} is already added to this trip. Each country can only be visited once per trip.`;
-    }
-    return null;
-  };
-
   const validateDateOverlap = (newStartDate: string, newEndDate: string): string | null => {
     if (!newStartDate || !newEndDate) return null; // Skip validation if dates are optional
 
@@ -122,13 +110,6 @@ export default function AddLegModal({ visible, tripId, onClose, onSave }: AddLeg
     // Basic validation
     if (!country.trim()) {
       Alert.alert('Missing Country', 'Please select a country for this leg.');
-      return;
-    }
-
-    // Duplicate country validation
-    const duplicateError = validateDuplicateCountry(country.trim());
-    if (duplicateError) {
-      Alert.alert('Duplicate Country', duplicateError);
       return;
     }
 
