@@ -19,6 +19,7 @@ import Button from '../../components/ui/Button';
 import DestinationModal from '../../components/dashboard/DestinationModal';
 import LegTimeline from '../../components/LegTimeline';
 import AddLegModal from '../../components/AddLegModal';
+import CalendarPreviewWidget from '../../components/dashboard/CalendarPreviewWidget';
 
 const { width: screenWidth } = Dimensions.get('window');
 
@@ -294,6 +295,19 @@ export default function TripDashboardScreen() {
             </View>
           </View>
         </View>
+
+        {/* Calendar Preview Widget */}
+        <CalendarPreviewWidget
+          tripId={trip.id}
+          onLegEdit={(leg) => {
+            // For now, show an alert - we'll implement edit modal later
+            Alert.alert('Edit Leg', `Edit ${leg.country} leg (${leg.startDate} - ${leg.endDate})`);
+          }}
+          onOpenPlanner={() => {
+            // For now, open the existing AddLegModal - we'll implement full planner later
+            setAddLegModalVisible(true);
+          }}
+        />
 
         {/* Upcoming Itinerary */}
         <View style={styles.section}>

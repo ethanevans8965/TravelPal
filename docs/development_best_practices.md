@@ -1081,4 +1081,33 @@ User Input → UI Validation → Business Logic Checks → User Confirmations �
 - **Informational**: Timeline gaps, optimization suggestions
 - **Recovery Options**: Clear paths to fix or override validation issues
 
+## Calendar System (✅ COMPLETE)
+
+### CalendarPreviewWidget Component
+
+- **Two-Week Display**: Current + next week in responsive grid layout
+- **Visual Leg Indicators**: Hash-based country colors, up to 2 bars per day
+- **Smart Date Logic**: Automatic Sunday-start weeks, today highlighting
+- **Interactive Elements**: Tap-to-edit legs, "See More" for full planner
+- **Empty State Handling**: Beautiful placeholder with clear CTAs
+- **Performance Optimized**: useMemo for expensive calculations
+
+### Calendar Integration Patterns
+
+- **Dashboard Placement**: Between stats cards and expense breakdown
+- **Callback Architecture**: onLegEdit and onOpenPlanner props for extensibility
+- **Store Integration**: Direct connection to Zustand trip store
+- **Responsive Design**: Adapts to different screen sizes and leg counts
+
+### Visual Design Standards
+
+```typescript
+// Color System for Countries
+const getCountryColor = (country: string) => {
+  // Hash-based deterministic colors from premium palette
+  const colors = ['#3B82F6', '#10B981', '#F59E0B', '#EF4444', '#8B5CF6'];
+  // Consistent color assignment per country
+};
+```
+
 ## UI/UX Standards
