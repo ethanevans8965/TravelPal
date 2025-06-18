@@ -4,18 +4,119 @@
 
 ---
 
+## 🌙 **Dark Mode Priority Notice**
+
+**TravelPal prioritizes dark mode as the primary user experience.** All new components, screens, and features should be developed with dark mode styling as the default implementation. Light mode support will be added as a secondary phase.
+
+**Key Dark Mode Requirements:**
+
+- Use dark theme color palette as defined in `src/theme/colors.ts`
+- Follow dark mode component patterns from `docs/dark_mode_component_library.md`
+- Ensure WCAG AA accessibility compliance with high contrast ratios (4.5:1 minimum)
+- Optimize for OLED displays with pure black backgrounds (#000000)
+- Use platform-appropriate modal presentations (pageSheet for iOS, overFullScreen for Android)
+
+---
+
 ## 📋 Table of Contents
 
-1. [Code Organization](#-code-organization)
-2. [TypeScript Standards](#-typescript-standards)
-3. [Component Development](#-component-development)
-4. [State Management](#-state-management)
-5. [Styling Guidelines](#-styling-guidelines)
-6. [Performance Best Practices](#-performance-best-practices)
-7. [Testing Standards](#-testing-standards)
-8. [Git Workflow](#-git-workflow)
-9. [Error Handling](#-error-handling)
-10. [Documentation Requirements](#-documentation-requirements)
+1. [Dark Mode Development](#-dark-mode-development)
+2. [Code Organization](#-code-organization)
+3. [TypeScript Standards](#-typescript-standards)
+4. [Component Development](#-component-development)
+5. [State Management](#-state-management)
+6. [Styling Guidelines](#-styling-guidelines)
+7. [Performance Best Practices](#-performance-best-practices)
+8. [Testing Standards](#-testing-standards)
+9. [Git Workflow](#-git-workflow)
+10. [Error Handling](#-error-handling)
+11. [Documentation Requirements](#-documentation-requirements)
+
+---
+
+## 🌙 Dark Mode Development
+
+### **Component Creation Standards**
+
+When creating new components, follow the dark mode standards:
+
+```typescript
+// ✅ Good: Dark mode component structure
+import React from 'react';
+import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { colors } from '../../src/theme/colors';
+
+interface DarkComponentProps {
+  title: string;
+  onPress: () => void;
+}
+
+export default function DarkComponent({ title, onPress }: DarkComponentProps) {
+  return (
+    <TouchableOpacity style={styles.container} onPress={onPress}>
+      <Text style={styles.title}>{title}</Text>
+    </TouchableOpacity>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: {
+    backgroundColor: colors.dark.surface, // Use dark theme colors
+    borderRadius: 12,
+    padding: 16,
+    borderWidth: 1,
+    borderColor: colors.dark.border,
+  },
+  title: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: colors.dark.text, // White text for dark backgrounds
+  },
+});
+```
+
+### **Modal Implementation Standards**
+
+```typescript
+// ✅ Good: Dark modal implementation
+<Modal
+  visible={visible}
+  animationType="slide"
+  transparent={true}
+  presentationStyle={Platform.OS === 'ios' ? 'pageSheet' : 'overFullScreen'}
+>
+  <TouchableWithoutFeedback onPress={onClose}>
+    <View style={styles.modalOverlay}>
+      <TouchableWithoutFeedback>
+        <View style={styles.modalContainer}>
+          {/* Modal content */}
+        </View>
+      </TouchableWithoutFeedback>
+    </View>
+  </TouchableWithoutFeedback>
+</Modal>
+
+const styles = StyleSheet.create({
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: colors.dark.overlay, // Dark overlay
+    justifyContent: 'flex-end',
+  },
+  modalContainer: {
+    backgroundColor: colors.dark.surface, // Dark surface
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+    // ...
+  },
+});
+```
+
+### **Accessibility Requirements**
+
+- **Text Contrast**: Ensure 4.5:1 contrast ratio between text and background
+- **Focus Indicators**: Use blue accent (#007AFF) for focus rings and selected states
+- **Touch Targets**: Minimum 44pt touch targets for interactive elements
+- **Screen Reader Support**: Proper accessibility labels and hints
 
 ---
 
@@ -638,6 +739,97 @@ Include before/after screenshots for UI changes.
 - [ ] Documentation updated
 - [ ] Breaking changes documented
 ```
+
+---
+
+## ✅ Validation Patterns
+
+### Form Validation Standards
+
+TravelPal uses a layered validation approach with user-friendly messaging and smart defaults.
+
+#### **Leg Validation Example**
+
+```typescript
+// ✅ Good: Comprehensive validation with user guidance
+const validateDateOverlap = (newStartDate: string, newEndDate: string): string | null => {
+  if (!newStartDate || !newEndDate) return null; // Skip validation if dates are optional
+
+  const existingLegs = getLegsByTrip(tripId).filter((leg) => leg.startDate && leg.endDate);
+  const newStart = new Date(newStartDate);
+  const newEnd = new Date(newEndDate);
+
+  for (const leg of existingLegs) {
+    const legStart = new Date(leg.startDate);
+    const legEnd = new Date(leg.endDate);
+
+    // Check for overlap: newStart < legEnd && newEnd > legStart
+    if (newStart < legEnd && newEnd > legStart) {
+      return `Date range overlaps with your ${leg.country} leg (${formatDateRange(leg.startDate, leg.endDate)}). Please choose different dates.`;
+    }
+  }
+  return null;
+};
+
+const validateDuplicateCountry = (countryName: string): string | null => {
+  if (!countryName.trim()) return null;
+
+  const existingLegs = getLegsByTrip(tripId);
+  const duplicateLegs = existingLegs.filter(
+    (leg) => leg.country.toLowerCase() === countryName.toLowerCase()
+  );
+
+  if (duplicateLegs.length > 0) {
+    const legCount = duplicateLegs.length;
+    const legText = legCount === 1 ? 'leg' : 'legs';
+    return `You already have ${legCount} ${legText} in ${countryName}. Are you planning to return to this country?`;
+  }
+
+  return null;
+};
+```
+
+#### **Validation Implementation Patterns**
+
+```typescript
+// ✅ Good: Multi-layer validation with user choice
+const handleSave = () => {
+  // 1. Basic validation (blocking)
+  if (!country.trim()) {
+    Alert.alert('Missing Country', 'Please select a country for this leg.');
+    return;
+  }
+
+  // 2. Data integrity validation (blocking)
+  if (startDate && endDate) {
+    const overlapError = validateDateOverlap(startDate, endDate);
+    if (overlapError) {
+      Alert.alert('Date Conflict', overlapError);
+      return;
+    }
+  }
+
+  // 3. Smart suggestions (non-blocking)
+  const duplicateWarning = validateDuplicateCountry(country);
+  if (duplicateWarning) {
+    Alert.alert('Returning to Country?', duplicateWarning, [
+      { text: 'Yes, Continue', onPress: () => saveLeg() },
+      { text: 'Let Me Change', style: 'cancel' },
+    ]);
+    return;
+  }
+
+  saveLeg();
+};
+```
+
+### **Validation Principles**
+
+1. **Layered Validation**: Basic → Data Integrity → Smart Suggestions
+2. **User-Friendly Messages**: Clear, conversational language
+3. **Allow User Choice**: Non-blocking warnings for valid edge cases
+4. **Contextual Guidance**: Provide specific examples and suggestions
+5. **Graceful Fallbacks**: Handle incomplete or optional data gracefully
 
 ---
 

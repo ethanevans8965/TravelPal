@@ -106,6 +106,23 @@ export default function AddLegModal({ visible, tripId, onClose, onSave }: AddLeg
     return null;
   };
 
+  const validateDuplicateCountry = (countryName: string): string | null => {
+    if (!countryName.trim()) return null;
+
+    const existingLegs = getLegsByTrip(tripId);
+    const duplicateLegs = existingLegs.filter(
+      (leg) => leg.country.toLowerCase() === countryName.toLowerCase()
+    );
+
+    if (duplicateLegs.length > 0) {
+      const legCount = duplicateLegs.length;
+      const legText = legCount === 1 ? 'leg' : 'legs';
+      return `You already have ${legCount} ${legText} in ${countryName}. Are you planning to return to this country?`;
+    }
+
+    return null;
+  };
+
   const handleSave = () => {
     // Basic validation
     if (!country.trim()) {
@@ -135,11 +152,25 @@ export default function AddLegModal({ visible, tripId, onClose, onSave }: AddLeg
       const orderWarning = validateLegOrder(startDate);
       if (orderWarning) {
         Alert.alert('Leg Order Suggestion', orderWarning, [
-          { text: 'Continue Anyway', onPress: () => saveLeg() },
+          { text: 'Continue Anyway', onPress: () => checkDuplicateCountryAndSave() },
           { text: 'Let Me Adjust', style: 'cancel' },
         ]);
         return;
       }
+    }
+
+    checkDuplicateCountryAndSave();
+  };
+
+  const checkDuplicateCountryAndSave = () => {
+    // Duplicate country suggestion (warning, not blocking)
+    const duplicateWarning = validateDuplicateCountry(country);
+    if (duplicateWarning) {
+      Alert.alert('Returning to Country?', duplicateWarning, [
+        { text: 'Yes, Continue', onPress: () => saveLeg() },
+        { text: 'Let Me Change', style: 'cancel' },
+      ]);
+      return;
     }
 
     saveLeg();
