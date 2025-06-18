@@ -1017,3 +1017,68 @@ const calculateMonthlyTotals = (expenses: Expense[]): MonthlyTotals => {
 ---
 
 **Following these best practices ensures TravelPal maintains high code quality, performance, and maintainability as it grows!** 🚀✨
+
+## Overview
+
+This document outlines the development standards, patterns, and best practices for TravelPal.
+
+## Code Architecture
+
+### Store Management (Zustand)
+
+- **Validation at Store Level**: All CRUD operations include comprehensive validation
+- **Bypass Mechanisms**: Store methods support bypass flags for user-confirmed actions
+- **Error Handling**: Stores throw descriptive errors for validation failures
+- **Cross-Store Coordination**: Stores handle related data deletion/updates
+
+### Component Patterns
+
+- **Validation Flow**: UI validation first, then store validation with bypass options
+- **Error Recovery**: Multiple validation layers with user-friendly override options
+- **User Feedback**: Clear warning dialogs for data conflicts with choice to proceed
+
+### Data Integrity
+
+- **Duplicate Detection**: Prevent accidental duplicates while allowing intentional ones
+- **Date Validation**: Comprehensive date range, overlap, and chronological checks
+- **Timeline Management**: Gap detection and chronological ordering suggestions
+- **Fallback Systems**: Robust ID generation with crypto and fallback methods
+
+## Leg Management System (✅ COMPLETE)
+
+### Validation Layers
+
+1. **UI Layer Validation**:
+
+   - Basic field validation (required fields)
+   - Date range validation (start < end, future limits)
+   - Minimum duration checks (1+ days)
+   - Single date validation for partial entries
+
+2. **Business Logic Validation**:
+
+   - Duplicate country detection with date context
+   - Date overlap prevention between legs
+   - Timeline gap detection and reporting
+   - Chronological ordering suggestions
+
+3. **Store Layer Validation**:
+   - Final data integrity checks
+   - Bypass mechanisms for confirmed duplicates
+   - Comprehensive error reporting
+   - Transaction-safe state updates
+
+### User Experience Flow
+
+```
+User Input → UI Validation → Business Logic Checks → User Confirmations → Store Validation (with bypass) → Success
+```
+
+### Error Handling Strategy
+
+- **Blocking Errors**: Invalid dates, required fields, date overlaps
+- **Warning Prompts**: Duplicate countries, chronological order suggestions
+- **Informational**: Timeline gaps, optimization suggestions
+- **Recovery Options**: Clear paths to fix or override validation issues
+
+## UI/UX Standards

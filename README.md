@@ -7,11 +7,16 @@
 [![Expo](https://img.shields.io/badge/Expo-49-black.svg)](https://expo.dev/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.0-blue.svg)](https://www.typescriptlang.org/)
 
+## 🌙 **Dark Mode Priority**
+
+**TravelPal features a premium dark-first design experience.** The app is optimized for dark mode with careful attention to accessibility, readability, and battery efficiency on OLED displays. All components use a consistent dark color palette with high contrast ratios for optimal user experience.
+
 ## ✨ Features
 
-### 🎨 **Beautiful Modern UI**
+### 🎨 **Beautiful Dark Mode UI**
 
-- **Stunning Visual Design** with modern slate/blue color palette
+- **Premium Dark Visual Design** with pure black backgrounds and elevated surfaces
+- **High Contrast Typography** optimized for dark environments (WCAG AA compliant)
 - **Elegant Shadows & Gradients** for premium feel
 - **Smooth Animations** and micro-interactions
 - **Enhanced Navigation System** with haptic feedback and transitions

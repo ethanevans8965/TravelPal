@@ -77,17 +77,17 @@ const styles = StyleSheet.create({
   chip: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#f5f5f5',
+    backgroundColor: '#262626', // Dark elevated surface
     borderRadius: 20,
     paddingHorizontal: 12,
     paddingVertical: 8,
     marginHorizontal: 4,
     borderWidth: 1,
-    borderColor: '#e0e0e0',
+    borderColor: '#404040', // Dark border
   },
   chipSelected: {
-    backgroundColor: '#007AFF',
-    borderColor: '#007AFF',
+    backgroundColor: 'rgba(0, 122, 255, 0.1)', // Accent background
+    borderColor: '#007AFF', // Accent border
   },
   flag: {
     fontSize: 18,
@@ -99,14 +99,14 @@ const styles = StyleSheet.create({
   country: {
     fontSize: 14,
     fontWeight: '600',
-    color: '#333',
+    color: '#FFFFFF', // White primary text
   },
   dates: {
     fontSize: 12,
-    color: '#666',
+    color: '#CCCCCC', // Gray secondary text
     marginTop: 2,
   },
   textSelected: {
-    color: '#fff',
+    color: '#007AFF', // Accent text when selected
   },
 });

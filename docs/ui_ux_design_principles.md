@@ -1,6 +1,6 @@
 # 🎨 TravelPal UI/UX Design Principles
 
-> **Design philosophy and implementation guidelines for TravelPal's beautiful, modern interface**
+> **Design philosophy and implementation guidelines for TravelPal's beautiful, dark-mode interface**
 
 ---
 
@@ -17,335 +17,374 @@ TravelPal's design is built on four fundamental pillars that guide every interfa
 
 ### **Design Goals**
 
-- **Transform "shit" UI into "amazing" experiences** ✅ _Achieved in Phase 3_
+- **Premium Dark-First Experience** ✅ _Primary focus since v2.0_
 - **Create professional, enterprise-ready interfaces** suitable for business users
-- **Establish a consistent design system** that scales across all features
+- **Establish a consistent dark design system** that scales across all features
 - **Optimize for mobile-first interactions** with gesture-based navigation
-- **Ensure accessibility compliance** following WCAG 2.1 AA standards
+- **Ensure accessibility compliance** with high contrast ratios in dark mode
+- **Future light mode support** while maintaining design consistency
 
 ---
 
-## 🎨 **Visual Design System**
+## 🌙 **Dark Mode Design System (Primary)**
 
-### **Color Palette**
+### **Dark Mode Color Palette**
 
-Our carefully crafted color system provides professional elegance with excellent accessibility:
-
-```typescript
-// Primary Colors
-const colors = {
-  // Main Brand Colors
-  slate900: '#1E293B', // Primary backgrounds, headers
-  blue500: '#0EA5E9', // Primary actions, links, highlights
-  slate600: '#64748B', // Secondary text, borders
-  slate50: '#F8FAFC', // Light backgrounds, cards
-
-  // Semantic Colors
-  emerald500: '#10B981', // Success states, positive indicators
-  red500: '#EF4444', // Error states, delete actions
-  amber500: '#F59E0B', // Warning states, budget alerts
-
-  // Neutral Grays
-  gray900: '#111827', // Primary text
-  gray600: '#6B7280', // Secondary text
-  gray400: '#9CA3AF', // Tertiary text, placeholders
-  gray100: '#F3F4F6', // Dividers, subtle backgrounds
-  white: '#FFFFFF', // Pure white for contrast
-};
-```
-
-### **Typography System**
-
-Consistent typography creates visual hierarchy and improves readability:
+Our carefully crafted dark color system provides premium elegance with excellent readability:
 
 ```typescript
-const typography = {
-  // Heading Styles
-  h1: { fontSize: 32, fontWeight: '800', color: colors.slate900 },
-  h2: { fontSize: 24, fontWeight: '700', color: colors.slate900 },
-  h3: { fontSize: 20, fontWeight: '600', color: colors.slate900 },
+// PRIMARY DARK THEME
+const darkColors = {
+  // Background Hierarchy
+  background: '#000000', // Pure black for main screens
+  surface: '#171717', // Dark surface for modals, cards
+  card: '#262626', // Elevated elements, input fields
+  overlay: 'rgba(0, 0, 0, 0.7)', // Modal overlays
 
-  // Body Text
-  body: { fontSize: 16, fontWeight: '400', color: colors.gray900 },
-  bodyMedium: { fontSize: 16, fontWeight: '500', color: colors.gray900 },
-  bodySemibold: { fontSize: 16, fontWeight: '600', color: colors.gray900 },
-
-  // Small Text
-  caption: { fontSize: 14, fontWeight: '400', color: colors.gray600 },
-  small: { fontSize: 12, fontWeight: '400', color: colors.gray600 },
+  // Text Hierarchy
+  text: '#FFFFFF', // Primary text
+  textSecondary: '#CCCCCC', // Secondary text, labels
+  textTertiary: '#666666', // Placeholders, disabled text
 
   // Interactive Elements
-  button: { fontSize: 16, fontWeight: '600', color: colors.white },
-  link: { fontSize: 16, fontWeight: '500', color: colors.blue500 },
+  accent: '#007AFF', // Blue accent for buttons, links
+  accentBackground: 'rgba(0, 122, 255, 0.1)', // Light accent backgrounds
+  border: '#404040', // Borders, dividers, separators
+
+  // Status Colors (Dark Compatible)
+  success: '#34C759', // Green for success states
+  warning: '#FF9500', // Orange for warnings
+  error: '#FF3B30', // Red for errors
 };
 ```
 
-### **Spacing & Layout**
+### **Dark Mode Typography System**
 
-Consistent spacing creates visual rhythm and improves usability:
+Optimized typography for dark backgrounds with proper contrast:
+
+```typescript
+const darkTypography = {
+  // Heading Styles (High Contrast)
+  h1: { fontSize: 32, fontWeight: '800', color: '#FFFFFF' },
+  h2: { fontSize: 24, fontWeight: '700', color: '#FFFFFF' },
+  h3: { fontSize: 20, fontWeight: '600', color: '#FFFFFF' },
+
+  // Body Text (Readable on Dark)
+  body: { fontSize: 16, fontWeight: '400', color: '#FFFFFF' },
+  bodyMedium: { fontSize: 16, fontWeight: '500', color: '#FFFFFF' },
+  bodySemibold: { fontSize: 16, fontWeight: '600', color: '#FFFFFF' },
+
+  // Secondary Text (Reduced Opacity)
+  caption: { fontSize: 14, fontWeight: '400', color: '#CCCCCC' },
+  small: { fontSize: 12, fontWeight: '400', color: '#CCCCCC' },
+
+  // Interactive Elements
+  button: { fontSize: 16, fontWeight: '600', color: '#FFFFFF' },
+  link: { fontSize: 16, fontWeight: '500', color: '#007AFF' },
+  placeholder: { fontSize: 16, fontWeight: '400', color: '#666666' },
+};
+```
+
+### **Dark Mode Spacing & Layout**
+
+Consistent spacing optimized for dark interface elements:
 
 ```typescript
 const spacing = {
-  // Base Units (px)
-  xs: 4, // Tiny gaps, icon spacing
-  sm: 8, // Small gaps, tight spacing
-  md: 16, // Standard padding, card spacing
-  lg: 24, // Section spacing, large gaps
-  xl: 32, // Major section breaks
-  xxl: 48, // Screen-level spacing
+  // Base Units (px) - Same for all themes
+  xs: 4,
+  sm: 8,
+  md: 16,
+  lg: 24,
+  xl: 32,
+  xxl: 48,
 
-  // Component-Specific
-  cardPadding: 16,
-  screenPadding: 24,
+  // Dark-Optimized Component Spacing
+  cardPadding: 16, // Internal card padding
+  screenPadding: 24, // Screen edge padding
+  modalPadding: 20, // Modal container padding
+  sectionSpacing: 24, // Between major sections
+
+  // Interactive Element Padding
   buttonPadding: { vertical: 12, horizontal: 24 },
-  inputPadding: { vertical: 12, horizontal: 16 },
+  inputPadding: { vertical: 16, horizontal: 16 },
+  chipPadding: { vertical: 8, horizontal: 12 },
 };
 ```
 
 ---
 
-## 🎭 **Component Design Standards**
+## 🎭 **Dark Mode Component Standards**
 
-### **Card System**
+### **Modal System (Dark)**
 
-Cards are the primary container for content across TravelPal:
+Modern dark modals with smooth presentations:
 
 ```typescript
-const cardStyles = {
-  // Standard Card
-  card: {
-    backgroundColor: colors.white,
-    borderRadius: 16, // Consistent rounded corners
-    shadowColor: colors.gray900,
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.1,
-    shadowRadius: 8,
-    elevation: 8, // Android shadow
-    padding: spacing.md,
+const darkModalStyles = {
+  // Modal Container
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.7)', // Dark overlay
+    justifyContent: 'flex-end', // Bottom sheet style
   },
 
-  // Elevated Card (important content)
-  elevatedCard: {
-    shadowOffset: { width: 0, height: 8 },
-    shadowOpacity: 0.15,
-    shadowRadius: 12,
-    elevation: 12,
+  modalContainer: {
+    backgroundColor: '#171717', // Dark surface
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+    paddingHorizontal: 20,
+    paddingBottom: 30,
+    maxHeight: '80%',
+  },
+
+  // Modal Header
+  modalHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingVertical: 20,
+    borderBottomWidth: 1,
+    borderBottomColor: '#404040', // Dark border
+  },
+
+  modalTitle: {
+    fontSize: 20,
+    fontWeight: '600',
+    color: '#FFFFFF',
   },
 };
 ```
 
-### **Button System**
+### **Input System (Dark)**
 
-Comprehensive button variants for all use cases:
+Dark-themed form inputs with high contrast:
 
 ```typescript
-const buttonStyles = {
-  // Primary Button
+const darkInputStyles = {
+  // Input Container
+  inputContainer: {
+    backgroundColor: '#262626', // Dark input background
+    borderRadius: 8,
+    padding: 16,
+    borderWidth: 1,
+    borderColor: '#404040', // Subtle border
+  },
+
+  // Input Text
+  input: {
+    fontSize: 16,
+    color: '#FFFFFF', // White text
+    placeholderTextColor: '#666666', // Dark gray placeholder
+  },
+
+  // Focused State
+  inputFocused: {
+    borderColor: '#007AFF', // Blue accent when focused
+    backgroundColor: '#262626', // Maintain dark background
+  },
+
+  // Search Input (with icon)
+  searchContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#262626',
+    borderRadius: 10,
+    paddingHorizontal: 12,
+    marginVertical: 16,
+  },
+};
+```
+
+### **Button System (Dark)**
+
+Comprehensive dark button variants:
+
+```typescript
+const darkButtonStyles = {
+  // Primary Button (Blue Accent)
   primary: {
-    backgroundColor: colors.blue500,
+    backgroundColor: '#007AFF',
     borderRadius: 12,
     paddingVertical: 12,
     paddingHorizontal: 24,
-    shadowColor: colors.blue500,
+    shadowColor: '#007AFF',
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.3,
     shadowRadius: 8,
   },
 
-  // Secondary Button
+  // Secondary Button (Dark with Border)
   secondary: {
-    backgroundColor: colors.slate50,
+    backgroundColor: 'transparent',
     borderWidth: 1,
-    borderColor: colors.slate600,
+    borderColor: '#404040',
     borderRadius: 12,
   },
 
-  // Danger Button
-  danger: {
-    backgroundColor: colors.red500,
-    shadowColor: colors.red500,
+  // Chip/Tag Button
+  chip: {
+    backgroundColor: '#262626',
+    borderRadius: 20,
+    paddingVertical: 8,
+    paddingHorizontal: 12,
+    borderWidth: 1,
+    borderColor: '#404040',
+  },
+
+  chipSelected: {
+    backgroundColor: 'rgba(0, 122, 255, 0.1)',
+    borderColor: '#007AFF',
   },
 };
 ```
 
-### **Input System**
+### **Card System (Dark)**
 
-Modern, accessible form inputs:
+Dark cards with proper elevation and hierarchy:
 
 ```typescript
-const inputStyles = {
+const darkCardStyles = {
+  // Standard Dark Card
+  card: {
+    backgroundColor: '#171717', // Dark surface
+    borderRadius: 16,
+    padding: 16,
+    borderWidth: 1,
+    borderColor: '#404040', // Subtle border for definition
+  },
+
+  // Elevated Card (Important Content)
+  elevatedCard: {
+    backgroundColor: '#262626', // Lighter dark surface
+    borderRadius: 16,
+    padding: 20,
+    borderWidth: 1,
+    borderColor: '#404040',
+    shadowColor: '#000000',
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.3,
+    shadowRadius: 12,
+    elevation: 8,
+  },
+
+  // Timeline/List Item Card
+  listCard: {
+    backgroundColor: '#262626',
+    borderRadius: 12,
+    padding: 16,
+    marginVertical: 4,
+    borderWidth: 1,
+    borderColor: '#404040',
+  },
+};
+```
+
+---
+
+## 🔄 **Theme Implementation Strategy**
+
+### **Current State: Dark Mode Priority**
+
+- **Primary Development**: All new components use dark mode styling
+- **Component Library**: Dark-themed reusable components (DarkCountryPicker, DarkDateSelector)
+- **Modal System**: Dark modals with pageSheet presentation
+- **Navigation**: Dark headers and navigation elements
+
+### **Future: Light Mode Support**
+
+When implementing light mode support:
+
+1. **Theme Context**: Create theme context to switch between dark/light
+2. **Component Updates**: Update all components to use theme-aware styling
+3. **User Preference**: Add settings to choose theme preference
+4. **System Integration**: Respect system dark/light mode settings
+
+### **Migration Pattern**
+
+```typescript
+// Current (Dark Priority)
+const styles = StyleSheet.create({
   container: {
-    backgroundColor: colors.slate50,
-    borderRadius: 12,
-    borderWidth: 1,
-    borderColor: colors.gray100,
-    paddingVertical: 12,
-    paddingHorizontal: 16,
+    backgroundColor: '#171717', // Hard-coded dark
+    // ...
   },
+});
 
-  focused: {
-    borderColor: colors.blue500,
-    backgroundColor: colors.white,
-    shadowColor: colors.blue500,
-    shadowOffset: { width: 0, height: 0 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-  },
-
-  error: {
-    borderColor: colors.red500,
-    backgroundColor: colors.red50,
-  },
-};
+// Future (Theme Aware)
+const styles = (theme: ThemeColors) =>
+  StyleSheet.create({
+    container: {
+      backgroundColor: theme.surface, // Theme-aware
+      // ...
+    },
+  });
 ```
 
 ---
 
-## 🔄 **Animation & Interaction Design**
+## 📱 **Platform-Specific Dark Mode Guidelines**
 
-### **Animation Principles**
+### **iOS Dark Mode**
 
-- **Purposeful** - Every animation serves a functional purpose
-- **Fast** - All animations complete in 200-300ms for responsiveness
-- **Smooth** - 60fps performance on all target devices
-- **Consistent** - Similar interactions use similar animation patterns
+- **Status Bar**: Light content on dark backgrounds
+- **Navigation**: Use pageSheet for modals
+- **Safe Areas**: Respect safe area insets with dark backgrounds
+- **Haptic Feedback**: Enhanced feedback for dark interfaces
 
-### **Gesture System**
+### **Android Dark Mode**
 
-Modern mobile interactions prioritizing touch-first design:
-
-```typescript
-const gestureInteractions = {
-  // Swipe Actions
-  swipeToDelete: {
-    threshold: 100, // px to trigger action
-    animation: 'spring', // Animation type
-    hapticFeedback: 'medium', // iOS haptic intensity
-  },
-
-  // Pull to Refresh
-  pullToRefresh: {
-    triggerDistance: 80,
-    animation: 'timing',
-    duration: 200,
-  },
-
-  // Long Press
-  longPress: {
-    minimumPressDuration: 500,
-    hapticFeedback: 'light',
-  },
-};
-```
-
-### **Micro-Interactions**
-
-Subtle animations that enhance usability:
-
-- **Button Press** - Scale down to 95% with spring animation
-- **Card Hover** - Subtle elevation increase and shadow expansion
-- **Loading States** - Skeleton screens with shimmer effects
-- **State Changes** - Color transitions with 200ms timing
-- **Focus States** - Gentle shadow and scale animations
+- **Status Bar**: Translucent with light icons
+- **Navigation**: Use overFullScreen for modals
+- **Material Design**: Follow Material 3 dark theme guidelines
+- **System Integration**: Respect Android 10+ dark mode settings
 
 ---
 
-## 📱 **Mobile-First Design**
+## 🎨 **Design Patterns & Best Practices**
 
-### **Touch Target Standards**
+### **Accessibility in Dark Mode**
 
-Following Apple and Google guidelines for accessible touch targets:
+- **Contrast Ratios**: Maintain WCAG AA compliance (4.5:1 for normal text)
+- **Focus Indicators**: High contrast focus rings (#007AFF on dark backgrounds)
+- **Color Independence**: Don't rely solely on color for information
+- **Text Scaling**: Support dynamic type scaling in dark mode
 
-```typescript
-const touchTargets = {
-  minimum: 44, // Minimum touch target size (iOS standard)
-  recommended: 48, // Recommended size for better usability
-  spacing: 8, // Minimum spacing between touch targets
+### **Performance Optimization**
 
-  // Component Specific
-  buttonHeight: 48,
-  tabHeight: 56,
-  listItemHeight: 56,
-  cardMinHeight: 80,
-};
-```
+- **Pure Black Backgrounds**: Use #000000 for OLED power savings
+- **Reduced Glow Effects**: Minimize expensive shadow/glow effects
+- **Dark Image Optimization**: Use darker hero images for better integration
 
-### **Screen Density Support**
+### **User Experience**
 
-Adaptive design for various screen sizes and densities:
-
-- **Small Screens** (iPhone SE): Optimized layouts with priority content
-- **Standard Screens** (iPhone 12): Balanced layouts with full features
-- **Large Screens** (iPhone Pro Max): Enhanced layouts with additional context
-- **Tablets** (iPad): Adaptive layouts utilizing larger screen real estate
-
-### **Safe Area Handling**
-
-Proper respect for device-specific constraints:
-
-```typescript
-const safeAreaHandling = {
-  // Screen edges
-  top: 'respect notch and status bar',
-  bottom: 'respect home indicator',
-  sides: 'respect curved edges',
-
-  // Navigation
-  tabBar: 'above home indicator',
-  modal: 'full safe area respect',
-  keyboard: 'adaptive resize behavior',
-};
-```
+- **Smooth Transitions**: Dark mode transitions should be seamless
+- **Content Hierarchy**: Use multiple gray levels for clear hierarchy
+- **Touch Targets**: Maintain 44pt minimum touch targets
+- **Gesture Support**: Swipe-to-dismiss for modals and overlays
 
 ---
 
-## ♿ **Accessibility Standards**
+## 📐 **Layout & Grid System**
 
-### **WCAG 2.1 AA Compliance**
-
-Meeting international accessibility standards:
+### **Responsive Grid (Dark Optimized)**
 
 ```typescript
-const accessibilityStandards = {
-  // Color Contrast
-  normalText: 4.5, // Minimum contrast ratio
-  largeText: 3.0, // Large text (18pt+) minimum
-  uiElements: 3.0, // Interactive elements minimum
+const gridSystem = {
+  // Container Widths
+  maxWidth: screenWidth - spacing.screenPadding * 2,
 
-  // Text Scaling
-  supportedScale: '100% to 200%', // Dynamic Type support
-  minimumSize: 11, // Minimum readable font size
+  // Grid Columns
+  columns: {
+    single: '100%',
+    half: '48%',
+    third: '32%',
+    quarter: '23%',
+  },
 
-  // Touch Targets
-  minimumSize: 44, // iOS minimum touch target
-  recommendedSize: 48, // Better usability target
-};
-```
-
-### **Screen Reader Support**
-
-Comprehensive VoiceOver and TalkBack compatibility:
-
-- **Semantic Labels** - Clear, descriptive labels for all interactive elements
-- **Accessibility Hints** - Additional context for complex interactions
-- **Focus Management** - Logical focus order and proper focus indicators
-- **Live Regions** - Dynamic content updates announced to screen readers
-- **Gesture Alternatives** - Alternative methods for gesture-based actions
-
-### **Reduced Motion Support**
-
-Respecting user preferences for reduced motion:
-
-```typescript
-const reducedMotionSupport = {
-  // Animation Alternatives
-  crossfade: 'instant transition instead of slide',
-  bounce: 'simple fade instead of spring',
-  rotation: 'static state change instead of spin',
-
-  // Essential Animations
-  preserve: ['loading indicators', 'progress feedback'],
-  simplify: ['decorative animations', 'complex transitions'],
+  // Dark-Optimized Gutters
+  gutter: spacing.md, // 16px between grid items
+  rowGap: spacing.lg, // 24px between rows
 };
 ```
 
@@ -459,205 +498,454 @@ export const styles = {
 
 ---
 
-## 🛠️ **Implementation Guidelines**
+## 🎨 **Complete Styling Standards**
 
-### **Development Best Practices**
+### **📏 Spacing System (8px Grid)**
+
+Consistent spacing creates visual rhythm and improves usability:
 
 ```typescript
-// Style Implementation Example
-const MyComponent = () => {
-  return (
-    <View style={[styles.card, styles.shadow.medium]}>
-      <Text style={styles.typography.h2}>
-        Component Title
-      </Text>
-      <Text style={styles.typography.body}>
-        Component description with proper hierarchy
-      </Text>
-      <TouchableOpacity
-        style={styles.buttons.primary}
-        activeOpacity={0.8}
-        accessibilityRole="button"
-        accessibilityLabel="Primary action button"
-      >
-        <Text style={styles.typography.button}>Action</Text>
-      </TouchableOpacity>
-    </View>
-  );
+const spacing = {
+  // Base units (8px grid system)
+  xs: 4, // 0.25rem - tight spacing, icon gaps
+  sm: 8, // 0.5rem  - small gaps, internal padding
+  md: 16, // 1rem    - standard spacing, card padding
+  lg: 24, // 1.5rem  - section spacing, large gaps
+  xl: 32, // 2rem    - major section breaks
+  xxl: 48, // 3rem    - screen-level spacing
+  xxxl: 64, // 4rem    - extra large spacing
+
+  // Component-specific spacing
+  screen: 24, // Screen edge padding
+  card: 16, // Card internal padding
+  cardElevated: 20, // Elevated card padding
+  modal: 20, // Modal container padding
+  section: 24, // Between major sections
+  input: 16, // Input field padding
+  button: 12, // Button vertical padding
+  chip: 8, // Chip internal padding
+  list: 16, // List item padding
+
+  // Layout spacing
+  headerHeight: 60, // Standard header height
+  tabBarHeight: 80, // Tab bar height
+  modalHeaderHeight: 60, // Modal header height
+  touchTarget: 44, // Minimum touch target size
+
+  // Grid spacing
+  gridGutter: 16, // Space between grid items
+  gridRowGap: 24, // Space between grid rows
 };
 ```
 
-### **Design Review Checklist**
+### **🔄 Border Radius System**
 
-- [ ] **Visual consistency** with design system
-- [ ] **Accessibility compliance** with proper labels and contrast
-- [ ] **Performance optimization** with efficient rendering
-- [ ] **Responsive behavior** across different screen sizes
-- [ ] **Error state handling** with helpful user feedback
-- [ ] **Loading state management** with appropriate indicators
-- [ ] **Animation performance** maintaining 60fps
-- [ ] **Touch target sizing** meeting minimum requirements
-
----
-
-## 🧭 **Navigation & Animation Design**
-
-### **Modern Navigation System**
-
-TravelPal's navigation system prioritizes clarity, efficiency, and delight:
-
-#### **Tab Bar Design Standards**
+Consistent border radius creates visual cohesion:
 
 ```typescript
-const navigationStyles = {
-  // Modern Tab Bar
-  tabBar: {
-    backgroundColor: colors.white,
-    borderRadius: 24,
-    height: 64,
-    shadowColor: colors.slate900,
-    shadowOffset: { width: 0, height: 8 },
+const borderRadius = {
+  none: 0,
+  xs: 4, // Small elements, tight radius
+  sm: 8, // Inputs, buttons, chips
+  md: 12, // Cards, larger buttons
+  lg: 16, // Large cards, containers
+  xl: 20, // Modal corners, large containers
+  xxl: 24, // Extra large radius
+  full: 9999, // Fully rounded (pills, chips)
+
+  // Component-specific radius
+  input: 8, // Input fields
+  button: 12, // Standard buttons
+  buttonSmall: 8, // Small buttons
+  card: 16, // Cards and containers
+  modal: 20, // Modal containers
+  chip: 20, // Chip/tag elements (pill shape)
+  image: 12, // Image containers
+};
+```
+
+### **🌟 Shadow & Elevation System**
+
+Shadows create depth and hierarchy in dark interfaces:
+
+```typescript
+const shadows = {
+  // Standard elevation levels
+  sm: {
+    shadowColor: '#000000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 2,
+  },
+
+  md: {
+    shadowColor: '#000000',
+    shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.15,
+    shadowRadius: 8,
+    elevation: 4,
+  },
+
+  lg: {
+    shadowColor: '#000000',
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.2,
+    shadowRadius: 12,
+    elevation: 8,
+  },
+
+  xl: {
+    shadowColor: '#000000',
+    shadowOffset: { width: 0, height: 12 },
+    shadowOpacity: 0.25,
     shadowRadius: 16,
     elevation: 12,
   },
 
-  // Active Indicator
-  activeIndicator: {
-    height: 48,
-    borderRadius: 20,
-    // Color changes based on active tab:
-    // Home: #0EA5E9, Trips: #10B981, Finances: #F59E0B
-  },
-
-  // Tab Items
-  tabItem: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingVertical: 8,
+  // Colored shadows for interactive elements
+  accent: {
+    shadowColor: '#007AFF',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+    elevation: 8,
   },
 };
 ```
 
-#### **Floating Action Button**
+### **⚡ Animation & Timing System**
+
+Smooth animations enhance user experience:
 
 ```typescript
-const fabStyles = {
-  container: {
-    width: 56,
-    height: 56,
-    borderRadius: 28,
-    shadowColor: colors.slate900,
-    shadowOffset: { width: 0, height: 8 },
-    shadowOpacity: 0.25,
-    shadowRadius: 12,
-    elevation: 15,
+const animations = {
+  // Duration presets (milliseconds)
+  duration: {
+    immediate: 0,
+    fast: 150, // Quick interactions, micro-animations
+    normal: 200, // Standard transitions
+    slow: 300, // Slower, more dramatic transitions
+    slower: 500, // Page transitions, complex animations
   },
 
-  gradient: {
-    colors: ['#0EA5E9', '#1E293B'],
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-};
-```
+  // Common animation presets
+  presets: {
+    // Button press animation
+    buttonPress: {
+      scale: 0.96,
+      duration: 150,
+    },
 
-### **Animation & Transition Standards**
+    // Card hover animation
+    cardHover: {
+      scale: 1.02,
+      duration: 200,
+    },
 
-Smooth, purposeful animations enhance the user experience:
+    // Modal slide up
+    modalSlideUp: {
+      translateY: ['100%', '0%'],
+      duration: 400,
+    },
 
-#### **Page Transitions**
-
-```typescript
-const transitionTypes = {
-  // Fade Transition
-  fade: {
-    duration: 400,
-    easing: Easing.bezier(0.2, 0, 0.2, 1),
-    opacity: { from: 0, to: 1 },
-  },
-
-  // Slide Transition
-  slide: {
-    duration: 400,
-    translateX: { from: screenWidth * 0.1, to: 0 },
-    opacity: { from: 0, to: 1 },
-  },
-
-  // Slide Up Transition
-  slideUp: {
-    duration: 400,
-    translateY: { from: 50, to: 0 },
-    opacity: { from: 0, to: 1 },
-  },
-
-  // Scale Transition
-  scale: {
-    duration: 400,
-    scale: { from: 0.95, to: 1 },
-    opacity: { from: 0, to: 1 },
-  },
-};
-```
-
-#### **Staggered Animations**
-
-```typescript
-const staggeredAnimation = {
-  baseDelay: 0,
-  staggerDelay: 150, // ms between each item
-  duration: 400,
-  maxStagger: 1000, // Maximum total delay
-};
-```
-
-### **Loading States & Skeletons**
-
-Professional loading experiences maintain user engagement:
-
-#### **Skeleton Design**
-
-```typescript
-const skeletonStyles = {
-  base: {
-    backgroundColor: '#E2E8F0',
-    borderRadius: 8,
-  },
-
-  pulse: {
-    animation: {
-      duration: 1000,
-      easing: Easing.inOut(Easing.ease),
-      opacity: { from: 0.3, to: 0.7 },
-      repeat: -1,
-      reverse: true,
+    // Fade transitions
+    fadeIn: {
+      opacity: [0, 1],
+      duration: 300,
     },
   },
 };
 ```
 
-### **Haptic Feedback Guidelines**
+### **🔤 Complete Typography System**
 
-iOS haptic feedback enhances user interactions:
+Comprehensive typography with proper hierarchy and contrast:
 
 ```typescript
-const hapticFeedback = {
-  // Navigation interactions
-  tabPress: Haptics.ImpactFeedbackStyle.Medium,
-  fabPress: Haptics.ImpactFeedbackStyle.Medium,
+const typography = {
+  // Font weights
+  weights: {
+    light: '300',
+    regular: '400',
+    medium: '500',
+    semibold: '600',
+    bold: '700',
+    extrabold: '800',
+  },
 
-  // Success actions
-  expenseAdded: Haptics.NotificationFeedbackType.Success,
-  tripCreated: Haptics.NotificationFeedbackType.Success,
+  // Font sizes
+  sizes: {
+    xs: 12, // Small text, captions
+    sm: 14, // Secondary text, labels
+    base: 16, // Body text, inputs
+    lg: 18, // Section headers, larger body
+    xl: 20, // Modal titles, important headers
+    xxl: 24, // Page titles, hero text
+    xxxl: 32, // Display text, main headlines
+  },
 
-  // Warning actions
-  budgetAlert: Haptics.NotificationFeedbackType.Warning,
+  // Line heights
+  lineHeights: {
+    tight: 1.2, // Headlines, titles
+    normal: 1.4, // Body text
+    relaxed: 1.6, // Long-form content
+  },
 
-  // Error actions
-  deleteAction: Haptics.ImpactFeedbackStyle.Heavy,
-  validationError: Haptics.NotificationFeedbackType.Error,
+  // Letter spacing
+  letterSpacing: {
+    tighter: -0.5, // Large headlines
+    tight: -0.3, // Section headers
+    normal: 0, // Default text
+    wide: 0.5, // Buttons, labels
+  },
+
+  // Predefined text styles
+  styles: {
+    h1: {
+      fontSize: 32,
+      fontWeight: '800',
+      color: '#FFFFFF',
+      lineHeight: 1.2,
+      letterSpacing: -0.5,
+    },
+    h2: {
+      fontSize: 24,
+      fontWeight: '700',
+      color: '#FFFFFF',
+      lineHeight: 1.2,
+      letterSpacing: -0.3,
+    },
+    h3: {
+      fontSize: 20,
+      fontWeight: '600',
+      color: '#FFFFFF',
+      lineHeight: 1.3,
+      letterSpacing: -0.3,
+    },
+    body: {
+      fontSize: 16,
+      fontWeight: '400',
+      color: '#FFFFFF',
+      lineHeight: 1.4,
+    },
+    caption: {
+      fontSize: 14,
+      fontWeight: '400',
+      color: '#CCCCCC',
+      lineHeight: 1.4,
+    },
+    button: {
+      fontSize: 16,
+      fontWeight: '600',
+      color: '#FFFFFF',
+      letterSpacing: 0.5,
+    },
+    placeholder: {
+      fontSize: 16,
+      fontWeight: '400',
+      color: '#666666',
+    },
+  },
 };
 ```
+
+### **🎯 Component Specifications**
+
+Exact specifications for all component types:
+
+```typescript
+const components = {
+  // Button specifications
+  button: {
+    height: {
+      small: 36,
+      medium: 44,
+      large: 52,
+    },
+    padding: {
+      small: { vertical: 8, horizontal: 16 },
+      medium: { vertical: 12, horizontal: 24 },
+      large: { vertical: 16, horizontal: 32 },
+    },
+    borderRadius: {
+      small: 8,
+      medium: 12,
+      large: 12,
+    },
+  },
+
+  // Input specifications
+  input: {
+    height: {
+      small: 36,
+      medium: 44,
+      large: 52,
+    },
+    padding: {
+      horizontal: 16,
+      vertical: 16,
+    },
+    borderRadius: 8,
+    borderWidth: 1,
+  },
+
+  // Card specifications
+  card: {
+    padding: {
+      small: 16,
+      medium: 24,
+      large: 32,
+    },
+    borderRadius: 16,
+    borderWidth: 1,
+  },
+
+  // Modal specifications
+  modal: {
+    borderRadius: {
+      top: 20,
+    },
+    padding: 20,
+    maxHeight: '80%',
+    headerHeight: 60,
+  },
+
+  // Chip specifications
+  chip: {
+    height: 32,
+    padding: {
+      horizontal: 16,
+      vertical: 8,
+    },
+    borderRadius: 20,
+    borderWidth: 1,
+  },
+
+  // List item specifications
+  listItem: {
+    height: {
+      small: 44,
+      medium: 56,
+      large: 72,
+    },
+    padding: {
+      horizontal: 16,
+      vertical: 16,
+    },
+  },
+};
+```
+
+### **📱 Platform-Specific Standards**
+
+Platform-appropriate implementations:
+
+```typescript
+const platform = {
+  // iOS specific values
+  ios: {
+    statusBarHeight: 44,
+    homeIndicatorHeight: 34,
+    modalPresentationStyle: 'pageSheet',
+    hapticFeedback: {
+      light: 'light',
+      medium: 'medium',
+      heavy: 'heavy',
+    },
+  },
+
+  // Android specific values
+  android: {
+    statusBarHeight: 24,
+    navigationBarHeight: 48,
+    modalPresentationStyle: 'overFullScreen',
+    elevation: {
+      card: 4,
+      modal: 8,
+      dropdown: 12,
+    },
+  },
+};
+```
+
+### **📐 Layout & Grid System**
+
+Responsive grid system for consistent layouts:
+
+```typescript
+const layout = {
+  // Grid system
+  grid: {
+    columns: 12,
+    gutter: 16,
+    margin: 24,
+  },
+
+  // Z-index layers
+  zIndex: {
+    base: 0,
+    dropdown: 1000,
+    overlay: 1300,
+    modal: 1400,
+    toast: 1700,
+    tooltip: 1800,
+  },
+};
+```
+
+---
+
+## 🛠️ **Implementation Guidelines**
+
+### **Using the Design System**
+
+Import and use design tokens consistently:
+
+```typescript
+import { colors, spacing, typography, borderRadius, shadows } from '../src/theme/designSystem';
+
+const styles = StyleSheet.create({
+  container: {
+    backgroundColor: colors.surface,
+    padding: spacing.card,
+    borderRadius: borderRadius.card,
+    ...shadows.md,
+  },
+  title: {
+    ...typography.styles.h3,
+    marginBottom: spacing.md,
+  },
+  button: {
+    backgroundColor: colors.accent,
+    paddingVertical: spacing.button,
+    paddingHorizontal: spacing.lg,
+    borderRadius: borderRadius.button,
+    ...shadows.accent,
+  },
+});
+```
+
+### **Consistency Checklist**
+
+When creating components, ensure:
+
+- [ ] Colors use design system tokens
+- [ ] Spacing follows 8px grid system
+- [ ] Typography uses predefined styles
+- [ ] Border radius is consistent with component type
+- [ ] Shadows match elevation level
+- [ ] Touch targets are minimum 44pt
+- [ ] Animations use standard durations
+- [ ] Platform-specific patterns are applied
+
+### **Quality Standards**
+
+- **Accessibility**: 4.5:1 contrast ratio minimum
+- **Performance**: 60fps animations
+- **Consistency**: Design tokens used throughout
+- **Platform**: Native patterns respected
+- **Responsiveness**: Works on all screen sizes
 
 ---
 

@@ -1,20 +1,54 @@
 export const colors = {
-  primary: '#007AFF',
+  // PRIMARY THEME: Dark Mode
+  primary: '#007AFF', // Blue accent - consistent across light/dark
   secondary: '#5856D6',
   success: '#34C759',
   warning: '#FF9500',
   error: '#FF3B30',
 
-  background: '#FFFFFF',
-  surface: '#F2F2F7',
-  card: '#FFFFFF',
+  // DARK MODE THEME (Current Priority)
+  dark: {
+    background: '#000000', // Pure black for main backgrounds
+    surface: '#171717', // Dark surface (modals, cards)
+    card: '#262626', // Elevated card backgrounds
+    border: '#404040', // Borders and dividers
+    overlay: 'rgba(0, 0, 0, 0.7)', // Modal overlays
 
-  text: '#000000',
-  textSecondary: '#8E8E93',
-  textTertiary: '#C7C7CC',
+    text: '#FFFFFF', // Primary text
+    textSecondary: '#CCCCCC', // Secondary text
+    textTertiary: '#666666', // Tertiary text/placeholders
 
-  border: '#C6C6C8',
-  separator: '#E5E5EA',
+    accent: '#007AFF', // Blue accent for interactive elements
+    accentBackground: 'rgba(0, 122, 255, 0.1)', // Light accent background
+  },
+
+  // LIGHT MODE THEME (Future Implementation)
+  light: {
+    background: '#FFFFFF',
+    surface: '#F2F2F7',
+    card: '#FFFFFF',
+    border: '#C6C6C8',
+    overlay: 'rgba(0, 0, 0, 0.5)',
+
+    text: '#000000',
+    textSecondary: '#8E8E93',
+    textTertiary: '#C7C7CC',
+
+    accent: '#007AFF',
+    accentBackground: 'rgba(0, 122, 255, 0.1)',
+  },
+
+  // Legacy colors (for backward compatibility)
+  background: '#000000', // Now defaults to dark
+  surface: '#171717',
+  card: '#262626',
+
+  text: '#FFFFFF', // Now defaults to dark theme
+  textSecondary: '#CCCCCC',
+  textTertiary: '#666666',
+
+  border: '#404040',
+  separator: '#404040',
 
   white: '#FFFFFF',
   black: '#000000',
@@ -32,3 +66,11 @@ export const colors = {
     900: '#111827',
   },
 } as const;
+
+// Current active theme (can be switched in future)
+export const currentTheme = colors.dark;
+
+// Theme utilities for easy switching
+export const getThemeColors = (isDark: boolean = true) => {
+  return isDark ? colors.dark : colors.light;
+};

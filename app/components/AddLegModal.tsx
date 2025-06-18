@@ -20,7 +20,7 @@ interface AddLegModalProps {
   visible: boolean;
   tripId: string;
   onClose: () => void;
-  onSave: (legData: Omit<Leg, 'id'>) => void;
+  onSave: (legData: Omit<Leg, 'id'>, bypassValidation?: boolean) => void;
 }
 
 export default function AddLegModal({ visible, tripId, onClose, onSave }: AddLegModalProps) {
@@ -75,12 +75,87 @@ export default function AddLegModal({ visible, tripId, onClose, onSave }: AddLeg
     return null;
   };
 
+  const validateMinimumDuration = (startDate: string, endDate: string): string | null => {
+    if (!startDate || !endDate) return null; // Skip if dates are optional
+
+    const start = new Date(startDate);
+    const end = new Date(endDate);
+    const duration = Math.ceil((end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24));
+
+    if (duration < 1) {
+      return 'A leg must be at least 1 day long. Please adjust your dates.';
+    }
+
+    return null;
+  };
+
+  const validateDateRange = (startDate: string, endDate: string): string | null => {
+    if (!startDate || !endDate) return null; // Skip if dates are optional
+
+    const start = new Date(startDate);
+    const end = new Date(endDate);
+
+    // Check if dates are valid
+    if (isNaN(start.getTime()) || isNaN(end.getTime())) {
+      return 'Please enter valid dates.';
+    }
+
+    // Check if start is before end
+    if (start >= end) {
+      return 'End date must be after start date.';
+    }
+
+    // Check for reasonable future dates (not more than 10 years ahead)
+    const tenYearsFromNow = new Date();
+    tenYearsFromNow.setFullYear(tenYearsFromNow.getFullYear() + 10);
+
+    if (start > tenYearsFromNow || end > tenYearsFromNow) {
+      return 'Dates cannot be more than 10 years in the future.';
+    }
+
+    return null;
+  };
+
   const formatDateRange = (start: string, end: string): string => {
     const startDate = new Date(start);
     const endDate = new Date(end);
     const options: Intl.DateTimeFormatOptions = { month: 'short', day: 'numeric' };
 
     return `${startDate.toLocaleDateString('en-US', options)} - ${endDate.toLocaleDateString('en-US', options)}`;
+  };
+
+  const detectTripGaps = (newStartDate: string, newEndDate: string): string | null => {
+    if (!newStartDate) return null; // Skip if no start date
+
+    const existingLegs = getLegsByTrip(tripId)
+      .filter((leg) => leg.startDate && leg.endDate)
+      .sort((a, b) => new Date(a.startDate).getTime() - new Date(b.startDate).getTime());
+
+    if (existingLegs.length === 0) return null;
+
+    const newStart = new Date(newStartDate);
+    const newEnd = newEndDate ? new Date(newEndDate) : null;
+
+    // Find gaps in the trip timeline
+    for (let i = 0; i < existingLegs.length; i++) {
+      const currentLeg = existingLegs[i];
+      const nextLeg = existingLegs[i + 1];
+
+      const currentEnd = new Date(currentLeg.endDate);
+
+      // Check if the new leg fits in a gap
+      if (nextLeg) {
+        const nextStart = new Date(nextLeg.startDate);
+        const dayAfterCurrent = new Date(currentEnd);
+        dayAfterCurrent.setDate(dayAfterCurrent.getDate() + 1);
+
+        if (newStart >= dayAfterCurrent && (newEnd ? newEnd < nextStart : true)) {
+          return `This leg will fill the gap between your ${currentLeg.country} and ${nextLeg.country} legs.`;
+        }
+      }
+    }
+
+    return null;
   };
 
   const validateLegOrder = (newStartDate: string): string | null => {
@@ -117,7 +192,18 @@ export default function AddLegModal({ visible, tripId, onClose, onSave }: AddLeg
     if (duplicateLegs.length > 0) {
       const legCount = duplicateLegs.length;
       const legText = legCount === 1 ? 'leg' : 'legs';
-      return `You already have ${legCount} ${legText} in ${countryName}. Are you planning to return to this country?`;
+
+      // Show dates of existing legs if available
+      const existingDates = duplicateLegs
+        .filter((leg) => leg.startDate)
+        .map((leg) =>
+          leg.startDate ? formatDateRange(leg.startDate, leg.endDate || leg.startDate) : ''
+        )
+        .filter(Boolean)
+        .join(', ');
+
+      const datesText = existingDates ? ` (${existingDates})` : '';
+      return `You already have ${legCount} ${legText} in ${countryName}${datesText}. Are you planning to return to this country?`;
     }
 
     return null;
@@ -130,16 +216,23 @@ export default function AddLegModal({ visible, tripId, onClose, onSave }: AddLeg
       return;
     }
 
-    // Date validation (only if both dates are provided)
+    // Enhanced date validation (only if both dates are provided)
     if (startDate && endDate) {
-      const start = new Date(startDate);
-      const end = new Date(endDate);
-      if (start >= end) {
-        Alert.alert('Invalid Dates', 'End date must be after start date.');
+      // Basic date range validation
+      const dateRangeError = validateDateRange(startDate, endDate);
+      if (dateRangeError) {
+        Alert.alert('Invalid Dates', dateRangeError);
         return;
       }
 
-      // Date overlap validation
+      // Minimum duration validation
+      const durationError = validateMinimumDuration(startDate, endDate);
+      if (durationError) {
+        Alert.alert('Invalid Duration', durationError);
+        return;
+      }
+
+      // Date overlap validation (blocking)
       const overlapError = validateDateOverlap(startDate, endDate);
       if (overlapError) {
         Alert.alert('Date Conflict', overlapError);
@@ -147,36 +240,61 @@ export default function AddLegModal({ visible, tripId, onClose, onSave }: AddLeg
       }
     }
 
+    // Single date validation (start date only)
+    if (startDate && !endDate) {
+      const start = new Date(startDate);
+      if (isNaN(start.getTime())) {
+        Alert.alert('Invalid Date', 'Please enter a valid start date.');
+        return;
+      }
+    }
+
+    // Check for duplicate country BEFORE calling store (this prevents store validation error)
+    const duplicateWarning = validateDuplicateCountry(country);
+    if (duplicateWarning) {
+      Alert.alert('Returning to Country?', duplicateWarning, [
+        { text: 'Yes, Continue', onPress: () => proceedWithSave(true) }, // Save with bypass
+        { text: 'Let Me Change', style: 'cancel' },
+      ]);
+      return;
+    }
+
+    // Gap detection (informational)
+    if (startDate && endDate) {
+      const gapInfo = detectTripGaps(startDate, endDate);
+      if (gapInfo) {
+        Alert.alert('Gap Filled', gapInfo, [
+          { text: 'Continue', onPress: () => checkChronologicalOrderAndContinue() },
+        ]);
+        return;
+      }
+    }
+
+    checkChronologicalOrderAndContinue();
+  };
+
+  const checkChronologicalOrderAndContinue = () => {
     // Chronological order suggestion (warning, not blocking)
     if (startDate) {
       const orderWarning = validateLegOrder(startDate);
       if (orderWarning) {
         Alert.alert('Leg Order Suggestion', orderWarning, [
-          { text: 'Continue Anyway', onPress: () => checkDuplicateCountryAndSave() },
+          { text: 'Continue Anyway', onPress: () => proceedWithSave(false) }, // Save normally
           { text: 'Let Me Adjust', style: 'cancel' },
         ]);
         return;
       }
     }
 
-    checkDuplicateCountryAndSave();
+    proceedWithSave(false); // Save normally
   };
 
   const checkDuplicateCountryAndSave = () => {
-    // Duplicate country suggestion (warning, not blocking)
-    const duplicateWarning = validateDuplicateCountry(country);
-    if (duplicateWarning) {
-      Alert.alert('Returning to Country?', duplicateWarning, [
-        { text: 'Yes, Continue', onPress: () => saveLeg() },
-        { text: 'Let Me Change', style: 'cancel' },
-      ]);
-      return;
-    }
-
-    saveLeg();
+    // This function is no longer needed since we check duplicates first
+    proceedWithSave(false);
   };
 
-  const saveLeg = () => {
+  const proceedWithSave = (bypassValidation: boolean) => {
     const legData: Omit<Leg, 'id'> = {
       tripId,
       country: country.trim(),
@@ -185,8 +303,22 @@ export default function AddLegModal({ visible, tripId, onClose, onSave }: AddLeg
       budget: 0, // Default budget since we removed the field
     };
 
-    onSave(legData);
-    resetForm();
+    console.log('proceedWithSave called with bypass:', bypassValidation);
+    try {
+      onSave(legData, bypassValidation);
+      resetForm();
+    } catch (error) {
+      console.log('proceedWithSave error:', error);
+      Alert.alert(
+        'Error',
+        `Failed to save leg: ${error instanceof Error ? error.message : 'Unknown error'}`
+      );
+    }
+  };
+
+  const saveLeg = () => {
+    // This function is deprecated - use proceedWithSave instead
+    proceedWithSave(false);
   };
 
   return (

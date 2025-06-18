@@ -146,13 +146,20 @@ export default function TripDashboardScreen() {
     setAddLegModalVisible(true);
   };
 
-  const handleAddLegSave = (legData: Omit<Leg, 'id'>) => {
+  const handleAddLegSave = (legData: Omit<Leg, 'id'>, bypassValidation?: boolean) => {
+    console.log('handleAddLegSave called with:', { legData, bypassValidation });
     try {
-      addLeg(legData);
+      console.log('Calling addLeg with bypass:', bypassValidation);
+      addLeg(legData, bypassValidation);
+      console.log('addLeg completed successfully');
       setAddLegModalVisible(false);
       Alert.alert('Success', 'Leg added successfully!');
     } catch (error) {
-      Alert.alert('Error', 'Failed to add leg. Please try again.');
+      console.log('handleAddLegSave error:', error);
+      Alert.alert(
+        'Error',
+        `Failed to add leg: ${error instanceof Error ? error.message : 'Unknown error'}`
+      );
     }
   };
 
