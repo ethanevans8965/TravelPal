@@ -1,6 +1,7 @@
 import React, { useState, useMemo } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
 import { FontAwesome } from '@expo/vector-icons';
+import { useRouter } from 'expo-router';
 import { Leg } from '../../types';
 import { useTripStore } from '../../stores/tripStore';
 
@@ -16,6 +17,7 @@ export default function CalendarPreviewWidget({
   onOpenPlanner,
 }: CalendarPreviewWidgetProps) {
   const { getLegsByTrip } = useTripStore();
+  const router = useRouter();
   const legs = getLegsByTrip(tripId);
 
   // Get current date and calculate two-week range
@@ -94,16 +96,11 @@ export default function CalendarPreviewWidget({
   };
 
   const handleDayPress = (date: Date) => {
-    // Find legs on this date
-    const legsOnDate = visibleLegs.filter((leg) => isLegOnDate(leg, date));
+    // Format date for navigation (YYYY-MM-DD)
+    const formattedDate = date.toISOString().split('T')[0];
 
-    if (legsOnDate.length > 0 && onLegEdit) {
-      // Edit first leg on this date
-      onLegEdit(legsOnDate[0]);
-    } else if (onOpenPlanner) {
-      // Open planner for new leg
-      onOpenPlanner();
-    }
+    // Navigate to day details screen
+    router.push(`/trip/${tripId}/day/${formattedDate}` as any);
   };
 
   const renderDay = (date: Date, index: number) => {
@@ -210,6 +207,7 @@ const styles = StyleSheet.create({
     color: '#FFFFFF',
     letterSpacing: -0.3,
   },
+
   seeMoreButton: {
     flexDirection: 'row',
     alignItems: 'center',

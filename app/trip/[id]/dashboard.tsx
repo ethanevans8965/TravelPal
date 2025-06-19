@@ -20,6 +20,7 @@ import DestinationModal from '../../components/dashboard/DestinationModal';
 import LegTimeline from '../../components/LegTimeline';
 import AddLegModal from '../../components/AddLegModal';
 import CalendarPreviewWidget from '../../components/dashboard/CalendarPreviewWidget';
+import CalendarPlannerModal from '../../components/dashboard/CalendarPlannerModal';
 
 const { width: screenWidth } = Dimensions.get('window');
 
@@ -30,7 +31,8 @@ export default function TripDashboardScreen() {
   const { getLegsByTrip, addLeg } = useTripStore();
   const [destinationModalVisible, setDestinationModalVisible] = useState(false);
   const [addLegModalVisible, setAddLegModalVisible] = useState(false);
-  const [selectedLegId, setSelectedLegId] = useState<string | undefined>();
+  const [calendarPlannerVisible, setCalendarPlannerVisible] = useState(false);
+  const [selectedLegId, setSelectedLegId] = useState<string | undefined>(undefined);
 
   const trip = trips.find((t) => t.id === id);
   const tripLegs = trip ? getLegsByTrip(trip.id) : [];
@@ -300,12 +302,12 @@ export default function TripDashboardScreen() {
         <CalendarPreviewWidget
           tripId={trip.id}
           onLegEdit={(leg) => {
-            // For now, show an alert - we'll implement edit modal later
-            Alert.alert('Edit Leg', `Edit ${leg.country} leg (${leg.startDate} - ${leg.endDate})`);
+            // Open the full calendar planner for editing
+            setCalendarPlannerVisible(true);
           }}
           onOpenPlanner={() => {
-            // For now, open the existing AddLegModal - we'll implement full planner later
-            setAddLegModalVisible(true);
+            // Open the full calendar planner
+            setCalendarPlannerVisible(true);
           }}
         />
 
@@ -370,6 +372,13 @@ export default function TripDashboardScreen() {
         tripId={trip.id}
         onClose={() => setAddLegModalVisible(false)}
         onSave={handleAddLegSave}
+      />
+
+      {/* Calendar Planner Modal */}
+      <CalendarPlannerModal
+        visible={calendarPlannerVisible}
+        tripId={trip.id}
+        onClose={() => setCalendarPlannerVisible(false)}
       />
     </View>
   );
