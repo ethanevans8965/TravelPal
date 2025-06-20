@@ -11,6 +11,7 @@ import {
   FlatList,
 } from 'react-native';
 import { FontAwesome } from '@expo/vector-icons';
+import { useRouter } from 'expo-router';
 import { Leg } from '../../types';
 import { useTripStore } from '../../stores/tripStore';
 import DarkCountryPicker from '../DarkCountryPicker';
@@ -32,6 +33,7 @@ export default function CalendarPlannerModal({
   tripId,
   onClose,
 }: CalendarPlannerModalProps) {
+  const router = useRouter();
   const { getLegsByTrip, addLeg, updateLeg, deleteLeg } = useTripStore();
   const legs = getLegsByTrip(tripId);
 
@@ -181,11 +183,14 @@ export default function CalendarPlannerModal({
 
   // Handle date selection
   const handleDatePress = (date: Date) => {
-    // Only allow editing interactions when in edit mode
+    // In view mode, navigate to day details screen
     if (calendarMode === 'view') {
-      return; // No interactions allowed in view mode
+      const formattedDate = date.toISOString().split('T')[0]; // Format as YYYY-MM-DD
+      router.push(`/trip/${tripId}/day/${formattedDate}` as any);
+      return;
     }
 
+    // Edit mode interactions
     const legsOnDate = getLegsForDate(date);
 
     if (selectionMode === 'viewing') {
