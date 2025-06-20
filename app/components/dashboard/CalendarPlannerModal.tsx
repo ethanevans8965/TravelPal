@@ -62,6 +62,9 @@ export default function CalendarPlannerModal({
     return months;
   }, []);
 
+  // Current month is at index 12 (12 months back + current month = index 12)
+  const currentMonthIndex = 12;
+
   // Get calendar days for a specific month
   const getCalendarDaysForMonth = (monthDate: Date) => {
     const year = monthDate.getFullYear();
@@ -512,6 +515,12 @@ export default function CalendarPlannerModal({
             showsVerticalScrollIndicator={false}
             style={styles.calendarList}
             contentContainerStyle={styles.calendarContent}
+            initialScrollIndex={currentMonthIndex}
+            getItemLayout={(data, index) => ({
+              length: 400, // Approximate height of each month
+              offset: 400 * index,
+              index,
+            })}
             ListFooterComponent={() => (
               <View>
                 {/* Country selection */}
