@@ -8,6 +8,7 @@ import {
   ScrollView,
   Dimensions,
   Alert,
+  FlatList,
 } from 'react-native';
 import { FontAwesome } from '@expo/vector-icons';
 import { Leg } from '../../types';
@@ -35,7 +36,6 @@ export default function CalendarPlannerModal({
   const legs = getLegsByTrip(tripId);
 
   // Calendar state
-  const [currentMonth, setCurrentMonth] = useState(new Date());
   const [calendarMode, setCalendarMode] = useState<'view' | 'edit'>('view');
   const [selectionMode, setSelectionMode] = useState<SelectionMode>('viewing');
   const [selectedStartDate, setSelectedStartDate] = useState<Date | null>(null);
@@ -43,40 +43,55 @@ export default function CalendarPlannerModal({
   const [selectedCountry, setSelectedCountry] = useState('');
   const [editingLeg, setEditingLeg] = useState<Leg | null>(null);
 
-  // Get calendar days for current month
-  const calendarDays = useMemo(() => {
-    const year = currentMonth.getFullYear();
-    const month = currentMonth.getMonth();
+  // Generate months data for FlatList (12 months before and after current month)
+  const monthsData = useMemo(() => {
+    const months = [];
+    const today = new Date();
+    const startMonth = new Date(today.getFullYear(), today.getMonth() - 12, 1);
 
-    // Get first day of month and how many days to show from previous month
+    for (let i = 0; i < 24; i++) {
+      const monthDate = new Date(startMonth);
+      monthDate.setMonth(startMonth.getMonth() + i);
+      months.push({
+        id: `${monthDate.getFullYear()}-${monthDate.getMonth()}`,
+        date: monthDate,
+        year: monthDate.getFullYear(),
+        month: monthDate.getMonth(),
+      });
+    }
+    return months;
+  }, []);
+
+  // Get calendar days for a specific month
+  const getCalendarDaysForMonth = (monthDate: Date) => {
+    const year = monthDate.getFullYear();
+    const month = monthDate.getMonth();
+
+    // Get first day of month and last day of month
     const firstDay = new Date(year, month, 1);
-    const startDate = new Date(firstDay);
-    startDate.setDate(startDate.getDate() - firstDay.getDay()); // Start from Sunday
+    const lastDay = new Date(year, month + 1, 0);
 
-    // Generate 6 weeks (42 days) to ensure full calendar
+    // Generate only the days that belong to this month
     const days = [];
-    for (let i = 0; i < 42; i++) {
-      const date = new Date(startDate);
-      date.setDate(startDate.getDate() + i);
+    for (let day = 1; day <= lastDay.getDate(); day++) {
+      const date = new Date(year, month, day);
       days.push(date);
     }
 
     return days;
-  }, [currentMonth]);
+  };
 
-  // Get country colors (reuse from CalendarPreviewWidget)
+  // Get country colors (match CalendarPreviewWidget)
   const getCountryColor = (country: string) => {
     const colors = [
-      '#3B82F6',
-      '#10B981',
-      '#F59E0B',
-      '#EF4444',
-      '#8B5CF6',
-      '#F97316',
-      '#06B6D4',
-      '#84CC16',
-      '#EC4899',
-      '#6366F1',
+      '#3B82F6', // blue
+      '#10B981', // green
+      '#F59E0B', // orange
+      '#EF4444', // red
+      '#8B5CF6', // purple
+      '#F97316', // orange-600
+      '#06B6D4', // cyan
+      '#84CC16', // lime
     ];
     let hash = 0;
     for (let i = 0; i < country.length; i++) {
@@ -101,13 +116,6 @@ export default function CalendarPlannerModal({
   // Get legs for a specific date
   const getLegsForDate = (date: Date) => {
     return legs.filter((leg) => isLegOnDate(leg, date));
-  };
-
-  // Handle month navigation
-  const navigateMonth = (direction: 'prev' | 'next') => {
-    const newMonth = new Date(currentMonth);
-    newMonth.setMonth(currentMonth.getMonth() + (direction === 'next' ? 1 : -1));
-    setCurrentMonth(newMonth);
   };
 
   // Handle date selection
@@ -220,7 +228,8 @@ export default function CalendarPlannerModal({
 
   // Check if date is in current month
   const isCurrentMonth = (date: Date) => {
-    return date.getMonth() === currentMonth.getMonth();
+    const today = new Date();
+    return date.getMonth() === today.getMonth() && date.getFullYear() === today.getFullYear();
   };
 
   // Check if date is today
@@ -258,27 +267,26 @@ export default function CalendarPlannerModal({
     const isBoundary = isSelectionBoundary(date);
     const isCurrent = isCurrentMonth(date);
     const isCurrentDay = isToday(date);
+    const hasLegs = legsOnDate.length > 0;
 
     return (
       <TouchableOpacity
         key={index}
         style={[
           styles.dayCell,
-          !isCurrent && styles.dayCellInactive,
-          isSelected && styles.dayCellSelected,
-          isInRange && !isBoundary && styles.dayCellInRange,
-          isBoundary && styles.dayCellBoundary,
-          isCurrentDay && styles.dayCellToday,
+          // Remove mode-based styling from here since it's now on container
         ]}
         onPress={() => handleDatePress(date)}
-        activeOpacity={0.7}
+        activeOpacity={calendarMode === 'edit' ? 0.7 : 1.0}
       >
         <Text
           style={[
             styles.dayText,
-            !isCurrent && styles.dayTextInactive,
             (isSelected || isInRange) && styles.dayTextSelected,
             isCurrentDay && styles.dayTextToday,
+            // Mode-based text styling
+            calendarMode === 'edit' && styles.dayTextEditMode,
+            calendarMode === 'view' && styles.dayTextViewMode,
           ]}
         >
           {date.getDate()}
@@ -289,11 +297,128 @@ export default function CalendarPlannerModal({
           {legsOnDate.slice(0, 3).map((leg, legIndex) => (
             <View
               key={`${leg.id}-${legIndex}`}
-              style={[styles.legIndicator, { backgroundColor: getCountryColor(leg.country) }]}
+              style={[
+                styles.legIndicator,
+                { backgroundColor: getCountryColor(leg.country) },
+                // Mode-based leg indicator styling
+                calendarMode === 'edit' && styles.legIndicatorEditMode,
+                calendarMode === 'view' && styles.legIndicatorViewMode,
+              ]}
             />
           ))}
         </View>
+
+        {/* Edit mode interaction hint */}
+        {calendarMode === 'edit' && !hasLegs && (
+          <View style={styles.editHint}>
+            <FontAwesome name="plus" size={8} color="rgba(0,122,255,0.6)" />
+          </View>
+        )}
       </TouchableOpacity>
+    );
+  };
+
+  // Render month for FlatList
+  const renderMonth = ({
+    item,
+  }: {
+    item: { id: string; date: Date; year: number; month: number };
+  }) => {
+    const calendarDays = getCalendarDaysForMonth(item.date);
+    const isCurrentMonth =
+      item.date.getMonth() === new Date().getMonth() &&
+      item.date.getFullYear() === new Date().getFullYear();
+
+    // Group days into weeks - simplified and more reliable approach
+    const weeks: (Date | null)[][] = [];
+    const firstDay = new Date(item.date.getFullYear(), item.date.getMonth(), 1);
+    const firstDayOfWeek = firstDay.getDay(); // 0 = Sunday, 1 = Monday, etc.
+
+    // Start with empty week
+    let currentWeek: (Date | null)[] = [];
+
+    // Add empty cells for days before the first day of the month
+    for (let i = 0; i < firstDayOfWeek; i++) {
+      currentWeek.push(null);
+    }
+
+    // Add all days of the month
+    calendarDays.forEach((date) => {
+      currentWeek.push(date);
+
+      // If week is complete (7 days), start a new week
+      if (currentWeek.length === 7) {
+        weeks.push(currentWeek);
+        currentWeek = [];
+      }
+    });
+
+    // Complete the last week with empty cells if needed
+    while (currentWeek.length < 7 && currentWeek.length > 0) {
+      currentWeek.push(null);
+    }
+
+    // Add the last week if it has any days
+    if (currentWeek.length > 0) {
+      weeks.push(currentWeek);
+    }
+
+    return (
+      <View style={styles.monthContainer}>
+        {/* Month header */}
+        <View style={styles.monthHeader}>
+          <Text style={[styles.monthTitle, isCurrentMonth && styles.currentMonthTitle]}>
+            {item.date.toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}
+            {isCurrentMonth && ' (Current)'}
+          </Text>
+        </View>
+
+        {/* Weekday headers */}
+        <View style={styles.weekHeader}>
+          {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map((day) => (
+            <Text key={day} style={styles.weekdayText}>
+              {day}
+            </Text>
+          ))}
+        </View>
+
+        {/* Calendar grid */}
+        <View style={styles.calendar}>
+          {weeks.map((week: (Date | null)[], weekIndex: number) => (
+            <View key={weekIndex} style={styles.week}>
+              {week.map((date: Date | null, dayIndex: number) => (
+                <View
+                  key={dayIndex}
+                  style={[
+                    styles.dayCellContainer,
+                    // Apply mode-based styling to container for full coverage
+                    date && calendarMode === 'edit' && styles.dayCellEditMode,
+                    date &&
+                      calendarMode === 'edit' &&
+                      getLegsForDate(date).length > 0 &&
+                      styles.dayCellEditModeWithLegs,
+                    date && calendarMode === 'view' && styles.dayCellViewMode,
+                    // Selection styling
+                    date && isDateSelected(date) && styles.dayCellSelected,
+                    date &&
+                      isInSelectionRange(date) &&
+                      !isSelectionBoundary(date) &&
+                      styles.dayCellInRange,
+                    date && isSelectionBoundary(date) && styles.dayCellBoundary,
+                    date && isToday(date) && styles.dayCellToday,
+                  ]}
+                >
+                  {date ? (
+                    renderDay(date, weekIndex * 7 + dayIndex)
+                  ) : (
+                    <View style={styles.emptyDayCell} />
+                  )}
+                </View>
+              ))}
+            </View>
+          ))}
+        </View>
+      </View>
     );
   };
 
@@ -307,13 +432,17 @@ export default function CalendarPlannerModal({
       <View style={styles.container}>
         {/* Header */}
         <View style={styles.header}>
-          <TouchableOpacity onPress={onClose} style={styles.headerButton}>
+          <TouchableOpacity onPress={onClose} style={styles.headerButton} activeOpacity={0.8}>
             <FontAwesome name="times" size={24} color="#FFFFFF" />
           </TouchableOpacity>
           <Text style={styles.headerTitle}>Trip Planner</Text>
           <View style={styles.headerActions}>
             {selectionMode !== 'viewing' && (
-              <TouchableOpacity onPress={resetSelection} style={styles.resetButton}>
+              <TouchableOpacity
+                onPress={resetSelection}
+                style={styles.resetButton}
+                activeOpacity={0.8}
+              >
                 <FontAwesome name="refresh" size={16} color="#FFFFFF" />
               </TouchableOpacity>
             )}
@@ -330,6 +459,7 @@ export default function CalendarPlannerModal({
                 styles.modeToggleButton,
                 calendarMode === 'edit' && styles.modeToggleButtonActive,
               ]}
+              activeOpacity={0.8}
             >
               <Text
                 style={[
@@ -344,129 +474,119 @@ export default function CalendarPlannerModal({
         </View>
 
         {/* Mode indicator */}
-        <View style={styles.modeIndicator}>
+        <View
+          style={[
+            styles.modeIndicator,
+            calendarMode === 'edit' && styles.modeIndicatorEdit,
+            calendarMode === 'view' && styles.modeIndicatorView,
+          ]}
+        >
           {calendarMode === 'view' && (
-            <Text style={styles.modeText}>View mode - Tap "Edit" to modify your trip</Text>
+            <Text style={[styles.modeText, styles.modeTextView]}>
+              View mode - Tap "Edit" to modify your trip
+            </Text>
           )}
           {calendarMode === 'edit' && selectionMode === 'viewing' && (
-            <Text style={styles.modeText}>Edit mode - Tap to edit legs or add new ones</Text>
+            <Text style={[styles.modeText, styles.modeTextEdit]}>
+              Edit mode - Tap to edit legs or add new ones
+            </Text>
           )}
           {calendarMode === 'edit' && selectionMode === 'selecting_dates' && (
-            <Text style={styles.modeText}>
+            <Text style={[styles.modeText, styles.modeTextEdit]}>
               {selectedStartDate ? 'Tap end date' : 'Tap start date'}
             </Text>
           )}
           {calendarMode === 'edit' && selectionMode === 'selecting_country' && (
-            <Text style={styles.modeText}>
+            <Text style={[styles.modeText, styles.modeTextEdit]}>
               {editingLeg ? 'Edit leg details' : 'Choose country for new leg'}
             </Text>
           )}
         </View>
 
-        <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
-          {/* Month navigation */}
-          <View style={styles.monthHeader}>
-            <TouchableOpacity onPress={() => navigateMonth('prev')} style={styles.navButton}>
-              <FontAwesome name="chevron-left" size={20} color="#FFFFFF" />
-            </TouchableOpacity>
-            <Text style={styles.monthTitle}>
-              {currentMonth.toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}
-            </Text>
-            <TouchableOpacity onPress={() => navigateMonth('next')} style={styles.navButton}>
-              <FontAwesome name="chevron-right" size={20} color="#FFFFFF" />
-            </TouchableOpacity>
-          </View>
+        <View style={styles.content}>
+          {/* Vertical Calendar with FlatList */}
+          <FlatList
+            data={monthsData}
+            renderItem={renderMonth}
+            keyExtractor={(item) => item.id}
+            showsVerticalScrollIndicator={false}
+            style={styles.calendarList}
+            contentContainerStyle={styles.calendarContent}
+            ListFooterComponent={() => (
+              <View>
+                {/* Country selection */}
+                {selectionMode === 'selecting_country' && (
+                  <View style={styles.countrySection}>
+                    <Text style={styles.sectionTitle}>
+                      {editingLeg ? 'Update Country' : 'Select Country'}
+                    </Text>
+                    <DarkCountryPicker
+                      selectedCountry={selectedCountry}
+                      onSelectCountry={handleCountrySelected}
+                    />
 
-          {/* Weekday headers */}
-          <View style={styles.weekHeader}>
-            {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map((day) => (
-              <Text key={day} style={styles.weekdayText}>
-                {day}
-              </Text>
-            ))}
-          </View>
+                    <View style={styles.actionButtons}>
+                      {editingLeg ? (
+                        <>
+                          <TouchableOpacity
+                            style={[styles.actionButton, styles.deleteButton]}
+                            onPress={deleteExistingLeg}
+                          >
+                            <FontAwesome name="trash" size={16} color="#FFFFFF" />
+                            <Text style={styles.actionButtonText}>Delete</Text>
+                          </TouchableOpacity>
+                          <TouchableOpacity
+                            style={[styles.actionButton, styles.saveButton]}
+                            onPress={updateExistingLeg}
+                            disabled={!selectedCountry.trim()}
+                          >
+                            <FontAwesome name="check" size={16} color="#FFFFFF" />
+                            <Text style={styles.actionButtonText}>Update</Text>
+                          </TouchableOpacity>
+                        </>
+                      ) : (
+                        <TouchableOpacity
+                          style={[styles.actionButton, styles.saveButton]}
+                          onPress={saveNewLeg}
+                          disabled={!selectedCountry.trim()}
+                        >
+                          <FontAwesome name="plus" size={16} color="#FFFFFF" />
+                          <Text style={styles.actionButtonText}>Add Leg</Text>
+                        </TouchableOpacity>
+                      )}
+                    </View>
+                  </View>
+                )}
 
-          {/* Calendar grid */}
-          <View style={styles.calendar}>
-            {Array.from({ length: 6 }, (_, weekIndex) => (
-              <View key={weekIndex} style={styles.week}>
-                {calendarDays
-                  .slice(weekIndex * 7, (weekIndex + 1) * 7)
-                  .map((date, dayIndex) => renderDay(date, weekIndex * 7 + dayIndex))}
-              </View>
-            ))}
-          </View>
-
-          {/* Country selection */}
-          {selectionMode === 'selecting_country' && (
-            <View style={styles.countrySection}>
-              <Text style={styles.sectionTitle}>
-                {editingLeg ? 'Update Country' : 'Select Country'}
-              </Text>
-              <DarkCountryPicker
-                selectedCountry={selectedCountry}
-                onSelectCountry={handleCountrySelected}
-              />
-
-              <View style={styles.actionButtons}>
-                {editingLeg ? (
-                  <>
-                    <TouchableOpacity
-                      style={[styles.actionButton, styles.deleteButton]}
-                      onPress={deleteExistingLeg}
-                    >
-                      <FontAwesome name="trash" size={16} color="#FFFFFF" />
-                      <Text style={styles.actionButtonText}>Delete</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity
-                      style={[styles.actionButton, styles.saveButton]}
-                      onPress={updateExistingLeg}
-                      disabled={!selectedCountry.trim()}
-                    >
-                      <FontAwesome name="check" size={16} color="#FFFFFF" />
-                      <Text style={styles.actionButtonText}>Update</Text>
-                    </TouchableOpacity>
-                  </>
-                ) : (
-                  <TouchableOpacity
-                    style={[styles.actionButton, styles.saveButton]}
-                    onPress={saveNewLeg}
-                    disabled={!selectedCountry.trim()}
-                  >
-                    <FontAwesome name="plus" size={16} color="#FFFFFF" />
-                    <Text style={styles.actionButtonText}>Add Leg</Text>
-                  </TouchableOpacity>
+                {/* Interactive Legend */}
+                {selectionMode === 'viewing' && (
+                  <View style={styles.legendSection}>
+                    <Text style={styles.legendTitle}>How to use Trip Planner</Text>
+                    <View style={styles.legendItems}>
+                      <View style={styles.legendItem}>
+                        <View style={[styles.legendIndicator, { backgroundColor: '#007AFF' }]} />
+                        <Text style={styles.legendText}>Tap empty date to start planning</Text>
+                      </View>
+                      <View style={styles.legendItem}>
+                        <View style={[styles.legendIndicator, { backgroundColor: '#00FF87' }]} />
+                        <Text style={styles.legendText}>Today's date</Text>
+                      </View>
+                      <View style={styles.legendItem}>
+                        <View style={[styles.legendIndicator, { backgroundColor: '#10B981' }]} />
+                        <Text style={styles.legendText}>Tap existing leg to edit</Text>
+                      </View>
+                      <View style={styles.legendItem}>
+                        <FontAwesome name="chevron-left" size={12} color="#666666" />
+                        <FontAwesome name="chevron-right" size={12} color="#666666" />
+                        <Text style={styles.legendText}>Scroll to navigate between months</Text>
+                      </View>
+                    </View>
+                  </View>
                 )}
               </View>
-            </View>
-          )}
-
-          {/* Interactive Legend */}
-          {selectionMode === 'viewing' && (
-            <View style={styles.legendSection}>
-              <Text style={styles.legendTitle}>How to use Trip Planner</Text>
-              <View style={styles.legendItems}>
-                <View style={styles.legendItem}>
-                  <View style={[styles.legendIndicator, { backgroundColor: '#007AFF' }]} />
-                  <Text style={styles.legendText}>Tap empty date to start planning</Text>
-                </View>
-                <View style={styles.legendItem}>
-                  <View style={[styles.legendIndicator, { backgroundColor: '#00FF87' }]} />
-                  <Text style={styles.legendText}>Today's date</Text>
-                </View>
-                <View style={styles.legendItem}>
-                  <View style={[styles.legendIndicator, { backgroundColor: '#10B981' }]} />
-                  <Text style={styles.legendText}>Tap existing leg to edit</Text>
-                </View>
-                <View style={styles.legendItem}>
-                  <FontAwesome name="chevron-left" size={12} color="#666666" />
-                  <FontAwesome name="chevron-right" size={12} color="#666666" />
-                  <Text style={styles.legendText}>Navigate between months</Text>
-                </View>
-              </View>
-            </View>
-          )}
-        </ScrollView>
+            )}
+          />
+        </View>
       </View>
     </Modal>
   );
@@ -518,6 +638,8 @@ const styles = StyleSheet.create({
     borderRadius: 6,
     borderWidth: 1,
     borderColor: '#007AFF',
+    minWidth: 60,
+    alignItems: 'center',
   },
   modeToggleButtonActive: {
     backgroundColor: '#007AFF',
@@ -537,6 +659,8 @@ const styles = StyleSheet.create({
     backgroundColor: '#262626',
     borderBottomWidth: 1,
     borderBottomColor: '#404040',
+    minHeight: 50,
+    justifyContent: 'center',
   },
   modeText: {
     fontSize: 14,
@@ -545,7 +669,6 @@ const styles = StyleSheet.create({
   },
   content: {
     flex: 1,
-    paddingHorizontal: 16,
   },
 
   // Month navigation
@@ -567,6 +690,9 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: '600',
     color: '#FFFFFF',
+  },
+  currentMonthTitle: {
+    color: '#00FF87',
   },
 
   // Weekday headers
@@ -594,14 +720,13 @@ const styles = StyleSheet.create({
   },
   dayCell: {
     flex: 1,
-    aspectRatio: 1,
-    backgroundColor: '#262626',
-    borderRadius: 8,
-    padding: 4,
+    width: '100%',
+    height: '100%',
     alignItems: 'center',
     justifyContent: 'space-between',
-    borderWidth: 1,
-    borderColor: '#404040',
+    backgroundColor: 'transparent',
+    borderRadius: 8,
+    padding: 4,
   },
   dayCellInactive: {
     backgroundColor: '#1C1C1C',
@@ -612,8 +737,9 @@ const styles = StyleSheet.create({
     borderColor: '#007AFF',
   },
   dayCellToday: {
-    borderColor: '#00FF87',
+    borderColor: '#007AFF',
     borderWidth: 2,
+    backgroundColor: 'rgba(0,122,255,0.1)',
   },
   dayCellInRange: {
     backgroundColor: '#007AFF',
@@ -638,21 +764,27 @@ const styles = StyleSheet.create({
     fontWeight: '600',
   },
   dayTextToday: {
-    color: '#00FF87',
+    color: '#007AFF',
     fontWeight: '600',
   },
 
   // Leg indicators
   legIndicators: {
     width: '100%',
-    flexDirection: 'row',
     gap: 1,
-    justifyContent: 'center',
   },
   legIndicator: {
-    width: 8,
     height: 3,
     borderRadius: 1.5,
+    width: '100%',
+  },
+  legIndicatorEditMode: {
+    height: 4,
+    borderRadius: 2,
+    opacity: 0.9,
+  },
+  legIndicatorViewMode: {
+    opacity: 0.7,
   },
 
   // Country selection
@@ -725,5 +857,84 @@ const styles = StyleSheet.create({
     color: '#CCCCCC',
     fontSize: 12,
     flex: 1,
+  },
+
+  // Mode-based styling
+  dayCellEditMode: {
+    backgroundColor: 'rgba(0,122,255,0.05)',
+    borderColor: 'rgba(0,122,255,0.2)',
+    borderWidth: 1,
+  },
+  dayCellEditModeWithLegs: {
+    backgroundColor: 'rgba(0,122,255,0.08)',
+    borderColor: 'rgba(0,122,255,0.3)',
+    borderWidth: 1,
+  },
+  dayCellViewMode: {
+    backgroundColor: '#171717',
+    borderColor: '#262626',
+  },
+  dayTextEditMode: {
+    color: '#FFFFFF',
+    fontWeight: '600',
+  },
+  dayTextViewMode: {
+    color: '#CCCCCC',
+  },
+  editHint: {
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: [{ translateX: -12 }, { translateY: -12 }],
+    width: 24,
+    height: 24,
+    borderRadius: 12,
+    backgroundColor: 'rgba(0,122,255,0.1)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  modeIndicatorEdit: {
+    backgroundColor: '#007AFF',
+  },
+  modeIndicatorView: {
+    backgroundColor: '#262626',
+  },
+  modeTextEdit: {
+    color: '#FFFFFF',
+  },
+  modeTextView: {
+    color: '#CCCCCC',
+  },
+  calendarList: {
+    flex: 1,
+  },
+  calendarContent: {
+    paddingHorizontal: 16,
+    paddingBottom: 100,
+  },
+  monthContainer: {
+    padding: 16,
+  },
+  dayCellContainer: {
+    flex: 1,
+    aspectRatio: 1,
+    backgroundColor: '#171717',
+    borderRadius: 8,
+    padding: 4,
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    borderWidth: 1,
+    borderColor: '#262626',
+  },
+  emptyDayCell: {
+    flex: 1,
+    aspectRatio: 1,
+    backgroundColor: '#171717',
+    borderRadius: 8,
+    padding: 4,
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    borderWidth: 1,
+    borderColor: '#262626',
   },
 });
