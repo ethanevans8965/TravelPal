@@ -43,13 +43,14 @@ export default function CalendarPlannerModal({
   const [selectedCountry, setSelectedCountry] = useState('');
   const [editingLeg, setEditingLeg] = useState<Leg | null>(null);
 
-  // Generate months data for FlatList (12 months before and after current month)
-  const monthsData = useMemo(() => {
+  // Dynamic calendar state for infinite scrolling
+  const [monthsData, setMonthsData] = useState(() => {
     const months = [];
     const today = new Date();
-    const startMonth = new Date(today.getFullYear(), today.getMonth() - 12, 1);
+    const startMonth = new Date(today.getFullYear(), today.getMonth() - 6, 1);
 
-    for (let i = 0; i < 24; i++) {
+    // Start with 13 months (6 before + current + 6 after)
+    for (let i = 0; i < 13; i++) {
       const monthDate = new Date(startMonth);
       monthDate.setMonth(startMonth.getMonth() + i);
       months.push({
@@ -60,10 +61,67 @@ export default function CalendarPlannerModal({
       });
     }
     return months;
-  }, []);
+  });
 
-  // Current month is at index 12 (12 months back + current month = index 12)
-  const currentMonthIndex = 12;
+  // Current month is at index 6 (6 months back + current month = index 6)
+  const [currentMonthIndex, setCurrentMonthIndex] = useState(6);
+
+  // Prevent excessive loading when scrolling
+  const [isLoadingPastMonths, setIsLoadingPastMonths] = useState(false);
+
+  // Load more future months when scrolling down
+  const loadMoreFutureMonths = () => {
+    setMonthsData((prevMonths) => {
+      const lastMonth = prevMonths[prevMonths.length - 1];
+      const newMonths = [];
+
+      // Add 6 more months to the end
+      for (let i = 1; i <= 6; i++) {
+        const monthDate = new Date(lastMonth.date);
+        monthDate.setMonth(lastMonth.date.getMonth() + i);
+        newMonths.push({
+          id: `${monthDate.getFullYear()}-${monthDate.getMonth()}`,
+          date: monthDate,
+          year: monthDate.getFullYear(),
+          month: monthDate.getMonth(),
+        });
+      }
+
+      return [...prevMonths, ...newMonths];
+    });
+  };
+
+  // Load more past months when scrolling up
+  const loadMorePastMonths = () => {
+    if (isLoadingPastMonths) return;
+
+    setIsLoadingPastMonths(true);
+
+    setMonthsData((prevMonths) => {
+      const firstMonth = prevMonths[0];
+      const newMonths = [];
+
+      // Add 6 more months to the beginning
+      for (let i = 6; i >= 1; i--) {
+        const monthDate = new Date(firstMonth.date);
+        monthDate.setMonth(firstMonth.date.getMonth() - i);
+        newMonths.push({
+          id: `${monthDate.getFullYear()}-${monthDate.getMonth()}`,
+          date: monthDate,
+          year: monthDate.getFullYear(),
+          month: monthDate.getMonth(),
+        });
+      }
+
+      return [...newMonths, ...prevMonths];
+    });
+
+    // Update current month index since we added months at the beginning
+    setCurrentMonthIndex((prevIndex) => prevIndex + 6);
+
+    // Reset loading state after a brief delay
+    setTimeout(() => setIsLoadingPastMonths(false), 1000);
+  };
 
   // Get calendar days for a specific month
   const getCalendarDaysForMonth = (monthDate: Date) => {
@@ -521,6 +579,17 @@ export default function CalendarPlannerModal({
               offset: 400 * index,
               index,
             })}
+            onEndReached={loadMoreFutureMonths}
+            onEndReachedThreshold={0.5}
+            onScroll={(event) => {
+              const scrollY = event.nativeEvent.contentOffset.y;
+              // Load past months when scrolling near the top
+              if (scrollY < 800) {
+                // Less than 2 months from top
+                loadMorePastMonths();
+              }
+            }}
+            scrollEventThrottle={400}
             ListFooterComponent={() => (
               <View>
                 {/* Country selection */}
