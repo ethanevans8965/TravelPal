@@ -55,6 +55,22 @@ export interface Leg {
   budget: number;
 }
 
+export interface TripBudget {
+  currency: string; // e.g. "USD"
+  style: 'frugal' | 'balanced' | 'luxury';
+  autoSuggested: boolean; // true if never modified by user
+  total: number; // sum of all days & categories
+  perDay: number; // total / tripLengthDays
+  categories: {
+    accommodation: number;
+    food: number;
+    transport: number;
+    activities: number;
+    misc: number;
+  };
+  thresholds: { warn: number; stop: number }; // % of total
+}
+
 export interface Trip {
   id: string;
   name: string;
@@ -83,6 +99,7 @@ export interface Trip {
   dateMode?: 'both' | 'start-only' | 'no-dates';
   completionPercentage?: number; // Cached completion percentage
   onboardingCompleted?: boolean; // Track if user has completed onboarding for this trip
+  budget?: TripBudget; // Optional budget configuration
 }
 
 export interface AppContextType {

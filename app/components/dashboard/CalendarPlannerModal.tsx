@@ -569,6 +569,58 @@ export default function CalendarPlannerModal({
           )}
         </View>
 
+        {/* Country selection - moved outside FlatList for better visibility */}
+        {selectionMode === 'selecting_country' && (
+          <View style={styles.countrySection}>
+            <Text style={styles.sectionTitle}>
+              {editingLeg ? 'Update Country' : 'Select Country'}
+            </Text>
+            <DarkCountryPicker
+              selectedCountry={selectedCountry}
+              onSelectCountry={handleCountrySelected}
+            />
+
+            <View style={styles.actionButtons}>
+              <TouchableOpacity
+                style={[styles.actionButton, styles.cancelButton]}
+                onPress={resetSelection}
+              >
+                <FontAwesome name="times" size={16} color="#FFFFFF" />
+                <Text style={styles.actionButtonText}>Cancel</Text>
+              </TouchableOpacity>
+
+              {editingLeg ? (
+                <>
+                  <TouchableOpacity
+                    style={[styles.actionButton, styles.deleteButton]}
+                    onPress={deleteExistingLeg}
+                  >
+                    <FontAwesome name="trash" size={16} color="#FFFFFF" />
+                    <Text style={styles.actionButtonText}>Delete</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    style={[styles.actionButton, styles.saveButton]}
+                    onPress={updateExistingLeg}
+                    disabled={!selectedCountry.trim()}
+                  >
+                    <FontAwesome name="check" size={16} color="#FFFFFF" />
+                    <Text style={styles.actionButtonText}>Update</Text>
+                  </TouchableOpacity>
+                </>
+              ) : (
+                <TouchableOpacity
+                  style={[styles.actionButton, styles.saveButton]}
+                  onPress={saveNewLeg}
+                  disabled={!selectedCountry.trim()}
+                >
+                  <FontAwesome name="plus" size={16} color="#FFFFFF" />
+                  <Text style={styles.actionButtonText}>Add Leg</Text>
+                </TouchableOpacity>
+              )}
+            </View>
+          </View>
+        )}
+
         <View style={styles.content}>
           {/* Vertical Calendar with FlatList */}
           <FlatList
@@ -597,50 +649,6 @@ export default function CalendarPlannerModal({
             scrollEventThrottle={400}
             ListFooterComponent={() => (
               <View>
-                {/* Country selection */}
-                {selectionMode === 'selecting_country' && (
-                  <View style={styles.countrySection}>
-                    <Text style={styles.sectionTitle}>
-                      {editingLeg ? 'Update Country' : 'Select Country'}
-                    </Text>
-                    <DarkCountryPicker
-                      selectedCountry={selectedCountry}
-                      onSelectCountry={handleCountrySelected}
-                    />
-
-                    <View style={styles.actionButtons}>
-                      {editingLeg ? (
-                        <>
-                          <TouchableOpacity
-                            style={[styles.actionButton, styles.deleteButton]}
-                            onPress={deleteExistingLeg}
-                          >
-                            <FontAwesome name="trash" size={16} color="#FFFFFF" />
-                            <Text style={styles.actionButtonText}>Delete</Text>
-                          </TouchableOpacity>
-                          <TouchableOpacity
-                            style={[styles.actionButton, styles.saveButton]}
-                            onPress={updateExistingLeg}
-                            disabled={!selectedCountry.trim()}
-                          >
-                            <FontAwesome name="check" size={16} color="#FFFFFF" />
-                            <Text style={styles.actionButtonText}>Update</Text>
-                          </TouchableOpacity>
-                        </>
-                      ) : (
-                        <TouchableOpacity
-                          style={[styles.actionButton, styles.saveButton]}
-                          onPress={saveNewLeg}
-                          disabled={!selectedCountry.trim()}
-                        >
-                          <FontAwesome name="plus" size={16} color="#FFFFFF" />
-                          <Text style={styles.actionButtonText}>Add Leg</Text>
-                        </TouchableOpacity>
-                      )}
-                    </View>
-                  </View>
-                )}
-
                 {/* Interactive Legend */}
                 {selectionMode === 'viewing' && (
                   <View style={styles.legendSection}>
@@ -902,6 +910,9 @@ const styles = StyleSheet.create({
   },
   deleteButton: {
     backgroundColor: '#EF4444',
+  },
+  cancelButton: {
+    backgroundColor: '#666666',
   },
   actionButtonText: {
     color: '#FFFFFF',

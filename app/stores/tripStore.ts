@@ -2,7 +2,7 @@ import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as Crypto from 'expo-crypto';
-import { Trip, Leg } from '../types';
+import { Trip, Leg, TripBudget } from '../types';
 import { useExpenseStore } from './expenseStore';
 
 interface TripState {
@@ -24,6 +24,9 @@ interface TripState {
 
   // Onboarding operations
   markOnboardingComplete: (tripId: string) => void;
+
+  // Budget operations
+  setBudget: (tripId: string, budget: TripBudget) => void;
 
   // Utility functions
   getTripById: (tripId: string) => Trip | undefined;
@@ -110,6 +113,11 @@ export const useTripStore = create<TripState>()(
           trips: state.trips.map((trip) =>
             trip.id === tripId ? { ...trip, onboardingCompleted: true } : trip
           ),
+        })),
+
+      setBudget: (tripId, budget) =>
+        set((state) => ({
+          trips: state.trips.map((trip) => (trip.id === tripId ? { ...trip, budget } : trip)),
         })),
 
       deleteTrip: (tripId) => {
