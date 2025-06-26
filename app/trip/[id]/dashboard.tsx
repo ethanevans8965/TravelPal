@@ -21,6 +21,7 @@ import LegTimeline from '../../components/LegTimeline';
 import AddLegModal from '../../components/AddLegModal';
 import CalendarPreviewWidget from '../../components/dashboard/CalendarPreviewWidget';
 import CalendarPlannerModal from '../../components/dashboard/CalendarPlannerModal';
+import { BudgetSetupModal } from '../../components/BudgetSetupModal';
 
 const { width: screenWidth } = Dimensions.get('window');
 
@@ -32,6 +33,7 @@ export default function TripDashboardScreen() {
   const [destinationModalVisible, setDestinationModalVisible] = useState(false);
   const [addLegModalVisible, setAddLegModalVisible] = useState(false);
   const [calendarPlannerVisible, setCalendarPlannerVisible] = useState(false);
+  const [budgetSetupVisible, setBudgetSetupVisible] = useState(false);
   const [selectedLegId, setSelectedLegId] = useState<string | undefined>(undefined);
 
   const trip = trips.find((t) => t.id === id);
@@ -52,8 +54,6 @@ export default function TripDashboardScreen() {
 
   const expenses = getTripExpenses(trip.id);
   const totalSpent = expenses.reduce((sum, expense) => sum + expense.amount, 0);
-  const budgetLeft = (trip.totalBudget || 0) - totalSpent;
-  const budgetUsagePercentage = trip.totalBudget ? (totalSpent / trip.totalBudget) * 100 : 0;
 
   const formatDate = (dateString?: string) => {
     if (!dateString) return '';
@@ -253,19 +253,23 @@ export default function TripDashboardScreen() {
             <Text style={styles.statValue}>{getLegCountText()}</Text>
           </TouchableOpacity>
 
-          <View style={styles.statCard}>
+          <TouchableOpacity
+            style={styles.statCard}
+            onPress={() => setBudgetSetupVisible(true)}
+            activeOpacity={0.7}
+          >
             <View style={styles.statHeader}>
               <FontAwesome name="credit-card" size={12} color="rgba(255,255,255,0.6)" />
               <Text style={styles.statLabel}>Budget</Text>
             </View>
             <Text style={styles.statValue}>
-              {trip.totalBudget ? `$${trip.totalBudget.toLocaleString()}` : 'No budget'}
+              {trip.budget ? `$${trip.budget.total.toLocaleString()}` : 'No budget'}
             </Text>
-          </View>
+          </TouchableOpacity>
         </View>
 
         {/* Budget Progress */}
-        {trip.totalBudget && (
+        {trip.budget && (
           <View style={styles.section}>
             <Text style={styles.sectionTitle}>Budget Usage</Text>
             <View style={styles.progressContainer}>
@@ -273,13 +277,18 @@ export default function TripDashboardScreen() {
                 <View
                   style={[
                     styles.progressFill,
-                    { width: `${Math.min(budgetUsagePercentage, 100)}%` },
+                    {
+                      width: `${Math.min((totalSpent / trip.budget.total) * 100, 100)}%`,
+                      backgroundColor: totalSpent > trip.budget.total ? '#EF4444' : '#10B981',
+                    },
                   ]}
                 />
               </View>
               <View style={styles.progressLabels}>
                 <Text style={styles.progressLabel}>${totalSpent.toLocaleString()} spent</Text>
-                <Text style={styles.progressLabel}>${budgetLeft.toLocaleString()} left</Text>
+                <Text style={styles.progressLabel}>
+                  ${(trip.budget.total - totalSpent).toLocaleString()} left
+                </Text>
               </View>
             </View>
           </View>
@@ -379,6 +388,17 @@ export default function TripDashboardScreen() {
         visible={calendarPlannerVisible}
         tripId={trip.id}
         onClose={() => setCalendarPlannerVisible(false)}
+      />
+
+      {/* Budget Setup Modal */}
+      <BudgetSetupModal
+        visible={budgetSetupVisible}
+        tripId={trip.id}
+        onClose={() => setBudgetSetupVisible(false)}
+        onBudgetSet={(budget) => {
+          console.log('Budget set:', budget);
+          setBudgetSetupVisible(false);
+        }}
       />
     </View>
   );

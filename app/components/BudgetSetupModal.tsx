@@ -9,8 +9,6 @@ import {
   ScrollView,
   Alert,
 } from 'react-native';
-import { LinearGradient } from 'expo-linear-gradient';
-import { BlurView } from 'expo-blur';
 import { Ionicons } from '@expo/vector-icons';
 import { TripBudget } from '../types';
 import { useTripStore } from '../stores/tripStore';
@@ -26,36 +24,35 @@ interface BudgetSetupModalProps {
 }
 
 type TravelStyle = 'frugal' | 'balanced' | 'luxury';
-type Currency = 'USD' | 'EUR' | 'GBP' | 'JPY' | 'AUD' | 'CAD';
 
-const currencies: { code: Currency; symbol: string; name: string }[] = [
-  { code: 'USD', symbol: '$', name: 'US Dollar' },
-  { code: 'EUR', symbol: '€', name: 'Euro' },
-  { code: 'GBP', symbol: '£', name: 'British Pound' },
-  { code: 'JPY', symbol: '¥', name: 'Japanese Yen' },
-  { code: 'AUD', symbol: 'A$', name: 'Australian Dollar' },
-  { code: 'CAD', symbol: 'C$', name: 'Canadian Dollar' },
+const styleOptions = [
+  {
+    key: 'frugal' as TravelStyle,
+    icon: 'wallet-outline',
+    title: 'Frugal',
+    description: 'Budget-conscious travel with hostels and local food',
+  },
+  {
+    key: 'balanced' as TravelStyle,
+    icon: 'business-outline',
+    title: 'Balanced',
+    description: 'Mix of comfort and value with mid-range options',
+  },
+  {
+    key: 'luxury' as TravelStyle,
+    icon: 'diamond-outline',
+    title: 'Luxury',
+    description: 'Premium experiences with top-tier accommodations',
+  },
 ];
 
-const travelStyles: { key: TravelStyle; label: string; description: string; icon: string }[] = [
-  {
-    key: 'frugal',
-    label: 'Frugal',
-    description: 'Budget-conscious travel with hostels and local food',
-    icon: 'wallet-outline',
-  },
-  {
-    key: 'balanced',
-    label: 'Balanced',
-    description: 'Mix of comfort and value with mid-range options',
-    icon: 'scale-outline',
-  },
-  {
-    key: 'luxury',
-    label: 'Luxury',
-    description: 'Premium experiences with top-tier accommodations',
-    icon: 'diamond-outline',
-  },
+const currencies = [
+  { code: 'USD', symbol: '$' },
+  { code: 'EUR', symbol: '€' },
+  { code: 'GBP', symbol: '£' },
+  { code: 'JPY', symbol: '¥' },
+  { code: 'AUD', symbol: '$' },
+  { code: 'CAD', symbol: '$' },
 ];
 
 export const BudgetSetupModal: React.FC<BudgetSetupModalProps> = ({
@@ -64,55 +61,44 @@ export const BudgetSetupModal: React.FC<BudgetSetupModalProps> = ({
   tripId,
   onBudgetSet,
 }) => {
-  const { getTripById, getLegsByTrip, setBudget, generateBudgetSuggestion } = useTripStore();
-
+  const { getTripById, getLegsByTrip, setBudget } = useTripStore();
   const [selectedStyle, setSelectedStyle] = useState<TravelStyle>('balanced');
-  const [selectedCurrency, setSelectedCurrency] = useState<Currency>('USD');
+  const [selectedCurrency, setSelectedCurrency] = useState('USD');
   const [suggestedBudget, setSuggestedBudget] = useState<TripBudget | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
-  // Generate budget suggestion when modal opens or style/currency changes
+  const trip = getTripById(tripId);
+  const tripLegs = getLegsByTrip(tripId);
+
   useEffect(() => {
-    if (visible && tripId) {
-      const suggestion = generateBudgetSuggestion(tripId, selectedStyle, selectedCurrency);
-      setSuggestedBudget(suggestion);
+    if (visible && trip) {
+      generateSuggestion();
     }
-  }, [visible, tripId, selectedStyle, selectedCurrency, generateBudgetSuggestion]);
+  }, [visible, selectedStyle, selectedCurrency, trip]);
 
-  const handleStyleChange = (style: TravelStyle) => {
-    setSelectedStyle(style);
-
-    // Convert existing budget to new style if available
-    if (suggestedBudget) {
-      const convertedBudget = convertBudgetStyle(suggestedBudget, style);
-      setSuggestedBudget({ ...convertedBudget, currency: selectedCurrency });
-    }
-  };
-
-  const handleCurrencyChange = (currency: Currency) => {
-    setSelectedCurrency(currency);
-
-    // Update currency in existing budget
-    if (suggestedBudget) {
-      setSuggestedBudget({ ...suggestedBudget, currency });
-    }
-  };
-
-  const handleAcceptBudget = async () => {
-    if (!suggestedBudget) {
-      Alert.alert('Error', 'No budget suggestion available');
-      return;
-    }
+  const generateSuggestion = async () => {
+    if (!trip) return;
 
     setIsLoading(true);
     try {
-      // Save budget to trip
+      const suggestion = getSuggestedBudget(tripLegs, selectedStyle, selectedCurrency);
+      setSuggestedBudget(suggestion);
+    } catch (error) {
+      console.error('Error generating budget suggestion:', error);
+      Alert.alert('Error', 'Failed to generate budget suggestion');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleAccept = async () => {
+    if (!suggestedBudget) return;
+
+    setIsLoading(true);
+    try {
       setBudget(tripId, suggestedBudget);
-
-      // Notify parent component
       onBudgetSet?.(suggestedBudget);
-
-      // Close modal
+      Alert.alert('Success', 'Budget has been set for your trip!');
       onClose();
     } catch (error) {
       console.error('Error setting budget:', error);
@@ -122,24 +108,13 @@ export const BudgetSetupModal: React.FC<BudgetSetupModalProps> = ({
     }
   };
 
-  const handleSkip = () => {
-    onClose();
-  };
-
-  const formatCurrency = (amount: number, currencyCode: Currency) => {
-    const currency = currencies.find((c) => c.code === currencyCode);
-    const symbol = currency?.symbol || '$';
-
-    if (currencyCode === 'JPY') {
-      return `${symbol}${Math.round(amount).toLocaleString()}`;
+  const getDestinationCount = () => {
+    if (tripLegs.length > 0) {
+      const uniqueCountries = new Set(tripLegs.map((leg) => leg.country));
+      return uniqueCountries.size;
     }
-    return `${symbol}${amount.toLocaleString()}`;
+    return trip?.destination ? 1 : 0;
   };
-
-  const trip = getTripById(tripId);
-  const legs = getLegsByTrip(tripId);
-
-  if (!trip) return null;
 
   return (
     <Modal
@@ -148,163 +123,177 @@ export const BudgetSetupModal: React.FC<BudgetSetupModalProps> = ({
       presentationStyle="pageSheet"
       onRequestClose={onClose}
     >
-      <BlurView intensity={100} style={styles.container}>
-        <LinearGradient colors={['#1a1a2e', '#16213e', '#0f3460']} style={styles.gradient}>
-          {/* Header */}
-          <View style={styles.header}>
-            <TouchableOpacity onPress={onClose} style={styles.closeButton}>
-              <Ionicons name="close" size={24} color="#FFFFFF" />
-            </TouchableOpacity>
-            <Text style={styles.headerTitle}>Setup Budget</Text>
-            <View style={styles.headerSpacer} />
+      <View style={styles.container}>
+        {/* Header */}
+        <View style={styles.header}>
+          <TouchableOpacity style={styles.closeButton} onPress={onClose}>
+            <Ionicons name="close" size={24} color="#FFFFFF" />
+          </TouchableOpacity>
+          <Text style={styles.headerTitle}>Setup Budget</Text>
+          <View style={styles.headerSpacer} />
+        </View>
+
+        <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
+          {/* Trip Info */}
+          <View style={styles.tripInfoCard}>
+            <Text style={styles.tripName}>{trip?.name || 'Trip'}</Text>
+            <Text style={styles.tripDetails}>
+              {getDestinationCount()} destination{getDestinationCount() !== 1 ? 's' : ''}
+            </Text>
           </View>
 
-          <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
-            {/* Trip Info */}
-            <View style={styles.tripInfoCard}>
-              <Text style={styles.tripName}>{trip.name}</Text>
-              <Text style={styles.tripDetails}>
-                {legs.length > 0
-                  ? `${legs.length} destination${legs.length > 1 ? 's' : ''}`
-                  : 'New trip'}
-              </Text>
-            </View>
-
-            {/* Travel Style Selector */}
-            <View style={styles.section}>
-              <Text style={styles.sectionTitle}>Travel Style</Text>
-              <View style={styles.styleContainer}>
-                {travelStyles.map((style) => (
-                  <TouchableOpacity
-                    key={style.key}
-                    style={[
-                      styles.styleCard,
-                      selectedStyle === style.key && styles.styleCardSelected,
-                    ]}
-                    onPress={() => handleStyleChange(style.key)}
-                  >
-                    <View style={styles.styleIcon}>
-                      <Ionicons
-                        name={style.icon as any}
-                        size={24}
-                        color={selectedStyle === style.key ? '#007AFF' : '#CCCCCC'}
-                      />
-                    </View>
-                    <Text
-                      style={[
-                        styles.styleLabel,
-                        selectedStyle === style.key && styles.styleLabelSelected,
-                      ]}
-                    >
-                      {style.label}
-                    </Text>
-                    <Text style={styles.styleDescription}>{style.description}</Text>
-                  </TouchableOpacity>
-                ))}
-              </View>
-            </View>
-
-            {/* Currency Selector */}
-            <View style={styles.section}>
-              <Text style={styles.sectionTitle}>Currency</Text>
-              <ScrollView
-                horizontal
-                showsHorizontalScrollIndicator={false}
-                style={styles.currencyScroll}
+          {/* Travel Style */}
+          <Text style={styles.sectionTitle}>Travel Style</Text>
+          <View style={styles.styleContainer}>
+            {styleOptions.map((option) => (
+              <TouchableOpacity
+                key={option.key}
+                style={[styles.styleCard, selectedStyle === option.key && styles.styleCardSelected]}
+                onPress={() => setSelectedStyle(option.key)}
+                activeOpacity={0.7}
               >
-                {currencies.map((currency) => (
-                  <TouchableOpacity
-                    key={currency.code}
-                    style={[
-                      styles.currencyCard,
-                      selectedCurrency === currency.code && styles.currencyCardSelected,
-                    ]}
-                    onPress={() => handleCurrencyChange(currency.code)}
-                  >
-                    <Text
-                      style={[
-                        styles.currencySymbol,
-                        selectedCurrency === currency.code && styles.currencySymbolSelected,
-                      ]}
-                    >
-                      {currency.symbol}
-                    </Text>
-                    <Text
-                      style={[
-                        styles.currencyCode,
-                        selectedCurrency === currency.code && styles.currencyCodeSelected,
-                      ]}
-                    >
-                      {currency.code}
-                    </Text>
-                  </TouchableOpacity>
-                ))}
-              </ScrollView>
-            </View>
-
-            {/* Budget Preview */}
-            {suggestedBudget && (
-              <View style={styles.section}>
-                <Text style={styles.sectionTitle}>Suggested Budget</Text>
-                <LinearGradient colors={['#007AFF', '#5856D6']} style={styles.budgetCard}>
-                  <View style={styles.budgetHeader}>
-                    <Text style={styles.budgetTotal}>
-                      {formatCurrency(suggestedBudget.total, selectedCurrency)}
-                    </Text>
-                    <Text style={styles.budgetSubtitle}>Total Trip Budget</Text>
-                  </View>
-
-                  <View style={styles.budgetBreakdown}>
-                    <View style={styles.budgetRow}>
-                      <Text style={styles.budgetLabel}>Per Day</Text>
-                      <Text style={styles.budgetValue}>
-                        {formatCurrency(suggestedBudget.perDay, selectedCurrency)}
-                      </Text>
-                    </View>
-
-                    <View style={styles.budgetCategories}>
-                      {Object.entries(suggestedBudget.categories).map(([category, amount]) => (
-                        <View key={category} style={styles.categoryRow}>
-                          <Text style={styles.categoryLabel}>
-                            {category.charAt(0).toUpperCase() + category.slice(1)}
-                          </Text>
-                          <Text style={styles.categoryAmount}>
-                            {formatCurrency(amount, selectedCurrency)}
-                          </Text>
-                        </View>
-                      ))}
-                    </View>
-                  </View>
-                </LinearGradient>
-
-                <Text style={styles.budgetNote}>
-                  Based on {legs.length > 0 ? 'your destinations and' : ''} travel style. You can
-                  customize this later.
+                <Ionicons
+                  name={option.icon as any}
+                  size={24}
+                  color={selectedStyle === option.key ? '#3B82F6' : 'rgba(255,255,255,0.6)'}
+                />
+                <Text
+                  style={[
+                    styles.styleTitle,
+                    selectedStyle === option.key && styles.styleTitleSelected,
+                  ]}
+                >
+                  {option.title}
                 </Text>
-              </View>
-            )}
+                <Text style={styles.styleDescription}>{option.description}</Text>
+              </TouchableOpacity>
+            ))}
+          </View>
+
+          {/* Currency */}
+          <Text style={styles.sectionTitle}>Currency</Text>
+          <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            style={styles.currencyScroll}
+          >
+            <View style={styles.currencyContainer}>
+              {currencies.map((currency) => (
+                <TouchableOpacity
+                  key={currency.code}
+                  style={[
+                    styles.currencyCard,
+                    selectedCurrency === currency.code && styles.currencyCardSelected,
+                  ]}
+                  onPress={() => setSelectedCurrency(currency.code)}
+                  activeOpacity={0.7}
+                >
+                  <Text
+                    style={[
+                      styles.currencySymbol,
+                      selectedCurrency === currency.code && styles.currencySymbolSelected,
+                    ]}
+                  >
+                    {currency.symbol}
+                  </Text>
+                  <Text
+                    style={[
+                      styles.currencyCode,
+                      selectedCurrency === currency.code && styles.currencyCodeSelected,
+                    ]}
+                  >
+                    {currency.code}
+                  </Text>
+                </TouchableOpacity>
+              ))}
+            </View>
           </ScrollView>
 
-          {/* Action Buttons */}
-          <View style={styles.actions}>
-            <TouchableOpacity style={styles.skipButton} onPress={handleSkip}>
-              <Text style={styles.skipButtonText}>Skip for Now</Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity
-              style={[styles.acceptButton, isLoading && styles.acceptButtonDisabled]}
-              onPress={handleAcceptBudget}
-              disabled={isLoading || !suggestedBudget}
-            >
-              <LinearGradient colors={['#007AFF', '#5856D6']} style={styles.acceptButtonGradient}>
-                <Text style={styles.acceptButtonText}>
-                  {isLoading ? 'Setting up...' : 'Accept Budget'}
+          {/* Suggested Budget */}
+          {suggestedBudget && (
+            <>
+              <Text style={styles.sectionTitle}>Suggested Budget</Text>
+              <View style={styles.budgetCard}>
+                <Text style={styles.budgetTotal}>
+                  {currencies.find((c) => c.code === selectedCurrency)?.symbol}
+                  {suggestedBudget.total.toLocaleString()}
                 </Text>
-              </LinearGradient>
-            </TouchableOpacity>
-          </View>
-        </LinearGradient>
-      </BlurView>
+                <Text style={styles.budgetSubtitle}>Total Trip Budget</Text>
+
+                <View style={styles.budgetBreakdown}>
+                  <View style={styles.budgetRow}>
+                    <Text style={styles.budgetLabel}>Per Day</Text>
+                    <Text style={styles.budgetValue}>
+                      {currencies.find((c) => c.code === selectedCurrency)?.symbol}
+                      {suggestedBudget.perDay.toLocaleString()}
+                    </Text>
+                  </View>
+
+                  <View style={styles.separator} />
+
+                  <View style={styles.budgetRow}>
+                    <Text style={styles.budgetLabel}>Accommodation</Text>
+                    <Text style={styles.budgetValue}>
+                      {currencies.find((c) => c.code === selectedCurrency)?.symbol}
+                      {suggestedBudget.categories.accommodation.toLocaleString()}
+                    </Text>
+                  </View>
+                  <View style={styles.budgetRow}>
+                    <Text style={styles.budgetLabel}>Food</Text>
+                    <Text style={styles.budgetValue}>
+                      {currencies.find((c) => c.code === selectedCurrency)?.symbol}
+                      {suggestedBudget.categories.food.toLocaleString()}
+                    </Text>
+                  </View>
+                  <View style={styles.budgetRow}>
+                    <Text style={styles.budgetLabel}>Transport</Text>
+                    <Text style={styles.budgetValue}>
+                      {currencies.find((c) => c.code === selectedCurrency)?.symbol}
+                      {suggestedBudget.categories.transport.toLocaleString()}
+                    </Text>
+                  </View>
+                  <View style={styles.budgetRow}>
+                    <Text style={styles.budgetLabel}>Activities</Text>
+                    <Text style={styles.budgetValue}>
+                      {currencies.find((c) => c.code === selectedCurrency)?.symbol}
+                      {suggestedBudget.categories.activities.toLocaleString()}
+                    </Text>
+                  </View>
+                  <View style={styles.budgetRow}>
+                    <Text style={styles.budgetLabel}>Misc</Text>
+                    <Text style={styles.budgetValue}>
+                      {currencies.find((c) => c.code === selectedCurrency)?.symbol}
+                      {suggestedBudget.categories.misc.toLocaleString()}
+                    </Text>
+                  </View>
+                </View>
+              </View>
+
+              <Text style={styles.disclaimerText}>
+                Based on your destinations and travel style. You can customize this later.
+              </Text>
+            </>
+          )}
+        </ScrollView>
+
+        {/* Action Buttons */}
+        <View style={styles.actionContainer}>
+          <TouchableOpacity style={styles.skipButton} onPress={onClose} activeOpacity={0.7}>
+            <Text style={styles.skipButtonText}>Skip for Now</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={[styles.acceptButton, isLoading && styles.acceptButtonDisabled]}
+            onPress={handleAccept}
+            disabled={isLoading || !suggestedBudget}
+            activeOpacity={0.7}
+          >
+            <Text style={styles.acceptButtonText}>
+              {isLoading ? 'Setting...' : 'Accept Budget'}
+            </Text>
+          </TouchableOpacity>
+        </View>
+      </View>
     </Modal>
   );
 };
@@ -312,244 +301,237 @@ export const BudgetSetupModal: React.FC<BudgetSetupModalProps> = ({
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: '#171717',
   },
-  gradient: {
-    flex: 1,
-  },
+
+  // Header
   header: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingHorizontal: 20,
     paddingTop: 60,
+    paddingHorizontal: 20,
     paddingBottom: 20,
+    borderBottomWidth: 1,
+    borderBottomColor: '#262626',
   },
   closeButton: {
     width: 40,
     height: 40,
     borderRadius: 20,
-    backgroundColor: 'rgba(255, 255, 255, 0.1)',
-    alignItems: 'center',
+    backgroundColor: 'rgba(38,38,38,0.7)',
     justifyContent: 'center',
+    alignItems: 'center',
   },
   headerTitle: {
     flex: 1,
-    textAlign: 'center',
     fontSize: 20,
     fontWeight: '600',
     color: '#FFFFFF',
-    letterSpacing: 0.5,
+    textAlign: 'center',
+    letterSpacing: -0.3,
   },
   headerSpacer: {
     width: 40,
   },
+
+  // Content
   content: {
     flex: 1,
     paddingHorizontal: 20,
   },
+
+  // Trip Info
   tripInfoCard: {
-    backgroundColor: 'rgba(255, 255, 255, 0.05)',
-    borderRadius: 16,
-    padding: 20,
-    marginBottom: 24,
+    backgroundColor: 'rgba(38,38,38,0.7)',
     borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.1)',
+    borderColor: '#404040',
+    borderRadius: 8,
+    padding: 16,
+    marginTop: 20,
+    marginBottom: 24,
   },
   tripName: {
     fontSize: 18,
     fontWeight: '600',
     color: '#FFFFFF',
     marginBottom: 4,
+    letterSpacing: -0.3,
   },
   tripDetails: {
     fontSize: 14,
-    color: '#CCCCCC',
+    color: 'rgba(255,255,255,0.6)',
   },
-  section: {
-    marginBottom: 32,
-  },
+
+  // Sections
   sectionTitle: {
     fontSize: 18,
     fontWeight: '600',
     color: '#FFFFFF',
-    marginBottom: 16,
-    letterSpacing: 0.5,
+    marginBottom: 12,
+    letterSpacing: -0.3,
   },
+
+  // Style Selection
   styleContainer: {
-    gap: 12,
+    marginBottom: 24,
   },
   styleCard: {
-    backgroundColor: 'rgba(255, 255, 255, 0.05)',
-    borderRadius: 16,
-    padding: 20,
+    backgroundColor: 'rgba(38,38,38,0.7)',
     borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.1)',
+    borderColor: '#404040',
+    borderRadius: 8,
+    padding: 16,
+    marginBottom: 12,
   },
   styleCardSelected: {
-    backgroundColor: 'rgba(0, 122, 255, 0.1)',
-    borderColor: '#007AFF',
+    borderColor: '#3B82F6',
+    backgroundColor: 'rgba(59,130,246,0.1)',
   },
-  styleIcon: {
-    marginBottom: 8,
-  },
-  styleLabel: {
+  styleTitle: {
     fontSize: 16,
     fontWeight: '600',
     color: '#FFFFFF',
+    marginTop: 8,
     marginBottom: 4,
   },
-  styleLabelSelected: {
-    color: '#007AFF',
+  styleTitleSelected: {
+    color: '#3B82F6',
   },
   styleDescription: {
     fontSize: 14,
-    color: '#CCCCCC',
-    lineHeight: 20,
+    color: 'rgba(255,255,255,0.6)',
+    lineHeight: 18,
   },
+
+  // Currency Selection
   currencyScroll: {
-    marginHorizontal: -20,
-    paddingHorizontal: 20,
+    marginBottom: 24,
+  },
+  currencyContainer: {
+    flexDirection: 'row',
+    gap: 12,
+    paddingRight: 20,
   },
   currencyCard: {
-    width: 80,
-    height: 80,
-    backgroundColor: 'rgba(255, 255, 255, 0.05)',
-    borderRadius: 16,
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginRight: 12,
+    backgroundColor: 'rgba(38,38,38,0.7)',
     borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.1)',
+    borderColor: '#404040',
+    borderRadius: 8,
+    padding: 16,
+    minWidth: 80,
+    alignItems: 'center',
   },
   currencyCardSelected: {
-    backgroundColor: 'rgba(0, 122, 255, 0.1)',
-    borderColor: '#007AFF',
+    borderColor: '#3B82F6',
+    backgroundColor: 'rgba(59,130,246,0.1)',
   },
   currencySymbol: {
     fontSize: 24,
     fontWeight: '600',
-    color: '#CCCCCC',
+    color: 'rgba(255,255,255,0.6)',
     marginBottom: 4,
   },
   currencySymbolSelected: {
-    color: '#007AFF',
+    color: '#3B82F6',
   },
   currencyCode: {
     fontSize: 12,
     fontWeight: '500',
-    color: '#CCCCCC',
+    color: 'rgba(255,255,255,0.6)',
   },
   currencyCodeSelected: {
-    color: '#007AFF',
+    color: '#3B82F6',
   },
+
+  // Budget Display
   budgetCard: {
-    borderRadius: 20,
-    padding: 24,
-    marginBottom: 12,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 8 },
-    shadowOpacity: 0.3,
-    shadowRadius: 16,
-    elevation: 8,
-  },
-  budgetHeader: {
-    alignItems: 'center',
-    marginBottom: 20,
+    backgroundColor: '#3B82F6',
+    borderRadius: 8,
+    padding: 20,
+    marginBottom: 16,
   },
   budgetTotal: {
-    fontSize: 32,
+    fontSize: 36,
     fontWeight: '700',
     color: '#FFFFFF',
+    textAlign: 'center',
     marginBottom: 4,
   },
   budgetSubtitle: {
-    fontSize: 14,
-    color: 'rgba(255, 255, 255, 0.8)',
-    fontWeight: '500',
+    fontSize: 16,
+    color: 'rgba(255,255,255,0.8)',
+    textAlign: 'center',
+    marginBottom: 20,
   },
   budgetBreakdown: {
-    gap: 16,
+    gap: 12,
   },
   budgetRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingBottom: 16,
-    borderBottomWidth: 1,
-    borderBottomColor: 'rgba(255, 255, 255, 0.2)',
   },
   budgetLabel: {
-    fontSize: 16,
-    color: 'rgba(255, 255, 255, 0.9)',
-    fontWeight: '500',
+    fontSize: 14,
+    color: 'rgba(255,255,255,0.8)',
   },
   budgetValue: {
-    fontSize: 18,
-    color: '#FFFFFF',
+    fontSize: 14,
     fontWeight: '600',
-  },
-  budgetCategories: {
-    gap: 12,
-  },
-  categoryRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  },
-  categoryLabel: {
-    fontSize: 14,
-    color: 'rgba(255, 255, 255, 0.8)',
-    fontWeight: '500',
-  },
-  categoryAmount: {
-    fontSize: 14,
     color: '#FFFFFF',
-    fontWeight: '600',
   },
-  budgetNote: {
+  separator: {
+    height: 1,
+    backgroundColor: 'rgba(255,255,255,0.2)',
+    marginVertical: 4,
+  },
+
+  // Disclaimer
+  disclaimerText: {
     fontSize: 14,
-    color: '#CCCCCC',
+    color: 'rgba(255,255,255,0.6)',
     textAlign: 'center',
-    lineHeight: 20,
+    lineHeight: 18,
+    marginBottom: 24,
   },
-  actions: {
+
+  // Action Buttons
+  actionContainer: {
     flexDirection: 'row',
+    gap: 12,
     paddingHorizontal: 20,
     paddingBottom: 40,
-    gap: 12,
+    paddingTop: 20,
+    borderTopWidth: 1,
+    borderTopColor: '#262626',
   },
   skipButton: {
     flex: 1,
-    height: 56,
-    backgroundColor: 'rgba(255, 255, 255, 0.1)',
-    borderRadius: 16,
-    alignItems: 'center',
-    justifyContent: 'center',
+    backgroundColor: 'rgba(38,38,38,0.7)',
     borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.2)',
+    borderColor: '#404040',
+    borderRadius: 8,
+    paddingVertical: 16,
+    alignItems: 'center',
   },
   skipButtonText: {
     fontSize: 16,
     fontWeight: '600',
-    color: '#CCCCCC',
+    color: 'rgba(255,255,255,0.8)',
   },
   acceptButton: {
-    flex: 2,
-    height: 56,
-    borderRadius: 16,
-    overflow: 'hidden',
+    flex: 1,
+    backgroundColor: '#3B82F6',
+    borderRadius: 8,
+    paddingVertical: 16,
+    alignItems: 'center',
   },
   acceptButtonDisabled: {
-    opacity: 0.6,
-  },
-  acceptButtonGradient: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
+    opacity: 0.5,
   },
   acceptButtonText: {
     fontSize: 16,
     fontWeight: '600',
     color: '#FFFFFF',
-    letterSpacing: 0.5,
   },
 });

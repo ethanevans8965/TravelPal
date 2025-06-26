@@ -1,6 +1,6 @@
 # 🎨 TravelPal UI/UX Design Principles
 
-> **Design philosophy and implementation guidelines for TravelPal's beautiful, dark-mode interface**
+> **Design philosophy and implementation guidelines for TravelPal's clean, dark-mode interface**
 
 ---
 
@@ -10,437 +10,307 @@
 
 TravelPal's design is built on four fundamental pillars that guide every interface decision:
 
-1. **🌟 Beauty & Elegance** - Every element should be visually appealing and premium
+1. **🎯 Clean & Minimal** - Clean interfaces with consistent patterns and minimal visual noise
 2. **⚡ Efficiency & Speed** - Users should accomplish tasks quickly and intuitively
 3. **🧠 Intelligence & Context** - The app should anticipate user needs and provide smart defaults
 4. **♿ Accessibility & Inclusion** - Everyone should be able to use TravelPal effectively
 
 ### **Design Goals**
 
-- **Premium Dark-First Experience** ✅ _Primary focus since v2.0_
-- **Create professional, enterprise-ready interfaces** suitable for business users
-- **Establish a consistent dark design system** that scales across all features
-- **Optimize for mobile-first interactions** with gesture-based navigation
+- **Clean Dark-First Experience** ✅ _Primary focus since v2.0_
+- **Create professional, minimal interfaces** with consistent patterns
+- **Establish a unified dark design system** that scales across all features
+- **Optimize for mobile-first interactions** with clear touch targets
 - **Ensure accessibility compliance** with high contrast ratios in dark mode
-- **Future light mode support** while maintaining design consistency
+- **Maintain design consistency** across all components and screens
 
 ---
 
-## 🌙 **Dark Mode Design System (Primary)**
+## 🌙 **Dashboard-First Design System**
 
-### **Dark Mode Color Palette**
+### **Color Palette**
 
-Our carefully crafted dark color system provides premium elegance with excellent readability:
+Our clean, minimal color system provides excellent readability and consistency:
 
 ```typescript
-// PRIMARY DARK THEME
-const darkColors = {
+// DASHBOARD DESIGN SYSTEM
+const dashboardColors = {
   // Background Hierarchy
-  background: '#000000', // Pure black for main screens
-  surface: '#171717', // Dark surface for modals, cards
-  card: '#262626', // Elevated elements, input fields
-  overlay: 'rgba(0, 0, 0, 0.7)', // Modal overlays
+  background: '#171717', // Primary background (neutral-900)
+  surface: 'rgba(38,38,38,0.7)', // Cards and elevated elements (neutral-800/70)
+  elevated: '#262626', // Highly elevated elements (neutral-800)
+
+  // Borders & Separators
+  border: '#404040', // All borders and dividers (neutral-700)
 
   // Text Hierarchy
   text: '#FFFFFF', // Primary text
-  textSecondary: '#CCCCCC', // Secondary text, labels
-  textTertiary: '#666666', // Placeholders, disabled text
+  textSecondary: 'rgba(255,255,255,0.8)', // Secondary text, subtitles
+  textTertiary: 'rgba(255,255,255,0.6)', // Placeholders, labels, disabled text
 
   // Interactive Elements
-  accent: '#007AFF', // Blue accent for buttons, links
-  accentBackground: 'rgba(0, 122, 255, 0.1)', // Light accent backgrounds
-  border: '#404040', // Borders, dividers, separators
+  accent: '#3B82F6', // Blue accent for buttons, selection (blue-500)
+  accentBackground: 'rgba(59,130,246,0.1)', // Light accent backgrounds
 
-  // Status Colors (Dark Compatible)
-  success: '#34C759', // Green for success states
-  warning: '#FF9500', // Orange for warnings
-  error: '#FF3B30', // Red for errors
+  // Status Colors
+  success: '#10B981', // Green for success states
+  warning: '#F59E0B', // Orange for warnings
+  error: '#EF4444', // Red for errors
 };
 ```
 
-### **Dark Mode Typography System**
+### **Typography System**
 
-Optimized typography for dark backgrounds with proper contrast:
+Clean typography optimized for readability:
 
 ```typescript
-const darkTypography = {
-  // Heading Styles (High Contrast)
-  h1: { fontSize: 32, fontWeight: '800', color: '#FFFFFF' },
-  h2: { fontSize: 24, fontWeight: '700', color: '#FFFFFF' },
-  h3: { fontSize: 20, fontWeight: '600', color: '#FFFFFF' },
+const dashboardTypography = {
+  // Heading Styles
+  h1: { fontSize: 30, fontWeight: '600', color: '#FFFFFF', letterSpacing: -0.5 },
+  h2: { fontSize: 20, fontWeight: '600', color: '#FFFFFF', letterSpacing: -0.3 },
+  h3: { fontSize: 18, fontWeight: '600', color: '#FFFFFF', letterSpacing: -0.3 },
 
-  // Body Text (Readable on Dark)
+  // Body Text
   body: { fontSize: 16, fontWeight: '400', color: '#FFFFFF' },
-  bodyMedium: { fontSize: 16, fontWeight: '500', color: '#FFFFFF' },
-  bodySemibold: { fontSize: 16, fontWeight: '600', color: '#FFFFFF' },
+  bodyMedium: { fontSize: 14, fontWeight: '500', color: '#FFFFFF' },
+  bodySemibold: { fontSize: 14, fontWeight: '600', color: '#FFFFFF' },
 
-  // Secondary Text (Reduced Opacity)
-  caption: { fontSize: 14, fontWeight: '400', color: '#CCCCCC' },
-  small: { fontSize: 12, fontWeight: '400', color: '#CCCCCC' },
+  // Secondary Text
+  caption: { fontSize: 14, color: 'rgba(255,255,255,0.8)' },
+  small: { fontSize: 12, color: 'rgba(255,255,255,0.6)' },
+  label: { fontSize: 12, color: 'rgba(255,255,255,0.6)' },
 
   // Interactive Elements
   button: { fontSize: 16, fontWeight: '600', color: '#FFFFFF' },
-  link: { fontSize: 16, fontWeight: '500', color: '#007AFF' },
-  placeholder: { fontSize: 16, fontWeight: '400', color: '#666666' },
+  link: { fontSize: 16, fontWeight: '500', color: '#3B82F6' },
 };
 ```
 
-### **Dark Mode Spacing & Layout**
+### **Component Standards**
 
-Consistent spacing optimized for dark interface elements:
+Consistent styling patterns for all components:
 
 ```typescript
-const spacing = {
-  // Base Units (px) - Same for all themes
-  xs: 4,
-  sm: 8,
-  md: 16,
-  lg: 24,
-  xl: 32,
-  xxl: 48,
+const componentStandards = {
+  // Border Radius
+  borderRadius: {
+    small: 8, // Cards, buttons, inputs
+    medium: 12, // Modals, larger components
+    large: 16, // Screen containers
+    round: 20, // Circular elements
+  },
 
-  // Dark-Optimized Component Spacing
-  cardPadding: 16, // Internal card padding
-  screenPadding: 24, // Screen edge padding
-  modalPadding: 20, // Modal container padding
-  sectionSpacing: 24, // Between major sections
+  // Spacing
+  spacing: {
+    xs: 4,
+    sm: 8,
+    md: 12,
+    lg: 16,
+    xl: 20,
+    xxl: 24,
+  },
 
-  // Interactive Element Padding
-  buttonPadding: { vertical: 12, horizontal: 24 },
-  inputPadding: { vertical: 16, horizontal: 16 },
-  chipPadding: { vertical: 8, horizontal: 12 },
+  // Card Pattern
+  card: {
+    backgroundColor: 'rgba(38,38,38,0.7)',
+    borderWidth: 1,
+    borderColor: '#404040',
+    borderRadius: 8,
+    padding: 16,
+  },
+
+  // Button Pattern
+  primaryButton: {
+    backgroundColor: '#3B82F6',
+    borderRadius: 8,
+    paddingVertical: 16,
+    alignItems: 'center',
+  },
+
+  secondaryButton: {
+    backgroundColor: 'rgba(38,38,38,0.7)',
+    borderWidth: 1,
+    borderColor: '#404040',
+    borderRadius: 8,
+    paddingVertical: 16,
+    alignItems: 'center',
+  },
 };
 ```
 
 ---
 
-## 🎭 **Dark Mode Component Standards**
+## 🎭 **Component Implementation Standards**
 
-### **Modal System (Dark)**
+### **Modal System**
 
-Modern dark modals with smooth presentations:
+Clean, minimal modals that match the dashboard design:
 
 ```typescript
-const darkModalStyles = {
-  // Modal Container
-  modalOverlay: {
+const modalStyles = {
+  // Modal Container (matches dashboard background)
+  container: {
     flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.7)', // Dark overlay
-    justifyContent: 'flex-end', // Bottom sheet style
-  },
-
-  modalContainer: {
-    backgroundColor: '#171717', // Dark surface
-    borderTopLeftRadius: 20,
-    borderTopRightRadius: 20,
-    paddingHorizontal: 20,
-    paddingBottom: 30,
-    maxHeight: '80%',
+    backgroundColor: '#171717', // Same as dashboard
   },
 
   // Modal Header
-  modalHeader: {
+  header: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
     alignItems: 'center',
-    paddingVertical: 20,
+    paddingTop: 60,
+    paddingHorizontal: 20,
+    paddingBottom: 20,
     borderBottomWidth: 1,
-    borderBottomColor: '#404040', // Dark border
+    borderBottomColor: '#262626',
   },
 
-  modalTitle: {
-    fontSize: 20,
+  // Close Button (matches dashboard buttons)
+  closeButton: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: 'rgba(38,38,38,0.7)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+
+  // Section Titles
+  sectionTitle: {
+    fontSize: 18,
+    fontWeight: '600',
+    color: '#FFFFFF',
+    marginBottom: 12,
+    letterSpacing: -0.3,
+  },
+};
+```
+
+### **Card System**
+
+Consistent card styling across all components:
+
+```typescript
+const cardStyles = {
+  // Standard Card (used everywhere)
+  card: {
+    backgroundColor: 'rgba(38,38,38,0.7)',
+    borderWidth: 1,
+    borderColor: '#404040',
+    borderRadius: 8,
+    padding: 16,
+  },
+
+  // Selected Card State
+  cardSelected: {
+    borderColor: '#3B82F6',
+    backgroundColor: 'rgba(59,130,246,0.1)',
+  },
+
+  // Card Content
+  cardTitle: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#FFFFFF',
+    marginBottom: 4,
+  },
+
+  cardDescription: {
+    fontSize: 14,
+    color: 'rgba(255,255,255,0.6)',
+    lineHeight: 18,
+  },
+};
+```
+
+### **Button System**
+
+Clean button patterns for consistent interactions:
+
+```typescript
+const buttonStyles = {
+  // Primary Action Button
+  primaryButton: {
+    backgroundColor: '#3B82F6',
+    borderRadius: 8,
+    paddingVertical: 16,
+    alignItems: 'center',
+  },
+
+  primaryButtonText: {
+    fontSize: 16,
     fontWeight: '600',
     color: '#FFFFFF',
   },
-};
-```
 
-### **Input System (Dark)**
-
-Dark-themed form inputs with high contrast:
-
-```typescript
-const darkInputStyles = {
-  // Input Container
-  inputContainer: {
-    backgroundColor: '#262626', // Dark input background
+  // Secondary Button
+  secondaryButton: {
+    backgroundColor: 'rgba(38,38,38,0.7)',
+    borderWidth: 1,
+    borderColor: '#404040',
     borderRadius: 8,
-    padding: 16,
-    borderWidth: 1,
-    borderColor: '#404040', // Subtle border
-  },
-
-  // Input Text
-  input: {
-    fontSize: 16,
-    color: '#FFFFFF', // White text
-    placeholderTextColor: '#666666', // Dark gray placeholder
-  },
-
-  // Focused State
-  inputFocused: {
-    borderColor: '#007AFF', // Blue accent when focused
-    backgroundColor: '#262626', // Maintain dark background
-  },
-
-  // Search Input (with icon)
-  searchContainer: {
-    flexDirection: 'row',
+    paddingVertical: 16,
     alignItems: 'center',
-    backgroundColor: '#262626',
-    borderRadius: 10,
-    paddingHorizontal: 12,
-    marginVertical: 16,
-  },
-};
-```
-
-### **Button System (Dark)**
-
-Comprehensive dark button variants:
-
-```typescript
-const darkButtonStyles = {
-  // Primary Button (Blue Accent)
-  primary: {
-    backgroundColor: '#007AFF',
-    borderRadius: 12,
-    paddingVertical: 12,
-    paddingHorizontal: 24,
-    shadowColor: '#007AFF',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.3,
-    shadowRadius: 8,
   },
 
-  // Secondary Button (Dark with Border)
-  secondary: {
-    backgroundColor: 'transparent',
-    borderWidth: 1,
-    borderColor: '#404040',
-    borderRadius: 12,
-  },
-
-  // Chip/Tag Button
-  chip: {
-    backgroundColor: '#262626',
-    borderRadius: 20,
-    paddingVertical: 8,
-    paddingHorizontal: 12,
-    borderWidth: 1,
-    borderColor: '#404040',
-  },
-
-  chipSelected: {
-    backgroundColor: 'rgba(0, 122, 255, 0.1)',
-    borderColor: '#007AFF',
-  },
-};
-```
-
-### **Card System (Dark)**
-
-Dark cards with proper elevation and hierarchy:
-
-```typescript
-const darkCardStyles = {
-  // Standard Dark Card
-  card: {
-    backgroundColor: '#171717', // Dark surface
-    borderRadius: 16,
-    padding: 16,
-    borderWidth: 1,
-    borderColor: '#404040', // Subtle border for definition
-  },
-
-  // Elevated Card (Important Content)
-  elevatedCard: {
-    backgroundColor: '#262626', // Lighter dark surface
-    borderRadius: 16,
-    padding: 20,
-    borderWidth: 1,
-    borderColor: '#404040',
-    shadowColor: '#000000',
-    shadowOffset: { width: 0, height: 8 },
-    shadowOpacity: 0.3,
-    shadowRadius: 12,
-    elevation: 8,
-  },
-
-  // Timeline/List Item Card
-  listCard: {
-    backgroundColor: '#262626',
-    borderRadius: 12,
-    padding: 16,
-    marginVertical: 4,
-    borderWidth: 1,
-    borderColor: '#404040',
+  secondaryButtonText: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: 'rgba(255,255,255,0.8)',
   },
 };
 ```
 
 ---
 
-## 🔄 **Theme Implementation Strategy**
+## ⚠️ **Design Don'ts**
 
-### **Current State: Dark Mode Priority**
+### **Avoid These Patterns**
 
-- **Primary Development**: All new components use dark mode styling
-- **Component Library**: Dark-themed reusable components (DarkCountryPicker, DarkDateSelector)
-- **Modal System**: Dark modals with pageSheet presentation
-- **Navigation**: Dark headers and navigation elements
+❌ **Travel-themed gradients** - Use solid colors instead  
+❌ **Glassmorphism effects** - Keep interfaces clean and minimal  
+❌ **Premium shadows and blur** - Use simple borders and solid backgrounds  
+❌ **Complex animations** - Prefer simple, functional interactions  
+❌ **Inconsistent border radius** - Always use 8px for cards, 20px for buttons  
+❌ **Mixed design systems** - Always follow the dashboard-first approach
 
-### **Future: Light Mode Support**
+### **Correct Approach**
 
-When implementing light mode support:
-
-1. **Theme Context**: Create theme context to switch between dark/light
-2. **Component Updates**: Update all components to use theme-aware styling
-3. **User Preference**: Add settings to choose theme preference
-4. **System Integration**: Respect system dark/light mode settings
-
-### **Migration Pattern**
-
-```typescript
-// Current (Dark Priority)
-const styles = StyleSheet.create({
-  container: {
-    backgroundColor: '#171717', // Hard-coded dark
-    // ...
-  },
-});
-
-// Future (Theme Aware)
-const styles = (theme: ThemeColors) =>
-  StyleSheet.create({
-    container: {
-      backgroundColor: theme.surface, // Theme-aware
-      // ...
-    },
-  });
-```
+✅ **Clean, minimal design** with consistent patterns  
+✅ **Solid backgrounds** with subtle transparency  
+✅ **Simple borders** using #404040 color  
+✅ **Consistent spacing** following the 4px grid system  
+✅ **Unified color palette** with #3B82F6 accent  
+✅ **Dashboard-first consistency** across all components
 
 ---
 
-## 📱 **Platform-Specific Dark Mode Guidelines**
+## 🔧 **Implementation Guidelines**
 
-### **iOS Dark Mode**
+### **New Component Checklist**
 
-- **Status Bar**: Light content on dark backgrounds
-- **Navigation**: Use pageSheet for modals
-- **Safe Areas**: Respect safe area insets with dark backgrounds
-- **Haptic Feedback**: Enhanced feedback for dark interfaces
+When creating new components, ensure they follow these standards:
 
-### **Android Dark Mode**
+- [ ] Uses dashboard color palette (#171717, rgba(38,38,38,0.7), #404040)
+- [ ] Follows 8px border radius for cards
+- [ ] Uses consistent spacing (12px, 16px, 20px, 24px)
+- [ ] Implements proper text hierarchy with correct colors
+- [ ] Matches existing button and card patterns
+- [ ] Avoids gradients, glassmorphism, or premium effects
+- [ ] Maintains accessibility with high contrast ratios
 
-- **Status Bar**: Translucent with light icons
-- **Navigation**: Use overFullScreen for modals
-- **Material Design**: Follow Material 3 dark theme guidelines
-- **System Integration**: Respect Android 10+ dark mode settings
+### **Modal Guidelines**
 
----
+All modals should:
 
-## 🎨 **Design Patterns & Best Practices**
+- [ ] Use `backgroundColor: '#171717'` for container
+- [ ] Include header with close button matching dashboard style
+- [ ] Use section titles with proper typography
+- [ ] Implement card patterns for content sections
+- [ ] Follow action button patterns for primary/secondary actions
+- [ ] Maintain consistent padding and spacing
 
-### **Accessibility in Dark Mode**
-
-- **Contrast Ratios**: Maintain WCAG AA compliance (4.5:1 for normal text)
-- **Focus Indicators**: High contrast focus rings (#007AFF on dark backgrounds)
-- **Color Independence**: Don't rely solely on color for information
-- **Text Scaling**: Support dynamic type scaling in dark mode
-
-### **Performance Optimization**
-
-- **Pure Black Backgrounds**: Use #000000 for OLED power savings
-- **Reduced Glow Effects**: Minimize expensive shadow/glow effects
-- **Dark Image Optimization**: Use darker hero images for better integration
-
-### **User Experience**
-
-- **Smooth Transitions**: Dark mode transitions should be seamless
-- **Content Hierarchy**: Use multiple gray levels for clear hierarchy
-- **Touch Targets**: Maintain 44pt minimum touch targets
-- **Gesture Support**: Swipe-to-dismiss for modals and overlays
-
----
-
-## 📐 **Layout & Grid System**
-
-### **Responsive Grid (Dark Optimized)**
-
-```typescript
-const gridSystem = {
-  // Container Widths
-  maxWidth: screenWidth - spacing.screenPadding * 2,
-
-  // Grid Columns
-  columns: {
-    single: '100%',
-    half: '48%',
-    third: '32%',
-    quarter: '23%',
-  },
-
-  // Dark-Optimized Gutters
-  gutter: spacing.md, // 16px between grid items
-  rowGap: spacing.lg, // 24px between rows
-};
-```
-
----
-
-## 🎨 **Design Implementation**
-
-### **Component Library Structure**
-
-Organized, reusable components following atomic design principles:
-
-```
-components/
-├── atoms/              # Basic building blocks
-│   ├── Button.tsx     # Reusable button component
-│   ├── Input.tsx      # Form input component
-│   ├── Typography.tsx # Text components
-│   └── Icon.tsx       # Icon system
-├── molecules/          # Component combinations
-│   ├── Card.tsx       # Card containers
-│   ├── FilterChip.tsx # Filter components
-│   └── ProgressBar.tsx # Progress indicators
-├── organisms/          # Complex components
-│   ├── ExpenseCard.tsx # Swipeable expense cards
-│   ├── TabNavigator.tsx # Navigation system
-│   └── Dashboard.tsx   # Dashboard layout
-└── templates/          # Page layouts
-    ├── ScreenLayout.tsx # Standard screen template
-    └── ModalLayout.tsx  # Modal template
-```
-
-### **Style Organization**
-
-Centralized styling for consistency and maintainability:
-
-```typescript
-// styles/index.ts
-export const styles = {
-  // Global Styles
-  colors,
-  typography,
-  spacing,
-  shadows,
-  borderRadius,
-
-  // Component Styles
-  buttons: buttonStyles,
-  cards: cardStyles,
-  inputs: inputStyles,
-
-  // Layout Styles
-  screens: screenStyles,
-  modals: modalStyles,
-  navigation: navigationStyles,
-};
-```
+This ensures all components feel cohesive and part of the same design system as the main dashboard.
 
 ---
 
