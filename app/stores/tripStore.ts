@@ -4,6 +4,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as Crypto from 'expo-crypto';
 import { Trip, Leg, TripBudget } from '../types';
 import { useExpenseStore } from './expenseStore';
+import { getSuggestedBudget } from '../utils/budgetSuggestions';
 
 interface TripState {
   trips: Trip[];
@@ -27,6 +28,11 @@ interface TripState {
 
   // Budget operations
   setBudget: (tripId: string, budget: TripBudget) => void;
+  generateBudgetSuggestion: (
+    tripId: string,
+    style: 'frugal' | 'balanced' | 'luxury',
+    currency?: string
+  ) => TripBudget | null;
 
   // Utility functions
   getTripById: (tripId: string) => Trip | undefined;
@@ -119,6 +125,14 @@ export const useTripStore = create<TripState>()(
         set((state) => ({
           trips: state.trips.map((trip) => (trip.id === tripId ? { ...trip, budget } : trip)),
         })),
+
+      generateBudgetSuggestion: (tripId, style, currency = 'USD') => {
+        const trip = get().getTripById(tripId);
+        if (!trip) return null;
+
+        const tripLegs = get().getLegsByTrip(tripId);
+        return getSuggestedBudget(tripLegs, style, currency);
+      },
 
       deleteTrip: (tripId) => {
         // First, delete associated data from other stores
