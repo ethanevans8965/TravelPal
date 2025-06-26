@@ -1,320 +1,555 @@
-import React, { useState } from 'react';
-import { View, Text, StyleSheet, Modal, TouchableOpacity, ScrollView } from 'react-native';
-import { FontAwesome } from '@expo/vector-icons';
-import Button from './ui/Button';
-import Input from './ui/Input';
-import Card from './ui/Card';
+import React, { useState, useEffect } from 'react';
+import {
+  View,
+  Text,
+  Modal,
+  StyleSheet,
+  TouchableOpacity,
+  Dimensions,
+  ScrollView,
+  Alert,
+} from 'react-native';
+import { LinearGradient } from 'expo-linear-gradient';
+import { BlurView } from 'expo-blur';
+import { Ionicons } from '@expo/vector-icons';
+import { TripBudget } from '../types';
+import { useTripStore } from '../stores/tripStore';
+import { getSuggestedBudget, convertBudgetStyle } from '../utils/budgetSuggestions';
+
+const { width, height } = Dimensions.get('window');
 
 interface BudgetSetupModalProps {
   visible: boolean;
   onClose: () => void;
-  onBudgetSet: (budgetData: BudgetData) => void;
-  tripName: string;
+  tripId: string;
+  onBudgetSet?: (budget: TripBudget) => void;
 }
 
-interface BudgetData {
-  method: 'no-budget' | 'simple-total' | 'detailed-plan';
-  totalBudget?: number;
-  dailyBudget?: number;
-  categories?: Record<string, number>;
-}
+type TravelStyle = 'frugal' | 'balanced' | 'luxury';
+type Currency = 'USD' | 'EUR' | 'GBP' | 'JPY' | 'AUD' | 'CAD';
 
-const budgetOptions = [
+const currencies: { code: Currency; symbol: string; name: string }[] = [
+  { code: 'USD', symbol: '$', name: 'US Dollar' },
+  { code: 'EUR', symbol: '€', name: 'Euro' },
+  { code: 'GBP', symbol: '£', name: 'British Pound' },
+  { code: 'JPY', symbol: '¥', name: 'Japanese Yen' },
+  { code: 'AUD', symbol: 'A$', name: 'Australian Dollar' },
+  { code: 'CAD', symbol: 'C$', name: 'Canadian Dollar' },
+];
+
+const travelStyles: { key: TravelStyle; label: string; description: string; icon: string }[] = [
   {
-    id: 'no-budget' as const,
-    title: 'Track As I Go',
-    description: 'No budget limits - just track expenses as they happen',
-    icon: 'list-alt',
-    color: '#6B7280',
-    benefits: ['Simple expense tracking', 'No budget constraints', 'Perfect for spontaneous trips'],
+    key: 'frugal',
+    label: 'Frugal',
+    description: 'Budget-conscious travel with hostels and local food',
+    icon: 'wallet-outline',
   },
   {
-    id: 'simple-total' as const,
-    title: 'Simple Total Budget',
-    description: 'Set one total amount and track against it',
-    icon: 'dollar',
-    color: '#10B981',
-    benefits: ['Easy to set up', 'Clear spending limit', 'Automatic tracking'],
+    key: 'balanced',
+    label: 'Balanced',
+    description: 'Mix of comfort and value with mid-range options',
+    icon: 'scale-outline',
   },
   {
-    id: 'detailed-plan' as const,
-    title: 'Detailed Budget Plan',
-    description: 'Full planning with daily budgets and category breakdown',
-    icon: 'calculator',
-    color: '#8B5CF6',
-    benefits: ['Complete budget control', 'Category-wise tracking', 'Daily spending guidance'],
+    key: 'luxury',
+    label: 'Luxury',
+    description: 'Premium experiences with top-tier accommodations',
+    icon: 'diamond-outline',
   },
 ];
 
-export default function BudgetSetupModal({
+export const BudgetSetupModal: React.FC<BudgetSetupModalProps> = ({
   visible,
   onClose,
+  tripId,
   onBudgetSet,
-  tripName,
-}: BudgetSetupModalProps) {
-  const [selectedMethod, setSelectedMethod] = useState<BudgetData['method'] | null>(null);
-  const [totalBudget, setTotalBudget] = useState('');
-  const [error, setError] = useState('');
+}) => {
+  const { getTripById, getLegsByTrip, setBudget, generateBudgetSuggestion } = useTripStore();
 
-  const handleMethodSelect = (method: BudgetData['method']) => {
-    setSelectedMethod(method);
-    setError('');
+  const [selectedStyle, setSelectedStyle] = useState<TravelStyle>('balanced');
+  const [selectedCurrency, setSelectedCurrency] = useState<Currency>('USD');
+  const [suggestedBudget, setSuggestedBudget] = useState<TripBudget | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+
+  // Generate budget suggestion when modal opens or style/currency changes
+  useEffect(() => {
+    if (visible && tripId) {
+      const suggestion = generateBudgetSuggestion(tripId, selectedStyle, selectedCurrency);
+      setSuggestedBudget(suggestion);
+    }
+  }, [visible, tripId, selectedStyle, selectedCurrency, generateBudgetSuggestion]);
+
+  const handleStyleChange = (style: TravelStyle) => {
+    setSelectedStyle(style);
+
+    // Convert existing budget to new style if available
+    if (suggestedBudget) {
+      const convertedBudget = convertBudgetStyle(suggestedBudget, style);
+      setSuggestedBudget({ ...convertedBudget, currency: selectedCurrency });
+    }
   };
 
-  const handleContinue = () => {
-    if (!selectedMethod) {
-      setError('Please select a budget method');
+  const handleCurrencyChange = (currency: Currency) => {
+    setSelectedCurrency(currency);
+
+    // Update currency in existing budget
+    if (suggestedBudget) {
+      setSuggestedBudget({ ...suggestedBudget, currency });
+    }
+  };
+
+  const handleAcceptBudget = async () => {
+    if (!suggestedBudget) {
+      Alert.alert('Error', 'No budget suggestion available');
       return;
     }
 
-    switch (selectedMethod) {
-      case 'no-budget':
-        onBudgetSet({ method: 'no-budget' });
-        break;
+    setIsLoading(true);
+    try {
+      // Save budget to trip
+      setBudget(tripId, suggestedBudget);
 
-      case 'simple-total':
-        const budget = parseFloat(totalBudget);
-        if (!totalBudget || isNaN(budget) || budget <= 0) {
-          setError('Please enter a valid budget amount');
-          return;
-        }
-        onBudgetSet({
-          method: 'simple-total',
-          totalBudget: budget,
-        });
-        break;
+      // Notify parent component
+      onBudgetSet?.(suggestedBudget);
 
-      case 'detailed-plan':
-        // TODO: Navigate to detailed planning flow
-        // For now, just close with a simple setup
-        onBudgetSet({
-          method: 'detailed-plan',
-          totalBudget: parseFloat(totalBudget) || undefined,
-        });
-        break;
+      // Close modal
+      onClose();
+    } catch (error) {
+      console.error('Error setting budget:', error);
+      Alert.alert('Error', 'Failed to set budget. Please try again.');
+    } finally {
+      setIsLoading(false);
     }
   };
 
-  const reset = () => {
-    setSelectedMethod(null);
-    setTotalBudget('');
-    setError('');
-  };
-
-  const handleClose = () => {
-    reset();
+  const handleSkip = () => {
     onClose();
   };
+
+  const formatCurrency = (amount: number, currencyCode: Currency) => {
+    const currency = currencies.find((c) => c.code === currencyCode);
+    const symbol = currency?.symbol || '$';
+
+    if (currencyCode === 'JPY') {
+      return `${symbol}${Math.round(amount).toLocaleString()}`;
+    }
+    return `${symbol}${amount.toLocaleString()}`;
+  };
+
+  const trip = getTripById(tripId);
+  const legs = getLegsByTrip(tripId);
+
+  if (!trip) return null;
 
   return (
     <Modal
       visible={visible}
       animationType="slide"
       presentationStyle="pageSheet"
-      onRequestClose={handleClose}
+      onRequestClose={onClose}
     >
-      <View style={styles.container}>
-        <View style={styles.header}>
-          <TouchableOpacity onPress={handleClose} style={styles.closeButton}>
-            <FontAwesome name="times" size={24} color="#666666" />
-          </TouchableOpacity>
-          <Text style={styles.title}>Set Up Budget</Text>
-          <View style={styles.placeholder} />
-        </View>
+      <BlurView intensity={100} style={styles.container}>
+        <LinearGradient colors={['#1a1a2e', '#16213e', '#0f3460']} style={styles.gradient}>
+          {/* Header */}
+          <View style={styles.header}>
+            <TouchableOpacity onPress={onClose} style={styles.closeButton}>
+              <Ionicons name="close" size={24} color="#FFFFFF" />
+            </TouchableOpacity>
+            <Text style={styles.headerTitle}>Setup Budget</Text>
+            <View style={styles.headerSpacer} />
+          </View>
 
-        <ScrollView style={styles.content}>
-          <Text style={styles.subtitle}>
-            How would you like to manage your budget for "{tripName}"?
-          </Text>
+          <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
+            {/* Trip Info */}
+            <View style={styles.tripInfoCard}>
+              <Text style={styles.tripName}>{trip.name}</Text>
+              <Text style={styles.tripDetails}>
+                {legs.length > 0
+                  ? `${legs.length} destination${legs.length > 1 ? 's' : ''}`
+                  : 'New trip'}
+              </Text>
+            </View>
 
-          <View style={styles.options}>
-            {budgetOptions.map((option) => {
-              const cardStyle = {
-                ...styles.optionCard,
-                ...(selectedMethod === option.id ? styles.selectedOption : {}),
-              };
-
-              return (
-                <TouchableOpacity key={option.id} onPress={() => handleMethodSelect(option.id)}>
-                  <Card
-                    variant={selectedMethod === option.id ? 'elevated' : 'outlined'}
-                    style={cardStyle}
+            {/* Travel Style Selector */}
+            <View style={styles.section}>
+              <Text style={styles.sectionTitle}>Travel Style</Text>
+              <View style={styles.styleContainer}>
+                {travelStyles.map((style) => (
+                  <TouchableOpacity
+                    key={style.key}
+                    style={[
+                      styles.styleCard,
+                      selectedStyle === style.key && styles.styleCardSelected,
+                    ]}
+                    onPress={() => handleStyleChange(style.key)}
                   >
-                    <View style={styles.optionHeader}>
-                      <View style={[styles.optionIcon, { backgroundColor: option.color }]}>
-                        <FontAwesome name={option.icon as any} size={20} color="#FFFFFF" />
-                      </View>
-                      <View style={styles.optionInfo}>
-                        <Text style={styles.optionTitle}>{option.title}</Text>
-                        <Text style={styles.optionDescription}>{option.description}</Text>
-                      </View>
-                      {selectedMethod === option.id && (
-                        <FontAwesome name="check-circle" size={24} color={option.color} />
-                      )}
+                    <View style={styles.styleIcon}>
+                      <Ionicons
+                        name={style.icon as any}
+                        size={24}
+                        color={selectedStyle === style.key ? '#007AFF' : '#CCCCCC'}
+                      />
+                    </View>
+                    <Text
+                      style={[
+                        styles.styleLabel,
+                        selectedStyle === style.key && styles.styleLabelSelected,
+                      ]}
+                    >
+                      {style.label}
+                    </Text>
+                    <Text style={styles.styleDescription}>{style.description}</Text>
+                  </TouchableOpacity>
+                ))}
+              </View>
+            </View>
+
+            {/* Currency Selector */}
+            <View style={styles.section}>
+              <Text style={styles.sectionTitle}>Currency</Text>
+              <ScrollView
+                horizontal
+                showsHorizontalScrollIndicator={false}
+                style={styles.currencyScroll}
+              >
+                {currencies.map((currency) => (
+                  <TouchableOpacity
+                    key={currency.code}
+                    style={[
+                      styles.currencyCard,
+                      selectedCurrency === currency.code && styles.currencyCardSelected,
+                    ]}
+                    onPress={() => handleCurrencyChange(currency.code)}
+                  >
+                    <Text
+                      style={[
+                        styles.currencySymbol,
+                        selectedCurrency === currency.code && styles.currencySymbolSelected,
+                      ]}
+                    >
+                      {currency.symbol}
+                    </Text>
+                    <Text
+                      style={[
+                        styles.currencyCode,
+                        selectedCurrency === currency.code && styles.currencyCodeSelected,
+                      ]}
+                    >
+                      {currency.code}
+                    </Text>
+                  </TouchableOpacity>
+                ))}
+              </ScrollView>
+            </View>
+
+            {/* Budget Preview */}
+            {suggestedBudget && (
+              <View style={styles.section}>
+                <Text style={styles.sectionTitle}>Suggested Budget</Text>
+                <LinearGradient colors={['#007AFF', '#5856D6']} style={styles.budgetCard}>
+                  <View style={styles.budgetHeader}>
+                    <Text style={styles.budgetTotal}>
+                      {formatCurrency(suggestedBudget.total, selectedCurrency)}
+                    </Text>
+                    <Text style={styles.budgetSubtitle}>Total Trip Budget</Text>
+                  </View>
+
+                  <View style={styles.budgetBreakdown}>
+                    <View style={styles.budgetRow}>
+                      <Text style={styles.budgetLabel}>Per Day</Text>
+                      <Text style={styles.budgetValue}>
+                        {formatCurrency(suggestedBudget.perDay, selectedCurrency)}
+                      </Text>
                     </View>
 
-                    <View style={styles.benefits}>
-                      {option.benefits.map((benefit, index) => (
-                        <View key={index} style={styles.benefitItem}>
-                          <FontAwesome
-                            name="check"
-                            size={12}
-                            color={option.color}
-                            style={styles.benefitIcon}
-                          />
-                          <Text style={styles.benefitText}>{benefit}</Text>
+                    <View style={styles.budgetCategories}>
+                      {Object.entries(suggestedBudget.categories).map(([category, amount]) => (
+                        <View key={category} style={styles.categoryRow}>
+                          <Text style={styles.categoryLabel}>
+                            {category.charAt(0).toUpperCase() + category.slice(1)}
+                          </Text>
+                          <Text style={styles.categoryAmount}>
+                            {formatCurrency(amount, selectedCurrency)}
+                          </Text>
                         </View>
                       ))}
                     </View>
-                  </Card>
-                </TouchableOpacity>
-              );
-            })}
-          </View>
+                  </View>
+                </LinearGradient>
 
-          {/* Budget Input for Simple Total and Detailed Plan */}
-          {(selectedMethod === 'simple-total' || selectedMethod === 'detailed-plan') && (
-            <Card variant="outlined" style={styles.budgetInputCard}>
-              <Input
-                label="Total Budget"
-                placeholder="Enter your total budget"
-                value={totalBudget}
-                onChangeText={setTotalBudget}
-                keyboardType="numeric"
-                leftIcon="dollar"
-                error={error}
-              />
-
-              {selectedMethod === 'detailed-plan' && (
-                <Text style={styles.detailedPlanNote}>
-                  💡 You'll be able to set daily budgets and category breakdowns in the next step
+                <Text style={styles.budgetNote}>
+                  Based on {legs.length > 0 ? 'your destinations and' : ''} travel style. You can
+                  customize this later.
                 </Text>
-              )}
-            </Card>
-          )}
+              </View>
+            )}
+          </ScrollView>
 
-          {error && selectedMethod === 'no-budget' && <Text style={styles.errorText}>{error}</Text>}
-        </ScrollView>
+          {/* Action Buttons */}
+          <View style={styles.actions}>
+            <TouchableOpacity style={styles.skipButton} onPress={handleSkip}>
+              <Text style={styles.skipButtonText}>Skip for Now</Text>
+            </TouchableOpacity>
 
-        <View style={styles.footer}>
-          <Button title="Continue" onPress={handleContinue} disabled={!selectedMethod} fullWidth />
-        </View>
-      </View>
+            <TouchableOpacity
+              style={[styles.acceptButton, isLoading && styles.acceptButtonDisabled]}
+              onPress={handleAcceptBudget}
+              disabled={isLoading || !suggestedBudget}
+            >
+              <LinearGradient colors={['#007AFF', '#5856D6']} style={styles.acceptButtonGradient}>
+                <Text style={styles.acceptButtonText}>
+                  {isLoading ? 'Setting up...' : 'Accept Budget'}
+                </Text>
+              </LinearGradient>
+            </TouchableOpacity>
+          </View>
+        </LinearGradient>
+      </BlurView>
     </Modal>
   );
-}
+};
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F8F9FA',
+  },
+  gradient: {
+    flex: 1,
   },
   header: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between',
-    padding: 20,
+    paddingHorizontal: 20,
     paddingTop: 60,
-    backgroundColor: '#FFFFFF',
-    borderBottomWidth: 1,
-    borderBottomColor: '#E5E5E5',
+    paddingBottom: 20,
   },
   closeButton: {
     width: 40,
     height: 40,
     borderRadius: 20,
-    backgroundColor: '#F3F4F6',
-    justifyContent: 'center',
+    backgroundColor: 'rgba(255, 255, 255, 0.1)',
     alignItems: 'center',
+    justifyContent: 'center',
   },
-  title: {
+  headerTitle: {
+    flex: 1,
+    textAlign: 'center',
     fontSize: 20,
-    fontWeight: '700',
-    color: '#333333',
+    fontWeight: '600',
+    color: '#FFFFFF',
+    letterSpacing: 0.5,
   },
-  placeholder: {
+  headerSpacer: {
     width: 40,
   },
   content: {
     flex: 1,
+    paddingHorizontal: 20,
+  },
+  tripInfoCard: {
+    backgroundColor: 'rgba(255, 255, 255, 0.05)',
+    borderRadius: 16,
     padding: 20,
-  },
-  subtitle: {
-    fontSize: 16,
-    color: '#666666',
     marginBottom: 24,
-    textAlign: 'center',
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.1)',
   },
-  options: {
-    gap: 16,
-    marginBottom: 24,
-  },
-  optionCard: {
-    marginBottom: 0,
-  },
-  selectedOption: {
-    borderColor: '#057B8C',
-    borderWidth: 2,
-  },
-  optionHeader: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 16,
-  },
-  optionIcon: {
-    width: 48,
-    height: 48,
-    borderRadius: 24,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginRight: 16,
-  },
-  optionInfo: {
-    flex: 1,
-  },
-  optionTitle: {
+  tripName: {
     fontSize: 18,
     fontWeight: '600',
-    color: '#333333',
+    color: '#FFFFFF',
     marginBottom: 4,
   },
-  optionDescription: {
+  tripDetails: {
     fontSize: 14,
-    color: '#666666',
+    color: '#CCCCCC',
   },
-  benefits: {
-    gap: 8,
+  section: {
+    marginBottom: 32,
   },
-  benefitItem: {
+  sectionTitle: {
+    fontSize: 18,
+    fontWeight: '600',
+    color: '#FFFFFF',
+    marginBottom: 16,
+    letterSpacing: 0.5,
+  },
+  styleContainer: {
+    gap: 12,
+  },
+  styleCard: {
+    backgroundColor: 'rgba(255, 255, 255, 0.05)',
+    borderRadius: 16,
+    padding: 20,
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.1)',
+  },
+  styleCardSelected: {
+    backgroundColor: 'rgba(0, 122, 255, 0.1)',
+    borderColor: '#007AFF',
+  },
+  styleIcon: {
+    marginBottom: 8,
+  },
+  styleLabel: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#FFFFFF',
+    marginBottom: 4,
+  },
+  styleLabelSelected: {
+    color: '#007AFF',
+  },
+  styleDescription: {
+    fontSize: 14,
+    color: '#CCCCCC',
+    lineHeight: 20,
+  },
+  currencyScroll: {
+    marginHorizontal: -20,
+    paddingHorizontal: 20,
+  },
+  currencyCard: {
+    width: 80,
+    height: 80,
+    backgroundColor: 'rgba(255, 255, 255, 0.05)',
+    borderRadius: 16,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginRight: 12,
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.1)',
+  },
+  currencyCardSelected: {
+    backgroundColor: 'rgba(0, 122, 255, 0.1)',
+    borderColor: '#007AFF',
+  },
+  currencySymbol: {
+    fontSize: 24,
+    fontWeight: '600',
+    color: '#CCCCCC',
+    marginBottom: 4,
+  },
+  currencySymbolSelected: {
+    color: '#007AFF',
+  },
+  currencyCode: {
+    fontSize: 12,
+    fontWeight: '500',
+    color: '#CCCCCC',
+  },
+  currencyCodeSelected: {
+    color: '#007AFF',
+  },
+  budgetCard: {
+    borderRadius: 20,
+    padding: 24,
+    marginBottom: 12,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.3,
+    shadowRadius: 16,
+    elevation: 8,
+  },
+  budgetHeader: {
+    alignItems: 'center',
+    marginBottom: 20,
+  },
+  budgetTotal: {
+    fontSize: 32,
+    fontWeight: '700',
+    color: '#FFFFFF',
+    marginBottom: 4,
+  },
+  budgetSubtitle: {
+    fontSize: 14,
+    color: 'rgba(255, 255, 255, 0.8)',
+    fontWeight: '500',
+  },
+  budgetBreakdown: {
+    gap: 16,
+  },
+  budgetRow: {
     flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingBottom: 16,
+    borderBottomWidth: 1,
+    borderBottomColor: 'rgba(255, 255, 255, 0.2)',
+  },
+  budgetLabel: {
+    fontSize: 16,
+    color: 'rgba(255, 255, 255, 0.9)',
+    fontWeight: '500',
+  },
+  budgetValue: {
+    fontSize: 18,
+    color: '#FFFFFF',
+    fontWeight: '600',
+  },
+  budgetCategories: {
+    gap: 12,
+  },
+  categoryRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
     alignItems: 'center',
   },
-  benefitIcon: {
-    marginRight: 8,
-  },
-  benefitText: {
+  categoryLabel: {
     fontSize: 14,
-    color: '#666666',
+    color: 'rgba(255, 255, 255, 0.8)',
+    fontWeight: '500',
   },
-  budgetInputCard: {
-    marginBottom: 24,
-  },
-  detailedPlanNote: {
+  categoryAmount: {
     fontSize: 14,
-    color: '#666666',
-    fontStyle: 'italic',
-    marginTop: 8,
+    color: '#FFFFFF',
+    fontWeight: '600',
   },
-  errorText: {
+  budgetNote: {
     fontSize: 14,
-    color: '#FF6B6B',
+    color: '#CCCCCC',
     textAlign: 'center',
-    marginTop: 16,
+    lineHeight: 20,
   },
-  footer: {
-    padding: 20,
-    backgroundColor: '#FFFFFF',
-    borderTopWidth: 1,
-    borderTopColor: '#E5E5E5',
+  actions: {
+    flexDirection: 'row',
+    paddingHorizontal: 20,
+    paddingBottom: 40,
+    gap: 12,
+  },
+  skipButton: {
+    flex: 1,
+    height: 56,
+    backgroundColor: 'rgba(255, 255, 255, 0.1)',
+    borderRadius: 16,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.2)',
+  },
+  skipButtonText: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#CCCCCC',
+  },
+  acceptButton: {
+    flex: 2,
+    height: 56,
+    borderRadius: 16,
+    overflow: 'hidden',
+  },
+  acceptButtonDisabled: {
+    opacity: 0.6,
+  },
+  acceptButtonGradient: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  acceptButtonText: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#FFFFFF',
+    letterSpacing: 0.5,
   },
 });
